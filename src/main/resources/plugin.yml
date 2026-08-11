@@ -10,7 +10,7 @@ depend: [LibsDisguises]
 
 commands:
   mutsuhara:
-    description: Ouvre le menu de choix de race
+    description: Ouvre le menu de choix de race.
     default: true
     usage: /mutsuhara
 
