@@ -27,6 +27,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Kitsune implements IRace {
 
+    private static final double TOL = 0.02;
+
     private static final NamespacedKey STRENGTH = NamespacedKey.fromString("kitsune:strength");
     private static final NamespacedKey SPEED = NamespacedKey.fromString("kitsune:speed");
     private static final NamespacedKey JUMP = NamespacedKey.fromString("kitsune:jump");
@@ -42,9 +44,17 @@ public class Kitsune implements IRace {
             Biome currentBiome = profile.player.getWorld().getBiome(profile.player.getLocation());
 
             long time = profile.getTime(TIME_KEY);
-            if(currentBiome == Biome.FOREST || currentBiome == Biome.JUNGLE) {
+            if(currentBiome == Biome.JUNGLE
+            || currentBiome == Biome.SPARSE_JUNGLE
+            || currentBiome == Biome.BAMBOO_JUNGLE
+            || currentBiome == Biome.BIRCH_FOREST
+            || currentBiome == Biome.OLD_GROWTH_BIRCH_FOREST
+            || currentBiome == Biome.DARK_FOREST
+            || currentBiome == Biome.FOREST
+            || currentBiome == Biome.FLOWER_FOREST
+            || currentBiome == Biome.CHERRY_GROVE) {
                 if (currentTime - time >= 1000 * 60 * 60) {
-                    if (ThreadLocalRandom.current().nextDouble() <= 0.01) {
+                    if (ThreadLocalRandom.current().nextDouble() <= TOL) {
                         rankUp(profile);
                     }
                     profile.putTime(TIME_KEY, currentTime);
