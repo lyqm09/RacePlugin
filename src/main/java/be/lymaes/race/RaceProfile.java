@@ -225,44 +225,46 @@ public class RaceProfile {
     }
 
     public void save() {
-        Bukkit.getScheduler().runTaskAsynchronously(Race.getInstance(), () -> {
-            Path file = Paths.get(Race.getInstance().getDataFolder().toPath() + "Race/profiles/" + player.getUniqueId() + ".json");
+        Bukkit.getScheduler().runTaskAsynchronously(Race.getInstance(), this::saveSynchronously);
+    }
 
-            try {
-                Files.createDirectories(file.getParent());
+    public void saveSynchronously() {
+        Path file = Paths.get(Race.getInstance().getDataFolder().toPath() + "Race/profiles/" + player.getUniqueId() + ".json");
 
-                ObjectNode rootNode;
-                if (Files.exists(file) && Files.size(file) > 0) {
-                    rootNode = (ObjectNode) Race.MAPPER.readTree(file.toFile());
-                } else {
-                    rootNode = Race.MAPPER.createObjectNode();
-                }
+        try {
+            Files.createDirectories(file.getParent());
 
-                rootNode.put("current", race.name());
-
-                ObjectNode raceNode = rootNode.withObjectProperty(race.name());
-
-                JsonNode timesNode = Race.MAPPER.valueToTree(times);
-
-                if (Race.getInstance().getRaceManager().getRaceModel(race) instanceof ISubRaceable) {
-                    raceNode.put("subrace", subRace);
-
-                    ObjectNode subraceNode = raceNode.withObjectProperty(Integer.toString(subRace));
-                    subraceNode.put("exp", exp);
-                    subraceNode.put("rank", rank);
-                    subraceNode.set("times", timesNode);
-                } else {
-                    raceNode.put("exp", exp);
-                    raceNode.put("rank", rank);
-                    raceNode.set("times", timesNode);
-                }
-
-                Race.MAPPER.writerWithDefaultPrettyPrinter().writeValue(file.toFile(), rootNode);
-
-            } catch (IOException e) {
-                throw new RuntimeException("Unable to save the profile file for " + player.getUniqueId(), e);
+            ObjectNode rootNode;
+            if (Files.exists(file) && Files.size(file) > 0) {
+                rootNode = (ObjectNode) Race.MAPPER.readTree(file.toFile());
+            } else {
+                rootNode = Race.MAPPER.createObjectNode();
             }
-        });
+
+            rootNode.put("current", race.name());
+
+            ObjectNode raceNode = rootNode.withObjectProperty(race.name());
+
+            JsonNode timesNode = Race.MAPPER.valueToTree(times);
+
+            if (Race.getInstance().getRaceManager().getRaceModel(race) instanceof ISubRaceable) {
+                raceNode.put("subrace", subRace);
+
+                ObjectNode subraceNode = raceNode.withObjectProperty(Integer.toString(subRace));
+                subraceNode.put("exp", exp);
+                subraceNode.put("rank", rank);
+                subraceNode.set("times", timesNode);
+            } else {
+                raceNode.put("exp", exp);
+                raceNode.put("rank", rank);
+                raceNode.set("times", timesNode);
+            }
+
+            Race.MAPPER.writerWithDefaultPrettyPrinter().writeValue(file.toFile(), rootNode);
+
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to save the profile file for " + player.getUniqueId(), e);
+        }
     }
 
 }

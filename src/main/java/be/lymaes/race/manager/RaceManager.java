@@ -33,6 +33,10 @@ public class RaceManager {
     }
 
     public void terminate() {
+        for(RaceProfile profile : profiles.values()) {
+            profile.saveSynchronously();
+        }
+
         register.clear();
         profiles.clear();
         for(List<RaceProfile> lists : races.values()) {
@@ -129,12 +133,6 @@ public class RaceManager {
 
     public void save(RaceProfile profile) {
         profile.save();
-    }
-
-    public void saveAll() {
-        for(RaceProfile profile : profiles.values()) {
-            save(profile);
-        }
     }
 
     public Collection<IRace> getRegisterValues() {
