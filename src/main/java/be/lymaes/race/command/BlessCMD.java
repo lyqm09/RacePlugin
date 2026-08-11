@@ -24,7 +24,7 @@ public class BlessCMD implements CommandExecutor {
 
     private static final String TIME_KEY = "bless_cmd";
 
-    private static List<Enchantment> ENCHANTMENTS = List.of();
+    private final List<Enchantment> ENCHANTMENTS;
 
     public BlessCMD() {
         ENCHANTMENTS = Lists.newArrayList(Registry.ENCHANTMENT);
