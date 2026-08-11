@@ -394,7 +394,7 @@ public class Tamashi implements IRace, ISubRaceable {
         if(!(Race.getInstance().getItemManager().getItem(item) instanceof FlyCharge)) {
             profile.player.getInventory().setItem(8, RaceItem.FLY_CHARGE.getItem());
 
-            if(!profile.player.getInventory().addItem(item).isEmpty()) {
+            if(item != null && !profile.player.getInventory().addItem(item).isEmpty()) {
                 profile.player.getWorld().dropItemNaturally(profile.player.getLocation(), item);
             }
         }

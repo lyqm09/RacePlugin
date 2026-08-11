@@ -269,14 +269,13 @@ public class Karyu implements IRace, ISubRaceable {
 
     private void giveMerchantItem(RaceProfile profile) {
         if(profile.getRank() >= Rank.BIG.rank) {
-            ItemStack item = profile.player.getInventory().getContents()[0];
+            ItemStack item = profile.player.getInventory().getContents()[8];
             if(!(Race.getInstance().getItemManager().getItem(item) instanceof MilicienEgg)) {
                 profile.player.getInventory().setItem(8, RaceItem.MILICIEN_EGG.getItem());
 
-                if(!profile.player.getInventory().addItem(item).isEmpty()) {
+                if(item != null && !profile.player.getInventory().addItem(item).isEmpty()) {
                     profile.player.getWorld().dropItemNaturally(profile.player.getLocation(), item);
                 }
-
             }
         }
     }
