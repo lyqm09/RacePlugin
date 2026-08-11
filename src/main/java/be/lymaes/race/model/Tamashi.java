@@ -78,10 +78,13 @@ public class Tamashi implements IRace, ISubRaceable {
                 if(player.equals(profile.player))
                     continue;
 
-                if(player.getLocation().distance(spawnLoc) > 50)
-                    continue;
+                if(player.getLocation().distance(currentLoc) <= DISTANCE) {
+                    addExp(profile, 1);
+                }
 
-                addExp(profile, 1);
+                if(player.getLocation().distance(spawnLoc) <= DISTANCE) {
+                    addExp(profile, 1);
+                }
             }
         }
     }
