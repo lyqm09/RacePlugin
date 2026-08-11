@@ -184,10 +184,9 @@ public class Karyu implements IRace, ISubRaceable {
                         .getLocation()
                         .add(0.5, 0, 0.5);
 
-                player.getWorld().spawn(spawnLoc, IronGolem.class, golem -> {
-                    golem.setCustomName("Milicien");
-                    golem.setCustomNameVisible(true);
-                });
+                Entity golem = player.getWorld().spawn(spawnLoc, IronGolem.class);
+                golem.setCustomName("Milicien");
+                golem.setCustomNameVisible(true);
 
                 player.setCooldown(item, 60 * 20);
             }
