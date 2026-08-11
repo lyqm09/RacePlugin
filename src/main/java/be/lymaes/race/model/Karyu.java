@@ -140,13 +140,13 @@ public class Karyu implements IRace, ISubRaceable {
         if(profile.subRace == SubRace.MERCHANT.id
         || (profile.subRace == SubRace.ADORER.id && profile.getRank() >= Rank.DRAGON.rank)) {
 
-            if(profile.getRank() >= Rank.ADVANCE.rank) {
+            emeraldExchange: if(profile.getRank() >= Rank.ADVANCE.rank) {
 
                 if (item == null || item.getType() != Material.EMERALD)
-                    return;
+                    break emeraldExchange;
 
                 if (e.getAction() != Action.RIGHT_CLICK_AIR)
-                    return;
+                    break emeraldExchange;
 
                 Material mineral = minerals.get(ThreadLocalRandom.current().nextInt(minerals.size()));
 
@@ -165,19 +165,19 @@ public class Karyu implements IRace, ISubRaceable {
                 e.setCancelled(true);
             }
 
-            if(profile.getRank() >= Rank.BIG.rank) {
+            summonMilicien: if(profile.getRank() >= Rank.BIG.rank) {
                 if(!(Race.getInstance().getItemManager().getItem(item) instanceof MilicienEgg))
-                    return;
+                    break summonMilicien;
 
                 Block clickedBlock = e.getClickedBlock();
                 if (clickedBlock == null) {
-                    return;
+                    break summonMilicien;
                 }
 
                 e.setCancelled(true);
 
                 if(player.hasCooldown(item)) {
-                    return;
+                    break summonMilicien;
                 }
 
                 Location spawnLoc = clickedBlock.getRelative(e.getBlockFace())
@@ -270,14 +270,13 @@ public class Karyu implements IRace, ISubRaceable {
 
     private void giveMerchantItem(RaceProfile profile) {
         if(profile.getRank() >= Rank.BIG.rank) {
-            ItemStack item = profile.player.getInventory().getContents()[0];
+            ItemStack item = profile.player.getInventory().getContents()[8];
             if(!(Race.getInstance().getItemManager().getItem(item) instanceof MilicienEgg)) {
                 profile.player.getInventory().setItem(8, RaceItem.MILICIEN_EGG.getItem());
 
-                if(!profile.player.getInventory().addItem(item).isEmpty()) {
+                if(item != null && !profile.player.getInventory().addItem(item).isEmpty()) {
                     profile.player.getWorld().dropItemNaturally(profile.player.getLocation(), item);
                 }
-
             }
         }
     }
@@ -422,11 +421,11 @@ public class Karyu implements IRace, ISubRaceable {
     public enum Rank {
 
         BEGINNER(0, "Débutant", 0),
-        NOVICE(1, "Novice", 100),
-        INTERMEDIATE(2, "Intermédiaire", 500),
-        ADVANCE(3, "Avancé", 2000),
-        BIG(4, "Grand", 5000),
-        DRAGON(5, "Dragon", 10000);
+        NOVICE(1, "Novice", 200),
+        INTERMEDIATE(2, "Intermédiaire", 1000),
+        ADVANCE(3, "Avancé", 4000),
+        BIG(4, "Grand", 10_000),
+        DRAGON(5, "Dragon", 20_000);
 
         public final int rank;
         public final String name;

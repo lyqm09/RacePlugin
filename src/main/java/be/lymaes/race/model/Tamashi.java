@@ -78,10 +78,13 @@ public class Tamashi implements IRace, ISubRaceable {
                 if(player.equals(profile.player))
                     continue;
 
-                if(player.getLocation().distance(spawnLoc) > 50)
-                    continue;
+                if(player.getLocation().distance(currentLoc) <= DISTANCE) {
+                    addExp(profile, 1);
+                }
 
-                addExp(profile, 1);
+                if(player.getLocation().distance(spawnLoc) <= DISTANCE) {
+                    addExp(profile, 1);
+                }
             }
         }
     }
@@ -391,7 +394,7 @@ public class Tamashi implements IRace, ISubRaceable {
         if(!(Race.getInstance().getItemManager().getItem(item) instanceof FlyCharge)) {
             profile.player.getInventory().setItem(8, RaceItem.FLY_CHARGE.getItem());
 
-            if(!profile.player.getInventory().addItem(item).isEmpty()) {
+            if(item != null && !profile.player.getInventory().addItem(item).isEmpty()) {
                 profile.player.getWorld().dropItemNaturally(profile.player.getLocation(), item);
             }
         }
@@ -466,11 +469,11 @@ public class Tamashi implements IRace, ISubRaceable {
 
     public enum Rank {
         EMBRYO(0, "Embryon", 0),
-        CHILD(1, "Enfant", 200),
-        ACCOMPLISHED(2, "Accompli", 2000),
-        HALF_GOD(3, "Semi Divin", 5000),
-        KAMI(4, "Kami", 10000),
-        OKAMI(5, "Okami", 20000);
+        CHILD(1, "Enfant", 400),
+        ACCOMPLISHED(2, "Accompli", 4000),
+        HALF_GOD(3, "Semi Divin", 10_000),
+        KAMI(4, "Kami", 20_000),
+        OKAMI(5, "Okami", 40_000);
 
         public final int rank;
         public final String name;

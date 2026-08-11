@@ -25,15 +25,7 @@ public enum RaceType {
         this.color = color;
         this.icon = icon;
     }
-
-    public String getName() {
-        return name;
-    }
-
-    public NamedTextColor getColor() {
-        return color;
-    }
-
+    
     public ItemStack getItem() {
         ItemStack item = new ItemStack(icon);
         ItemMeta meta = item.getItemMeta();
