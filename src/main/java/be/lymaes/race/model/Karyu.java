@@ -140,13 +140,13 @@ public class Karyu implements IRace, ISubRaceable {
         if(profile.subRace == SubRace.MERCHANT.id
         || (profile.subRace == SubRace.ADORER.id && profile.getRank() >= Rank.DRAGON.rank)) {
 
-            if(profile.getRank() >= Rank.ADVANCE.rank) {
+            emeraldExchange: if(profile.getRank() >= Rank.ADVANCE.rank) {
 
                 if (item == null || item.getType() != Material.EMERALD)
-                    return;
+                    break emeraldExchange;
 
                 if (e.getAction() != Action.RIGHT_CLICK_AIR)
-                    return;
+                    break emeraldExchange;
 
                 Material mineral = minerals.get(ThreadLocalRandom.current().nextInt(minerals.size()));
 
@@ -165,28 +165,29 @@ public class Karyu implements IRace, ISubRaceable {
                 e.setCancelled(true);
             }
 
-            if(profile.getRank() >= Rank.BIG.rank) {
+            summonMilicien: if(profile.getRank() >= Rank.BIG.rank) {
                 if(!(Race.getInstance().getItemManager().getItem(item) instanceof MilicienEgg))
-                    return;
+                    break summonMilicien;
 
                 Block clickedBlock = e.getClickedBlock();
                 if (clickedBlock == null) {
-                    return;
+                    break summonMilicien;
                 }
 
                 e.setCancelled(true);
 
                 if(player.hasCooldown(item)) {
-                    return;
+                    break summonMilicien;
                 }
 
                 Location spawnLoc = clickedBlock.getRelative(e.getBlockFace())
                         .getLocation()
                         .add(0.5, 0, 0.5);
 
-                Entity golem = player.getWorld().spawn(spawnLoc, IronGolem.class);
-                golem.setCustomName("Milicien");
-                golem.setCustomNameVisible(true);
+                player.getWorld().spawn(spawnLoc, IronGolem.class, golem -> {
+                    golem.setCustomName("Milicien");
+                    golem.setCustomNameVisible(true);
+                });
 
                 player.setCooldown(item, 60 * 20);
             }
