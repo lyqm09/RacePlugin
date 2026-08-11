@@ -97,7 +97,7 @@ public class RaceProfile {
     public void setTabName() {
         Component tabNameComponent = Component.empty()
                 .append(Component.text("[").color(NamedTextColor.WHITE))
-                .append(Component.text(race.getName()).color(race.color))
+                .append(Component.text(race.name).color(race.color))
                 .append(Component.text("] ").color(NamedTextColor.WHITE))
                 .append(Component.text(player.getName()).color(race.color));
         LegacyComponentSerializer traducteur = LegacyComponentSerializer.builder()
