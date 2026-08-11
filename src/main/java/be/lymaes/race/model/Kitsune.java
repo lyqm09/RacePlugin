@@ -99,7 +99,7 @@ public class Kitsune implements IRace {
 
         if(e.isSneaking()) {
             if(!player.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, PotionEffect.INFINITE_DURATION, 1, true, false, true));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, PotionEffect.INFINITE_DURATION, 0, true, false, true));
             }
         }
         else {
@@ -257,14 +257,14 @@ public class Kitsune implements IRace {
         if(profile.player.hasPotionEffect(PotionEffectType.NIGHT_VISION)) {
             profile.player.removePotionEffect(PotionEffectType.NIGHT_VISION);
         }
-        profile.player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, PotionEffect.INFINITE_DURATION, 0, true, false, false));
+        profile.player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, PotionEffect.INFINITE_DURATION, 0, true, false, true));
 
 
         if(profile.getRank() >= Rank.SIX.rank) {
             if(profile.player.hasPotionEffect(PotionEffectType.LUCK)) {
                 profile.player.removePotionEffect(PotionEffectType.LUCK);
             }
-            profile.player.addPotionEffect(new PotionEffect(PotionEffectType.LUCK, PotionEffect.INFINITE_DURATION, 0, true, false, false));
+            profile.player.addPotionEffect(new PotionEffect(PotionEffectType.LUCK, PotionEffect.INFINITE_DURATION, 0, true, false, true));
         }
     }
 

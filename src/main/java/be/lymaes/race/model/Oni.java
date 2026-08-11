@@ -229,7 +229,7 @@ public class Oni implements IRace {
             if(profile.player.hasPotionEffect(PotionEffectType.REGENERATION)) {
                 profile.player.removePotionEffect(PotionEffectType.REGENERATION);
             }
-            profile.player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, PotionEffect.INFINITE_DURATION, 0, true, false, false));
+            profile.player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, PotionEffect.INFINITE_DURATION, 0, true, false, true));
         }
     }
 
