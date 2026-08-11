@@ -1,0 +1,11 @@
+# Compilation Maven
+target/
+*.jar
+*.war
+
+# Fichiers et dossiers d'IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/

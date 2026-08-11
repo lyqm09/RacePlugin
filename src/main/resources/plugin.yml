@@ -1,0 +1,101 @@
+name: Race
+version: '${version}'
+
+main: be.lymaes.race.Race
+api-version: '1.21'
+
+authors: [ Lyam Maes ]
+
+depend: [LibsDisguises]
+
+commands:
+  mutsuhara:
+    description: Ouvre le menu de choix de race
+    default: true
+    usage: /mutsuhara
+
+  giver:
+    description: Donne l'item demandé.
+    usage: /giver <player> <item>
+    default: op
+
+  fortune:
+    description: Pose l'enchantement fortune et curse of binding sur l'objet en main.
+    permission: race.karyu.merchant.fortune
+    permission-message: Tu n'as pas la permission d'utiliser cette commande.
+    usage: /fortune
+
+  villager:
+    aliases: [villageois]
+    description: Fait apparaitre un villageois et tue le precédent (Cooldown 5min).
+    permission: race.karyu.merchant.villager
+    permission-message: Tu n'as pas la permission d'utiliser cette commande.
+    usage: /villager
+
+  sharpness:
+    aliases: [tranchant]
+    description: Pose l'enchantement sharpness 6 et curse of binding sur l'objet en main.
+    permission: race.karyu.adorer.sharpness
+    permission-message: Tu n'as pas la permission d'utiliser cette commande.
+    usage: /sharpness
+
+  bless:
+    aliases: [benir]
+    description: Donne un livre enchanté aléatoire (Cooldown 10min).
+    permission: race.karyu.adorer.bless
+    permission-message: Tu n'as pas la permission d'utiliser cette commande.
+    usage: /bless <player>
+
+permissions:
+  race.*:
+    description: Donne accès à presque toutes les permissions du plugin.
+    default: op
+    children:
+      race.tamashi: true
+      race.karyu: true
+
+  race.tamashi:
+    description: Aucun effet.
+    children:
+      race.tamashi.home: false
+
+  race.tamashi.home:
+    description: Permet d'utiliser la commande /home.
+    default: false
+
+  race.karyu:
+    description: Donne toutes les permissions de la race Karyu.
+    default: op
+    children:
+      race.karyu.merchant: true
+      race.karyu.adorer: true
+
+  race.karyu.merchant:
+    description: Donne toutes les permissions de la sous-race Marchant de Karyu.
+    default: op
+    children:
+      race.karyu.merchant.fortune: true
+      race.karyu.merchant.villager: true
+
+  race.karyu.adorer:
+    description: Donne toutes les permissions de la sous-race Adorateur de Karyu.
+    default: op
+    children:
+      race.karyu.adorer.sharpness: true
+      race.karyu.adorer.bless: true
+
+  race.karyu.merchant.fortune:
+    description: Permet d'utiliser la commande /fortune.
+    default: op
+
+  race.karyu.merchant.villager:
+    description: Permet d'utiliser la commande /villager.
+    default: op
+
+  race.karyu.adorer.sharpness:
+    description: Permet d'utiliser la commande /sharpness.
+    default: op
+
+  race.karyu.adorer.bless:
+    description: Permet d'utiliser la commande /bless.
+    default: op

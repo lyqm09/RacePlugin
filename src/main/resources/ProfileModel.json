@@ -1,0 +1,14 @@
+{
+  "current": "Oni",
+  "Oni": {
+    "subrace": 0,
+    "exp": 945,
+    "rank": 2
+  },
+  "Kitsune": {
+    "subrace": 0,
+    "exp": 453,
+    "rank": 7
+  }
+
+}
