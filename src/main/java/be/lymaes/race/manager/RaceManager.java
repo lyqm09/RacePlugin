@@ -67,10 +67,10 @@ public class RaceManager {
         });
     }
 
-    private void verify(RaceProfile profile) {
+    private void verifyAndLoadRace(RaceProfile profile) {
         String raceName = profile.player.getPersistentDataContainer().get(RACE_KEY, PersistentDataType.STRING);
-        int subRaceId = profile.player.getPersistentDataContainer().get(SUBRACE_KEY, PersistentDataType.INTEGER);
-        int rank = profile.player.getPersistentDataContainer().get(RANK_KEY, PersistentDataType.INTEGER);
+        int subRaceId = profile.player.getPersistentDataContainer().getOrDefault(SUBRACE_KEY, PersistentDataType.INTEGER, 0);
+        int rank = profile.player.getPersistentDataContainer().getOrDefault(RANK_KEY, PersistentDataType.INTEGER, 0);
 
         IRace oldRace = getRaceModel(RaceType.fromName(raceName));
 
@@ -107,7 +107,7 @@ public class RaceManager {
         RaceProfile.loadProfile(player).thenAccept(profile -> {
             profiles.put(player, profile);
 
-            verify(profile);
+            verifyAndLoadRace(profile);
 
             addPlayerToRaces(profile);
 
