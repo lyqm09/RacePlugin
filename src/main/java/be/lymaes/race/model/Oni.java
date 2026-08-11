@@ -291,12 +291,12 @@ public class Oni implements IRace {
 
     public enum Rank {
         BEAST(0, "Bête", 0),
-        EVOLVED(1, "Évolué", 20),
-        LIEUTENANT(2, "Lieutenant", 100),
-        CAPTAIN(3, "Capitaine", 500),
-        COMMANDER(4, "Commandant", 2000),
-        LORD(5, "Seigneur", 5000),
-        GENERAL(6, "Général", 10000);
+        EVOLVED(1, "Évolué", 40),
+        LIEUTENANT(2, "Lieutenant", 200),
+        CAPTAIN(3, "Capitaine", 1000),
+        COMMANDER(4, "Commandant", 4000),
+        LORD(5, "Seigneur", 10_000),
+        GENERAL(6, "Général", 20_000);
 
         public final int rank;
         public final String name;

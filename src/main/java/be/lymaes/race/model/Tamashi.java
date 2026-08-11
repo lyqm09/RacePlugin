@@ -466,11 +466,11 @@ public class Tamashi implements IRace, ISubRaceable {
 
     public enum Rank {
         EMBRYO(0, "Embryon", 0),
-        CHILD(1, "Enfant", 200),
-        ACCOMPLISHED(2, "Accompli", 2000),
-        HALF_GOD(3, "Semi Divin", 5000),
-        KAMI(4, "Kami", 10000),
-        OKAMI(5, "Okami", 20000);
+        CHILD(1, "Enfant", 400),
+        ACCOMPLISHED(2, "Accompli", 4000),
+        HALF_GOD(3, "Semi Divin", 10_000),
+        KAMI(4, "Kami", 20_000),
+        OKAMI(5, "Okami", 40_000);
 
         public final int rank;
         public final String name;

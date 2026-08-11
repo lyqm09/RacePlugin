@@ -422,11 +422,11 @@ public class Karyu implements IRace, ISubRaceable {
     public enum Rank {
 
         BEGINNER(0, "Débutant", 0),
-        NOVICE(1, "Novice", 100),
-        INTERMEDIATE(2, "Intermédiaire", 500),
-        ADVANCE(3, "Avancé", 2000),
-        BIG(4, "Grand", 5000),
-        DRAGON(5, "Dragon", 10000);
+        NOVICE(1, "Novice", 200),
+        INTERMEDIATE(2, "Intermédiaire", 1000),
+        ADVANCE(3, "Avancé", 4000),
+        BIG(4, "Grand", 10_000),
+        DRAGON(5, "Dragon", 20_000);
 
         public final int rank;
         public final String name;
