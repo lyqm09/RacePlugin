@@ -1,3 +1,63 @@
+# Liste des Races
+
+## Humain
+Race de base. Aucun pouvoir.  
+
+## Oni
+
+Les Onis ne mangent que de la viande.  
+Les Onis, sous la pluie ou dans l'eau, s'affaiblissent (effets de *Weakness II*, *Slowness II*, et *Blindness*).  
+Les Onis gagnent de l'expérience en tuant des mobs (1 exp / mob).
+
+### 1. Bête (initial)
+
+### 2. Évolué (40 exp)
+\+10% de force.  
+\+5% de résistance.  
+\+10% de vitesse.
+
+### 3. Lieutenant (200 exp)
+\+20% de force.  
+\+10% de résistance.  
+\+20% de vitesse.  
+Possibilité de lancer des boules de feu (clic droit avec des poudres de Blaze).
+
+### 4. Capitaine (1000 exp)
+\+30% de force.  
+\+15% de résistance.  
+\+30% de vitesse.  
+Les Monstres ne l'attaquent plus.
+
+### 5. Commandant (4000 exp)
+\+40% de force.  
+\+20% de résistance.  
+\+40% de vitesse.  
+Se voit octroyé *Régénération I* de facon permanente.
+
+### 6. Seigneur (10,000 exp)
+\+50% de force.  
+\+25% de résistance.  
+\+50% de vitesse.  
+\+20 pv
+
+### 7. Général (20,000 exp & pierre de Kazan)
+\+100% de force.  
+\+50% de résistance.  
+\+100% de vitesse.  
+Possibilité de craft *Sang d'Oni primordial*.
+
+## Kitsune
+
+
+
+## Tamashi
+
+
+
+## Karyu
+
+
+
 # Liste des commandes
 
 `/mutsuhara` Ouvre le menu de choix de race.  
