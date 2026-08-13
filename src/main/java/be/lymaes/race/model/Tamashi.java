@@ -315,6 +315,8 @@ public class Tamashi implements IRace, ISubRaceable {
         }
 
         IRace.removeAttribute(profile.player, Attribute.MOVEMENT_SPEED, SPEED);
+
+        profile.player.setAllowFlight(false);
     }
 
 
