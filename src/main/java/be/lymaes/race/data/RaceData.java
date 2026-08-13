@@ -1,8 +1,13 @@
 package be.lymaes.race.data;
 
+import be.lymaes.race.Race;
+import be.lymaes.race.model.ISubRaceable;
 import be.lymaes.race.model.RaceType;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import java.util.HashMap;
 
 public abstract class RaceData implements IRaceData {
 
@@ -49,22 +54,43 @@ public abstract class RaceData implements IRaceData {
 
     // save and load
 
-    public final void updateProfileData(ObjectNode rootNode) {
-        ObjectNode raceNode = rootNode.withObjectProperty(race.name());
+    public final void saveProfileData(ObjectNode rootNode) {
+        ObjectNode node = rootNode.withObjectProperty(race.name());
 
-        raceNode.put("subrace", subrace);
-        ObjectNode subraceNode = raceNode.withObjectProperty(Integer.toString(subrace));
+        if(Race.getInstance().getRaceManager().getRaceModel(race) instanceof ISubRaceable) {
+            node.put("subrace", subrace);
+            node = node.withObjectProperty(Integer.toString(subrace));
+        }
 
-        subraceNode.put("exp", exp);
-        subraceNode.put("rank", rank);
+        node.put("exp", exp);
+        node.put("rank", rank);
 
-        writeSpecificData(subraceNode);
+        saveSpecificData(node);
     }
 
-    protected abstract void writeSpecificData(ObjectNode subraceNode);
+    protected abstract void saveSpecificData(ObjectNode node);
 
-    public final void loadProfileData(JsonNode rootNode) {
-        
+    protected static int[] loadProfileData(JsonNode raceNode, RaceType race, int subrace) {
+
+        int sub = -1;
+        int rank = 0;
+        int exp = 0;
+
+        if(Race.getInstance().getRaceManager().getRaceModel(race) instanceof ISubRaceable) {
+            sub = subrace < 0 ? raceNode.path("subrace").asInt(0) : subrace;
+
+            JsonNode subraceNode = raceNode.get(Integer.toString(sub));
+            if(subraceNode != null) {
+                rank = subraceNode.path("rank").asInt(0);
+                exp = subraceNode.path("exp").asInt(0);
+            }
+        }
+        else {
+            rank = raceNode.path("rank").asInt(0);
+            exp = raceNode.path("exp").asInt(0);
+        }
+
+        return new int[]{sub, rank, exp};
     }
 
 }

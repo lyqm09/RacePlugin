@@ -1,5 +1,6 @@
 package be.lymaes.race.data;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public interface IRaceData {
@@ -13,6 +14,5 @@ public interface IRaceData {
     void addExp(int n);
     void subExp(int n);
 
-    void updateProfileData(ObjectNode rootNode);
-
+    void saveProfileData(ObjectNode rootNode);
 }
