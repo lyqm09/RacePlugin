@@ -4,7 +4,7 @@
   <groupId>be.lymaes</groupId>
   <artifactId>Race</artifactId>
   <name>Race</name>
-  <version>1.0.2</version>
+  <version>1.0.3</version>
   <build>
     <defaultGoal>clean package</defaultGoal>
     <resources>

@@ -74,7 +74,7 @@ public class Tamashi implements IRace, ISubRaceable {
                 }
             }
 
-            if(currentTime % (60 * 1000) == 0) {
+            if((currentTime / 1000) % 60 == 0) {
                 for (Player player : Race.getInstance().getServer().getOnlinePlayers()) {
                     if (player.equals(profile.player))
                         continue;
