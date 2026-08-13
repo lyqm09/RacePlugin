@@ -71,7 +71,7 @@ L'item peut être utilisé pour craft un objet, ou pour augmenter de rang (sous 
 
 ### Obtention
 
-L'item peut être obtenu en tuant un *Monstre* avec une probabilité de 0.5\%.
+L'item peut être obtenu en tuant un *Wither Skeleton* avec une probabilité de 0.5\%.
 
 ## Coeur de Tamashi
 
