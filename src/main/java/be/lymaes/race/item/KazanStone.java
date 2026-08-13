@@ -18,7 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class KazanStone implements IRaceItem, Eatable {
 
-    private static final double TOL = 0.05;
+    private static final double TOL = 0.0005;
 
     @Override
     public RaceItem getType() {

@@ -74,18 +74,21 @@ public class Tamashi implements IRace, ISubRaceable {
                 }
             }
 
-            for(Player player : Race.getInstance().getServer().getOnlinePlayers()) {
-                if(player.equals(profile.player))
-                    continue;
+            if((currentTime / 1000) % 60 == 0) {
+                for (Player player : Race.getInstance().getServer().getOnlinePlayers()) {
+                    if (player.equals(profile.player))
+                        continue;
 
-                if(player.getLocation().distance(currentLoc) <= DISTANCE) {
-                    addExp(profile, 1);
-                }
+                    if (player.getLocation().distance(currentLoc) <= DISTANCE) {
+                        addExp(profile, 1);
+                    }
 
-                if(player.getLocation().distance(spawnLoc) <= DISTANCE) {
-                    addExp(profile, 1);
+                    if (player.getLocation().distance(spawnLoc) <= DISTANCE) {
+                        addExp(profile, 1);
+                    }
                 }
             }
+
         }
     }
 
@@ -312,6 +315,8 @@ public class Tamashi implements IRace, ISubRaceable {
         }
 
         IRace.removeAttribute(profile.player, Attribute.MOVEMENT_SPEED, SPEED);
+
+        profile.player.setAllowFlight(false);
     }
 
 

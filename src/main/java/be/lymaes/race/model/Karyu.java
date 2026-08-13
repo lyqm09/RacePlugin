@@ -10,6 +10,7 @@ import be.lymaes.race.item.RaceItem;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
@@ -211,7 +212,7 @@ public class Karyu implements IRace, ISubRaceable {
                 case NOVICE -> 0.10;
                 case INTERMEDIATE -> 0.20;
                 case ADVANCE -> 0.30;
-                case BIG, DRAGON -> 50;
+                case BIG, DRAGON -> 0.50;
             };
 
             e.setDamage(e.getFinalDamage() * (1.0 - factor));

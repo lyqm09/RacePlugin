@@ -17,7 +17,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class TamashiHeart implements IRaceItem, Eatable {
 
-    private static final double TOL = 0.005;
+    private static final double TOL = 0.001;
     private static final int BONUS_EXP = 500;
 
     @Override
