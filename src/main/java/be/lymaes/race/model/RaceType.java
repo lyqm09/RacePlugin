@@ -1,9 +1,6 @@
 package be.lymaes.race.model;
 
-import be.lymaes.race.data.HumanData;
-import be.lymaes.race.data.IRaceData;
-import be.lymaes.race.data.KitsuneData;
-import be.lymaes.race.data.OniData;
+import be.lymaes.race.data.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.ChatColor;
@@ -20,8 +17,8 @@ public enum RaceType {
     HUMAN("Humain", NamedTextColor.GOLD, Material.WOODEN_HOE, HumanData::loadProfileData),
     ONI("Oni", NamedTextColor.RED, Material.ROTTEN_FLESH, OniData::loadProfileData),
     KITSUNE("Kitsune", NamedTextColor.LIGHT_PURPLE, Material.OAK_SAPLING, KitsuneData::loadProfileData),
-    TAMASHI("Tamashi", NamedTextColor.AQUA, Material.BONE_MEAL, null),
-    KARYU("Karyu", NamedTextColor.GREEN, Material.DRAGON_EGG, null);
+    TAMASHI("Tamashi", NamedTextColor.AQUA, Material.BONE_MEAL, TamashiData::loadProfileData),
+    KARYU("Karyu", NamedTextColor.GREEN, Material.DRAGON_EGG, KaryuData::loadProfileData);
 
     public record PrimaryData(int subrace, int rank, int exp) {}
 

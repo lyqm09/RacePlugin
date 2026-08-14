@@ -1,6 +1,5 @@
 package be.lymaes.race.data;
 
-import be.lymaes.race.RaceProfile;
 import be.lymaes.race.model.RaceType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
