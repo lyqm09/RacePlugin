@@ -19,17 +19,10 @@ public class RaceManager {
     private Map<RaceType, List<RaceProfile>> races = new EnumMap<>(RaceType.class);
 
     public RaceManager() {
-        register.put(RaceType.HUMAN, new Human());
-        register.put(RaceType.KARYU, new Karyu());
-        register.put(RaceType.KITSUNE, new Kitsune());
-        register.put(RaceType.ONI, new Oni());
-        register.put(RaceType.TAMASHI, new Tamashi());
-
-        races.put(RaceType.HUMAN, new ArrayList<>());
-        races.put(RaceType.KARYU, new ArrayList<>());
-        races.put(RaceType.KITSUNE, new ArrayList<>());
-        races.put(RaceType.ONI, new ArrayList<>());
-        races.put(RaceType.TAMASHI, new ArrayList<>());
+        for(RaceType race : RaceType.values()) {
+            register.put(race, race.model.get());
+            races.put(race, new ArrayList<>());
+        }
     }
 
     public void terminate() {

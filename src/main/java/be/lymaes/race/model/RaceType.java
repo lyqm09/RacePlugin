@@ -11,26 +11,29 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 public enum RaceType {
 
-    HUMAN("Humain", NamedTextColor.GOLD, Material.WOODEN_HOE, HumanData::loadProfileData),
-    ONI("Oni", NamedTextColor.RED, Material.ROTTEN_FLESH, OniData::loadProfileData),
-    KITSUNE("Kitsune", NamedTextColor.LIGHT_PURPLE, Material.OAK_SAPLING, KitsuneData::loadProfileData),
-    TAMASHI("Tamashi", NamedTextColor.AQUA, Material.BONE_MEAL, TamashiData::loadProfileData),
-    KARYU("Karyu", NamedTextColor.GREEN, Material.DRAGON_EGG, KaryuData::loadProfileData);
+    HUMAN("Humain", NamedTextColor.GOLD, Material.WOODEN_HOE, Human::new, HumanData::loadProfileData),
+    ONI("Oni", NamedTextColor.RED, Material.ROTTEN_FLESH, Oni::new, OniData::loadProfileData),
+    KITSUNE("Kitsune", NamedTextColor.LIGHT_PURPLE, Material.OAK_SAPLING, Kitsune::new, KitsuneData::loadProfileData),
+    TAMASHI("Tamashi", NamedTextColor.AQUA, Material.BONE_MEAL, Tamashi::new, TamashiData::loadProfileData),
+    KARYU("Karyu", NamedTextColor.GREEN, Material.DRAGON_EGG, Karyu::new, KaryuData::loadProfileData);
 
     public record PrimaryData(int subrace, int rank, int exp) {}
 
     public final String name;
     public final NamedTextColor color;
     public final Material icon;
+    public final Supplier<IRace> model;
     public final BiFunction<JsonNode, PrimaryData, IRaceData> loadData;
 
-    RaceType(String name, NamedTextColor color, Material icon, BiFunction<JsonNode, PrimaryData, IRaceData> loadData) {
+    RaceType(String name, NamedTextColor color, Material icon, Supplier<IRace> model, BiFunction<JsonNode, PrimaryData, IRaceData> loadData) {
         this.name = name;
         this.color = color;
         this.icon = icon;
+        this.model = model;
         this.loadData = loadData;
     }
     
