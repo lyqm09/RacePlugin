@@ -1,5 +1,6 @@
 package be.lymaes.race.data;
 
+import be.lymaes.race.model.RaceType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -35,7 +36,7 @@ public class HumanData implements IRaceData {
 
     }
 
-    public static HumanData loadProfileData() {
+    public static HumanData loadProfileData(JsonNode rootNode, RaceType.PrimaryData primaryData) {
         return new HumanData();
     }
 

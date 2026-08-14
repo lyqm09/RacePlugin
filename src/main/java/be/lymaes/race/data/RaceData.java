@@ -70,7 +70,7 @@ public abstract class RaceData implements IRaceData {
 
     protected abstract void saveSpecificData(ObjectNode node);
 
-    protected static int[] loadProfileData(JsonNode raceNode, RaceType race, int subrace) {
+    protected static RaceType.PrimaryData loadProfileData(JsonNode raceNode, RaceType race, int subrace) {
 
         int sub = -1;
         int rank = 0;
@@ -90,7 +90,7 @@ public abstract class RaceData implements IRaceData {
             exp = raceNode.path("exp").asInt(0);
         }
 
-        return new int[]{sub, rank, exp};
+        return new RaceType.PrimaryData(sub, rank, exp);
     }
 
 }

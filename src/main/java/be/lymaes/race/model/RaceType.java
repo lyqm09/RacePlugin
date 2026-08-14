@@ -1,5 +1,10 @@
 package be.lymaes.race.model;
 
+import be.lymaes.race.data.HumanData;
+import be.lymaes.race.data.IRaceData;
+import be.lymaes.race.data.KitsuneData;
+import be.lymaes.race.data.OniData;
+import com.fasterxml.jackson.databind.JsonNode;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Color;
@@ -8,22 +13,28 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.function.BiFunction;
+
 public enum RaceType {
 
-    HUMAN("Humain", NamedTextColor.GOLD, Material.WOODEN_HOE),
-    ONI("Oni", NamedTextColor.RED, Material.ROTTEN_FLESH),
-    KITSUNE("Kitsune", NamedTextColor.LIGHT_PURPLE, Material.OAK_SAPLING),
-    TAMASHI("Tamashi", NamedTextColor.AQUA, Material.BONE_MEAL),
-    KARYU("Karyu", NamedTextColor.GREEN, Material.DRAGON_EGG);
+    HUMAN("Humain", NamedTextColor.GOLD, Material.WOODEN_HOE, HumanData::loadProfileData),
+    ONI("Oni", NamedTextColor.RED, Material.ROTTEN_FLESH, OniData::loadProfileData),
+    KITSUNE("Kitsune", NamedTextColor.LIGHT_PURPLE, Material.OAK_SAPLING, KitsuneData::loadProfileData),
+    TAMASHI("Tamashi", NamedTextColor.AQUA, Material.BONE_MEAL, null),
+    KARYU("Karyu", NamedTextColor.GREEN, Material.DRAGON_EGG, null);
+
+    public record PrimaryData(int subrace, int rank, int exp) {}
 
     public final String name;
     public final NamedTextColor color;
     public final Material icon;
+    public final BiFunction<JsonNode, PrimaryData, IRaceData> loadData;
 
-    RaceType(String name, NamedTextColor color, Material icon) {
+    RaceType(String name, NamedTextColor color, Material icon, BiFunction<JsonNode, PrimaryData, IRaceData> loadData) {
         this.name = name;
         this.color = color;
         this.icon = icon;
+        this.loadData = loadData;
     }
     
     public ItemStack getItem() {

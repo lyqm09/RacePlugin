@@ -23,20 +23,20 @@ public class KitsuneData extends RaceData {
         node.put("time_in_forest", timeInForest);
     }
 
-    public static KitsuneData loadProfileData(JsonNode rootNode, int rank, int exp) {
+    public static KitsuneData loadProfileData(JsonNode rootNode, RaceType.PrimaryData primaryData) {
         RaceType race = RaceType.KITSUNE;
 
         if (rootNode.has(race.name())) {
             JsonNode raceNode = rootNode.get(race.name());
 
-            int[] data = loadProfileData(raceNode, race, -1);
+            RaceType.PrimaryData data = loadProfileData(raceNode, race, -1);
 
             long time = raceNode.get("time_in_forest").asLong(0);
 
-            return new KitsuneData(data[1], data[2], time);
+            return new KitsuneData(data.rank(), data.exp(), time);
         }
 
-        return new KitsuneData(rank, exp);
+        return new KitsuneData(primaryData.rank(), primaryData.exp());
     }
 
 }
