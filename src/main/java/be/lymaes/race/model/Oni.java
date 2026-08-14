@@ -3,6 +3,7 @@ package be.lymaes.race.model;
 import be.lymaes.race.Messager;
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
+import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.manager.RaceManager;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -51,9 +52,10 @@ public class Oni implements IRace {
     public void task(RaceManager manager) {
 
         for(RaceProfile profile : manager.getRaceProfiles(RaceType.ONI)) {
-            if(profile.player.isInWater()) {
-                profile.player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 2 * 20, 1, true, false, true));
-                profile.player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 2 * 20, 1, true, false, true));
+            Player player = profile.getPlayer();
+            if(player.isInWater()) {
+                player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 2 * 20, 1, true, false, true));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 2 * 20, 1, true, false, true));
             }
         }
 
@@ -69,7 +71,7 @@ public class Oni implements IRace {
             return;
 
         RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
-        if(profile.race != RaceType.ONI)
+        if(profile.raceData.getRace() != RaceType.ONI)
             return;
 
         addExp(profile, 1);
@@ -79,7 +81,7 @@ public class Oni implements IRace {
     public void onConsume(PlayerItemConsumeEvent e) {
         Player player = e.getPlayer();
         RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
-        if(profile.race != RaceType.ONI)
+        if(profile.raceData.getRace() != RaceType.ONI)
             return;
 
         ItemStack item = e.getItem();
@@ -103,10 +105,10 @@ public class Oni implements IRace {
             return;
 
         RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
-        if(profile.race != RaceType.ONI)
+        if(profile.raceData.getRace() != RaceType.ONI)
             return;
 
-        double factor = switch(Rank.fromRank(profile.getRank())) {
+        double factor = switch(Rank.fromRank(profile.raceData.getRank())) {
             case EVOLVED -> 0.05;
             case LIEUTENANT -> 0.10;
             case CAPTAIN -> 0.15;
@@ -128,10 +130,10 @@ public class Oni implements IRace {
             return;
 
         RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
-        if(profile.race != RaceType.ONI)
+        if(profile.raceData.getRace() != RaceType.ONI)
             return;
 
-        if(profile.getRank() >= Rank.CAPTAIN.rank) {
+        if(profile.raceData.getRank() >= Rank.CAPTAIN.rank) {
 
             e.setCancelled(true);
         }
@@ -141,10 +143,10 @@ public class Oni implements IRace {
     public void onInteract(PlayerInteractEvent e) {
         Player player = e.getPlayer();
         RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
-        if(profile.race != RaceType.ONI)
+        if(profile.raceData.getRace() != RaceType.ONI)
             return;
 
-        if(profile.getRank() < Rank.GENERAL.rank)
+        if(profile.raceData.getRank() < Rank.GENERAL.rank)
             return;
 
         ItemStack item = e.getItem();
@@ -168,21 +170,22 @@ public class Oni implements IRace {
 
     @Override
     public void cleanup(RaceProfile profile) {
+        Player player = profile.getPlayer();
 
-        IRace.removeAttribute(profile.player, Attribute.ATTACK_DAMAGE, STRENGTH);
-        IRace.removeAttribute(profile.player, Attribute.MOVEMENT_SPEED, SPEED);
-        IRace.removeAttribute(profile.player, Attribute.MAX_HEALTH, HEALTH);
+        IRace.removeAttribute(player, Attribute.ATTACK_DAMAGE, STRENGTH);
+        IRace.removeAttribute(player, Attribute.MOVEMENT_SPEED, SPEED);
+        IRace.removeAttribute(player, Attribute.MAX_HEALTH, HEALTH);
 
-        PotionEffect regeneration = profile.player.getPotionEffect(PotionEffectType.REGENERATION);
+        PotionEffect regeneration = player.getPotionEffect(PotionEffectType.REGENERATION);
         if(regeneration != null && regeneration.isInfinite()) {
-            profile.player.removePotionEffect(PotionEffectType.REGENERATION);
+            player.removePotionEffect(PotionEffectType.REGENERATION);
         }
     }
 
     private void rankUp(RaceProfile profile) {
         profile.rankUp();
 
-        Rank rank = Rank.fromRank(profile.getRank());
+        Rank rank = Rank.fromRank(profile.raceData.getRank());
 
         Messager.sendRankupTitle(profile, rank.name);
 
@@ -190,7 +193,9 @@ public class Oni implements IRace {
     }
 
     private void loadAttribute(RaceProfile profile) {
-        Rank rank = Rank.fromRank(profile.getRank());
+        Rank rank = Rank.fromRank(profile.raceData.getRank());
+        Player player = profile.getPlayer();;
+
         double multiplier = switch(rank) {
             case EVOLVED -> 0.05;
             case LIEUTENANT -> 0.10;
@@ -201,11 +206,11 @@ public class Oni implements IRace {
             default -> 0.0;
         };
 
-        IRace.replaceAttribute(profile.player, Attribute.ATTACK_DAMAGE, STRENGTH, multiplier, AttributeModifier.Operation.ADD_SCALAR);
-        IRace.replaceAttribute(profile.player, Attribute.MOVEMENT_SPEED, SPEED, multiplier, AttributeModifier.Operation.ADD_SCALAR);
+        IRace.replaceAttribute(player, Attribute.ATTACK_DAMAGE, STRENGTH, multiplier, AttributeModifier.Operation.ADD_SCALAR);
+        IRace.replaceAttribute(player, Attribute.MOVEMENT_SPEED, SPEED, multiplier, AttributeModifier.Operation.ADD_SCALAR);
 
-        if(profile.getRank() >= Rank.LORD.rank) {
-            AttributeInstance health = profile.player.getAttribute(Attribute.MAX_HEALTH);
+        if(profile.raceData.getRank() >= Rank.LORD.rank) {
+            AttributeInstance health = player.getAttribute(Attribute.MAX_HEALTH);
             if(health != null) {
                 boolean isAbsent = true;
                 for (AttributeModifier mod : health.getModifiers()) {
@@ -216,20 +221,22 @@ public class Oni implements IRace {
                 }
 
                 if(isAbsent) {
-                    double ratio = profile.player.getHealth()/health.getValue();
+                    double ratio = player.getHealth()/health.getValue();
                     health.addModifier(new AttributeModifier(HEALTH, 20, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.ANY));
-                    profile.player.setHealth(ratio * health.getValue());
+                    player.setHealth(ratio * health.getValue());
                 }
             }
         }
     }
 
     private void loadEffect(RaceProfile profile) {
-        if(profile.getRank() >= Rank.COMMANDER.rank) {
-            if(profile.player.hasPotionEffect(PotionEffectType.REGENERATION)) {
-                profile.player.removePotionEffect(PotionEffectType.REGENERATION);
+        Player player = profile.getPlayer();
+
+        if(profile.raceData.getRank() >= Rank.COMMANDER.rank) {
+            if(player.hasPotionEffect(PotionEffectType.REGENERATION)) {
+                player.removePotionEffect(PotionEffectType.REGENERATION);
             }
-            profile.player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, PotionEffect.INFINITE_DURATION, 0, true, false, true));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, PotionEffect.INFINITE_DURATION, 0, true, false, true));
         }
     }
 
@@ -245,9 +252,9 @@ public class Oni implements IRace {
     }
 
     public void checkRankup(RaceProfile profile, boolean hasKazanStone) {
-        if(profile.getRank() < Rank.values().length-1) {
+        if(profile.raceData.getRank() < Rank.values().length-1) {
 
-            Rank rank = Rank.fromRank(profile.getRank() + 1);
+            Rank rank = Rank.fromRank(profile.raceData.getRank() + 1);
 
             if (rank == Rank.GENERAL) {
                 if(!hasKazanStone)
@@ -255,12 +262,10 @@ public class Oni implements IRace {
             }
 
             int required = rank.expRequired;
-            if (profile.getExp() < required)
+            if (profile.raceData.getExp() < required)
                 return;
 
-            System.out.println(profile.getExp() + " < " + required);
-
-            profile.subExp(required);
+            profile.raceData.subExp(required);
             rankUp(profile);
             checkRankup(profile);
         }
@@ -272,7 +277,7 @@ public class Oni implements IRace {
 
     @Override
     public void addExp(RaceProfile profile, int n) {
-        profile.addExp(n);
+        profile.raceData.addExp(n);
         checkRankup(profile);
     }
 
@@ -310,10 +315,7 @@ public class Oni implements IRace {
 
         public static Rank fromRank(int n) {
             Rank[] ranks = Rank.values();
-            if(n < 0) {
-                return ranks[0];
-            }
-            else if(n >= ranks.length) {
+            if(n >= ranks.length) {
                 return ranks[ranks.length-1];
             }
             return ranks[n];

@@ -7,6 +7,16 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class HumanData implements IRaceData {
 
     @Override
+    public RaceType getRace() {
+        return RaceType.HUMAN;
+    }
+
+    @Override
+    public int getSubrace() {
+        return -1;
+    }
+
+    @Override
     public int getRank() {
         return 0;
     }

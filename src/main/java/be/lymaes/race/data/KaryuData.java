@@ -20,6 +20,22 @@ public class KaryuData extends RaceData {
         this(subrace, rank, exp, 0L, 0L);
     }
 
+    public long getVillagerCMDTime() {
+        return villagerCMDTime;
+    }
+
+    public void setVillagerCMDTime(long time) {
+        this.villagerCMDTime = time;
+    }
+
+    public long getBlessCMDTime() {
+        return blessCMDTime;
+    }
+
+    public void setBlessCMDTime(long time) {
+        this.blessCMDTime = time;
+    }
+
     @Override
     protected void saveSpecificData(ObjectNode node) {
         node.put("time_villager_cmd", villagerCMDTime);
@@ -29,7 +45,7 @@ public class KaryuData extends RaceData {
     public static KaryuData loadProfileData(JsonNode rootNode, RaceType.PrimaryData primaryData) {
         RaceType race = RaceType.KITSUNE;
 
-        if (rootNode.has(race.name())) {
+        if (rootNode != null && rootNode.has(race.name())) {
             JsonNode raceNode = rootNode.get(race.name());
 
             RaceType.PrimaryData data = loadProfileData(raceNode, race, primaryData.subrace());

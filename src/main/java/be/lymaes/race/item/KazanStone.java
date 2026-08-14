@@ -51,7 +51,7 @@ public class KazanStone implements IRaceItem, Eatable {
         Player player = e.getPlayer();
         RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
 
-        IRace race = plugin.getRaceManager().getRaceModel(profile.race);
+        IRace race = plugin.getRaceManager().getRaceModel(profile.raceData.getRace());
         if(!(race instanceof Oni oni)) {
             player.addPotionEffect(PotionEffectType.POISON.createEffect(10 * 20, 1));
             return;

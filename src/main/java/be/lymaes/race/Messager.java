@@ -17,10 +17,10 @@ public class Messager {
     }
 
     public static void sendRankupTitle(RaceProfile profile, String rank) {
-        Audience player = Race.getInstance().getMessager().adventure.player(profile.player);
+        Audience player = Race.getInstance().getMessager().adventure.player(profile.getPlayer());
 
         Component title = Component.text("Rank Up !").color(NamedTextColor.RED);
-        Component subtitle = Component.text(rank).color(profile.race.color);
+        Component subtitle = Component.text(rank).color(profile.raceData.getRace().color);
         Title message = Title.title(title, subtitle);
 
         // TODO sound

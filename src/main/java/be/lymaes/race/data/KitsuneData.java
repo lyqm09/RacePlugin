@@ -18,6 +18,14 @@ public class KitsuneData extends RaceData {
         this(rank, exp, 0L);
     }
 
+    public long getTimeInForest() {
+        return timeInForest;
+    }
+
+    public void setTimeInForest(long time) {
+        timeInForest = time;
+    }
+
     @Override
     protected void saveSpecificData(ObjectNode node) {
         node.put("time_in_forest", timeInForest);
@@ -26,7 +34,7 @@ public class KitsuneData extends RaceData {
     public static KitsuneData loadProfileData(JsonNode rootNode, RaceType.PrimaryData primaryData) {
         RaceType race = RaceType.KITSUNE;
 
-        if (rootNode.has(race.name())) {
+        if (rootNode != null && rootNode.has(race.name())) {
             JsonNode raceNode = rootNode.get(race.name());
 
             RaceType.PrimaryData data = loadProfileData(raceNode, race, -1);

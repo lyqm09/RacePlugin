@@ -3,6 +3,7 @@ package be.lymaes.race.model;
 import be.lymaes.race.Messager;
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
+import be.lymaes.race.data.TamashiData;
 import be.lymaes.race.gui.GUITypes;
 import be.lymaes.race.item.FlyCharge;
 import be.lymaes.race.item.IStaticItem;
@@ -35,71 +36,47 @@ public class Tamashi implements IRace, ISubRaceable {
     private static final NamespacedKey STRENGTH = NamespacedKey.fromString("tamashi:strength");
     private static final NamespacedKey SPEED = NamespacedKey.fromString("tamashi:speed");
 
-    private static final String TIME_KEY = "time_around_spawn";
-
     public void task(RaceManager manager) {
         long currentTime = System.currentTimeMillis();
 
-        for(RaceProfile profile : manager.getRaceProfiles(RaceType.TAMASHI)) {
+        if((currentTime / 1000) % 60 != 0) {
+            return;
+        }
 
-            Location currentLoc = profile.player.getLocation();
-            Location spawnLoc = profile.player.getRespawnLocation();
-            if(spawnLoc == null) {
-                spawnLoc = profile.player.getWorld().getSpawnLocation();
+        for(RaceProfile profile : manager.getRaceProfiles(RaceType.TAMASHI)) {
+            Player player = profile.getPlayer();
+
+            Location playerLoc = player.getLocation();
+            Location home = ((TamashiData)profile.raceData).getHome();
+
+            boolean isAlone = true;
+
+            for (Player other : Race.getInstance().getServer().getOnlinePlayers()) {
+                if (other.equals(player))
+                    continue;
+
+                if (other.getLocation().distance(playerLoc) <= DISTANCE) {
+                    isAlone = false;
+                    addExp(profile, 1);
+                }
+
+                if (other.getLocation().distance(home) <= DISTANCE) {
+                    addExp(profile, 1);
+                }
             }
 
-            long time = profile.getTime(TIME_KEY);
-
-            if(currentLoc.distance(spawnLoc) > DISTANCE) {
-                if(!profile.player.hasPotionEffect(PotionEffectType.HUNGER)) {
-                    profile.player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, PotionEffect.INFINITE_DURATION, 0, true, false, true));
+            if(isAlone && playerLoc.distance(home) > DISTANCE) {
+                if(!player.hasPotionEffect(PotionEffectType.HUNGER)) {
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 2 * 20, 0, true, false, true));
                 }
-                if(!profile.player.hasPotionEffect(PotionEffectType.WEAKNESS)) {
-                    profile.player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, PotionEffect.INFINITE_DURATION, 0, true, false, true));
-                }
-
-                if(time != 0) {
-                    profile.putTime(TIME_KEY, 0L);
+                if(!player.hasPotionEffect(PotionEffectType.WEAKNESS)) {
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 2 * 20, 0, true, false, true));
                 }
             }
             else {
-                removeMalus(profile);
-
-                if(time <= 0) {
-                    profile.putTime(TIME_KEY, currentTime);
-                }
-                else if(currentTime - time >= 1000 * 60) {
-                    addExp(profile, 1);
-                    profile.putTime(TIME_KEY, currentTime);
-                }
+                addExp(profile, 1);
             }
 
-            if((currentTime / 1000) % 60 == 0) {
-                for (Player player : Race.getInstance().getServer().getOnlinePlayers()) {
-                    if (player.equals(profile.player))
-                        continue;
-
-                    if (player.getLocation().distance(currentLoc) <= DISTANCE) {
-                        addExp(profile, 1);
-                    }
-
-                    if (player.getLocation().distance(spawnLoc) <= DISTANCE) {
-                        addExp(profile, 1);
-                    }
-                }
-            }
-
-        }
-    }
-
-    private void removeMalus(RaceProfile profile) {
-        PotionEffect hunger = profile.player.getPotionEffect(PotionEffectType.HUNGER);
-        if(hunger != null && hunger.isInfinite()) {
-            profile.player.removePotionEffect(PotionEffectType.HUNGER);
-        }
-        PotionEffect weakness = profile.player.getPotionEffect(PotionEffectType.WEAKNESS);
-        if(weakness != null && weakness.isInfinite()) {
-            profile.player.removePotionEffect(PotionEffectType.WEAKNESS);
         }
     }
 
@@ -109,12 +86,12 @@ public class Tamashi implements IRace, ISubRaceable {
             return;
 
         RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
-        if(profile.race != RaceType.TAMASHI)
+        if(profile.raceData.getRace() != RaceType.TAMASHI)
             return;
 
-        if(profile.subRace == SubRace.EARTH.id) {
+        if(profile.raceData.getSubrace() == SubRace.EARTH.id) {
 
-            double factor = switch (Rank.fromRank(profile.getRank())) {
+            double factor = switch (Rank.fromRank(profile.raceData.getRank())) {
                 case EMBRYO -> 0.10;
                 case CHILD -> 0.20;
                 case ACCOMPLISHED -> 0.40;
@@ -125,7 +102,7 @@ public class Tamashi implements IRace, ISubRaceable {
 
             e.setDamage(e.getFinalDamage() * (1.0 - factor));
         }
-        else if(profile.subRace == SubRace.AIR.id) {
+        else if(profile.raceData.getSubrace() == SubRace.AIR.id) {
             if(e.getCause() != EntityDamageEvent.DamageCause.FALL)
                 return;
 
@@ -139,12 +116,12 @@ public class Tamashi implements IRace, ISubRaceable {
             return;
 
         RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
-        if(profile.race != RaceType.TAMASHI)
+        if(profile.raceData.getRace() != RaceType.TAMASHI)
             return;
 
-        Rank rank = Rank.fromRank(profile.getRank());
+        Rank rank = Rank.fromRank(profile.raceData.getRank());
 
-        if(profile.subRace == SubRace.FIRE.id) {
+        if(profile.raceData.getSubrace() == SubRace.FIRE.id) {
 
             int time = switch(rank) {
                 case EMBRYO -> 1;
@@ -157,7 +134,7 @@ public class Tamashi implements IRace, ISubRaceable {
 
             e.getEntity().setFireTicks(time * 20);
         }
-        else if(profile.subRace == SubRace.WATER.id) {
+        else if(profile.raceData.getSubrace() == SubRace.WATER.id) {
 
             if(!player.isInWater())
                 return;
@@ -183,14 +160,14 @@ public class Tamashi implements IRace, ISubRaceable {
             return;
 
         RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
-        if(profile.race != RaceType.TAMASHI)
+        if(profile.raceData.getRace() != RaceType.TAMASHI)
             return;
 
         ItemStack oldItem = player.getInventory().getItem(e.getPreviousSlot());
         ItemStack newItem = player.getInventory().getItem(e.getNewSlot());
 
-        if(profile.subRace == SubRace.AIR.id) {
-            if(profile.getRank() < Rank.OKAMI.rank)
+        if(profile.raceData.getSubrace() == SubRace.AIR.id) {
+            if(profile.raceData.getRank() < Rank.OKAMI.rank)
                 return;
 
             ItemManager manager = Race.getInstance().getItemManager();
@@ -208,13 +185,13 @@ public class Tamashi implements IRace, ISubRaceable {
     public void onInteract(PlayerInteractEvent e) {
         Player player = e.getPlayer();
         RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
-        if(profile.race != RaceType.TAMASHI)
+        if(profile.raceData.getRace() != RaceType.TAMASHI)
             return;
 
         ItemStack item = e.getItem();
-        Rank rank = Rank.fromRank(profile.getRank());
+        Rank rank = Rank.fromRank(profile.raceData.getRank());
 
-        if(profile.subRace == SubRace.EARTH.id) {
+        if(profile.raceData.getSubrace() == SubRace.EARTH.id) {
 
             if(item == null || (item.getType() != Material.DIRT && item.getType() != Material.GRASS_BLOCK))
                 return;
@@ -234,7 +211,7 @@ public class Tamashi implements IRace, ISubRaceable {
 
             e.setCancelled(true);
         }
-        else if(profile.subRace == SubRace.FIRE.id) {
+        else if(profile.raceData.getSubrace() == SubRace.FIRE.id) {
 
             if(item == null || item.getType() != Material.BLAZE_POWDER)
                 return;
@@ -253,14 +230,14 @@ public class Tamashi implements IRace, ISubRaceable {
 
             e.setCancelled(true);
         }
-        else if(profile.subRace == SubRace.AIR.id) {
+        else if(profile.raceData.getSubrace() == SubRace.AIR.id) {
 
             if(!(Race.getInstance().getItemManager().getItem(item) instanceof FlyCharge))
                 return;
 
             e.setCancelled(true);
 
-            if(profile.getRank() >= Rank.OKAMI.rank)
+            if(profile.raceData.getRank() >= Rank.OKAMI.rank)
                 return;
 
             if(e.getAction() != Action.RIGHT_CLICK_AIR)
@@ -287,43 +264,42 @@ public class Tamashi implements IRace, ISubRaceable {
 
     @Override
     public void cleanup(RaceProfile profile) {
-
-        removeMalus(profile);
+        Player player = profile.getPlayer();
 
         // water
-        PotionEffect conduit = profile.player.getPotionEffect(PotionEffectType.CONDUIT_POWER);
+        PotionEffect conduit = player.getPotionEffect(PotionEffectType.CONDUIT_POWER);
         if(conduit != null && conduit.isInfinite()) {
-            profile.player.removePotionEffect(PotionEffectType.CONDUIT_POWER);
+            player.removePotionEffect(PotionEffectType.CONDUIT_POWER);
         }
 
-        PotionEffect dolphinGrace = profile.player.getPotionEffect(PotionEffectType.DOLPHINS_GRACE);
+        PotionEffect dolphinGrace = player.getPotionEffect(PotionEffectType.DOLPHINS_GRACE);
         if(dolphinGrace != null && dolphinGrace.isInfinite()) {
-            profile.player.removePotionEffect(PotionEffectType.DOLPHINS_GRACE);
+            player.removePotionEffect(PotionEffectType.DOLPHINS_GRACE);
         }
 
         // fire
-        PotionEffect fireResistance = profile.player.getPotionEffect(PotionEffectType.FIRE_RESISTANCE);
+        PotionEffect fireResistance = player.getPotionEffect(PotionEffectType.FIRE_RESISTANCE);
         if(fireResistance != null && fireResistance.isInfinite()) {
-            profile.player.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
+            player.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
         }
 
-        IRace.removeAttribute(profile.player, Attribute.ATTACK_DAMAGE, STRENGTH);
+        IRace.removeAttribute(player, Attribute.ATTACK_DAMAGE, STRENGTH);
 
         // air
-        if(Race.getInstance().getItemManager().getItem(profile.player.getInventory().getContents()[8]) instanceof IStaticItem) {
-            profile.player.getInventory().setItem(8, null);
+        if(Race.getInstance().getItemManager().getItem(player.getInventory().getContents()[8]) instanceof IStaticItem) {
+            player.getInventory().setItem(8, null);
         }
 
-        IRace.removeAttribute(profile.player, Attribute.MOVEMENT_SPEED, SPEED);
+        IRace.removeAttribute(player, Attribute.MOVEMENT_SPEED, SPEED);
 
-        profile.player.setAllowFlight(false);
+        player.setAllowFlight(false);
     }
 
 
     private void rankUp(RaceProfile profile) {
         profile.rankUp();
 
-        Rank rank = Rank.fromRank(profile.getRank());
+        Rank rank = Rank.fromRank(profile.raceData.getRank());
 
         Messager.sendRankupTitle(profile, rank.name);
         // TODO ajouter a une queue de title
@@ -334,22 +310,24 @@ public class Tamashi implements IRace, ISubRaceable {
 
 
     private void loadWaterEffect(RaceProfile profile) {
-        int dolphinGraceLvl = switch(Rank.fromRank(profile.getRank())) {
+        Player player = profile.getPlayer();
+
+        int dolphinGraceLvl = switch(Rank.fromRank(profile.raceData.getRank())) {
             case EMBRYO, CHILD -> 1;
             case ACCOMPLISHED, HALF_GOD -> 2;
             case KAMI, OKAMI -> 3;
         };
 
-        if(profile.player.hasPotionEffect(PotionEffectType.CONDUIT_POWER)) {
-            profile.player.removePotionEffect(PotionEffectType.CONDUIT_POWER);
+        if(player.hasPotionEffect(PotionEffectType.CONDUIT_POWER)) {
+            player.removePotionEffect(PotionEffectType.CONDUIT_POWER);
         }
-        profile.player.addPotionEffect(new PotionEffect(PotionEffectType.CONDUIT_POWER, PotionEffect.INFINITE_DURATION, 0, true, false, true));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.CONDUIT_POWER, PotionEffect.INFINITE_DURATION, 0, true, false, true));
 
 
-        if(profile.player.hasPotionEffect(PotionEffectType.DOLPHINS_GRACE)) {
-            profile.player.removePotionEffect(PotionEffectType.DOLPHINS_GRACE);
+        if(player.hasPotionEffect(PotionEffectType.DOLPHINS_GRACE)) {
+            player.removePotionEffect(PotionEffectType.DOLPHINS_GRACE);
         }
-        profile.player.addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, PotionEffect.INFINITE_DURATION, dolphinGraceLvl-1, true, false, true));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, PotionEffect.INFINITE_DURATION, dolphinGraceLvl-1, true, false, true));
     }
 
     private void loadWater(RaceProfile profile) {
@@ -357,7 +335,7 @@ public class Tamashi implements IRace, ISubRaceable {
     }
 
     private void loadFireAttribute(RaceProfile profile) {
-        double multiplier = switch(Rank.fromRank(profile.getRank())) {
+        double multiplier = switch(Rank.fromRank(profile.raceData.getRank())) {
             case EMBRYO, CHILD -> 0.00;
             case ACCOMPLISHED -> 0.10;
             case HALF_GOD -> 0.20;
@@ -365,15 +343,17 @@ public class Tamashi implements IRace, ISubRaceable {
         };
 
         if(multiplier > 0.0) {
-            IRace.replaceAttribute(profile.player, Attribute.ATTACK_DAMAGE, STRENGTH, multiplier, AttributeModifier.Operation.ADD_SCALAR);
+            IRace.replaceAttribute(profile.getPlayer(), Attribute.ATTACK_DAMAGE, STRENGTH, multiplier, AttributeModifier.Operation.ADD_SCALAR);
         }
     }
 
     private void loadFireEffect(RaceProfile profile) {
-        if(profile.player.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE)) {
-            profile.player.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
+        Player player = profile.getPlayer();
+
+        if(player.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE)) {
+            player.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
         }
-        profile.player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, PotionEffect.INFINITE_DURATION, 0, true, false, true));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, PotionEffect.INFINITE_DURATION, 0, true, false, true));
     }
 
     private void loadFire(RaceProfile profile) {
@@ -382,7 +362,7 @@ public class Tamashi implements IRace, ISubRaceable {
     }
 
     private void loadAirAttribute(RaceProfile profile) {
-        double multiplier = switch(Rank.fromRank(profile.getRank())) {
+        double multiplier = switch(Rank.fromRank(profile.raceData.getRank())) {
             case EMBRYO -> 0.05;
             case CHILD -> 0.10;
             case ACCOMPLISHED -> 0.20;
@@ -391,16 +371,18 @@ public class Tamashi implements IRace, ISubRaceable {
             case OKAMI -> 1.00;
         };
 
-        IRace.replaceAttribute(profile.player, Attribute.MOVEMENT_SPEED, SPEED, multiplier, AttributeModifier.Operation.ADD_SCALAR);
+        IRace.replaceAttribute(profile.getPlayer(), Attribute.MOVEMENT_SPEED, SPEED, multiplier, AttributeModifier.Operation.ADD_SCALAR);
     }
 
     private void giveAirItem(RaceProfile profile) {
-        ItemStack item = profile.player.getInventory().getContents()[8];
-        if(!(Race.getInstance().getItemManager().getItem(item) instanceof FlyCharge)) {
-            profile.player.getInventory().setItem(8, RaceItem.FLY_CHARGE.getItem());
+        Player player = profile.getPlayer();
 
-            if(item != null && !profile.player.getInventory().addItem(item).isEmpty()) {
-                profile.player.getWorld().dropItemNaturally(profile.player.getLocation(), item);
+        ItemStack item = player.getInventory().getContents()[8];
+        if(!(Race.getInstance().getItemManager().getItem(item) instanceof FlyCharge)) {
+            player.getInventory().setItem(8, RaceItem.FLY_CHARGE.getItem());
+
+            if(item != null && !player.getInventory().addItem(item).isEmpty()) {
+                player.getWorld().dropItemNaturally(player.getLocation(), item);
             }
         }
     }
@@ -412,7 +394,7 @@ public class Tamashi implements IRace, ISubRaceable {
 
     @Override
     public void loadRank(RaceProfile profile) {
-        switch(SubRace.fromId(profile.subRace)) {
+        switch(SubRace.fromId(profile.raceData.getSubrace())) {
             case WATER -> loadWater(profile);
             case FIRE -> loadFire(profile);
             case AIR -> loadAir(profile);
@@ -421,7 +403,7 @@ public class Tamashi implements IRace, ISubRaceable {
 
     @Override
     public void reloadEffect(RaceProfile profile) {
-        switch(SubRace.fromId(profile.subRace)) {
+        switch(SubRace.fromId(profile.raceData.getSubrace())) {
             case WATER -> loadWaterEffect(profile);
             case FIRE -> loadFireEffect(profile);
             case AIR -> giveAirItem(profile);
@@ -429,15 +411,15 @@ public class Tamashi implements IRace, ISubRaceable {
     }
 
     public void checkRankup(RaceProfile profile) {
-        if(profile.getRank() < Rank.values().length-1) {
+        if(profile.raceData.getRank() < Rank.values().length-1) {
 
-            Rank rank = Rank.fromRank(profile.getRank() + 1);
+            Rank rank = Rank.fromRank(profile.raceData.getRank() + 1);
 
             int required = rank.expRequired;
-            if (profile.getExp() < required)
+            if (profile.raceData.getExp() < required)
                 return;
 
-            profile.subExp(required);
+            profile.raceData.subExp(required);
             rankUp(profile);
             checkRankup(profile);
         }

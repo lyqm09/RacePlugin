@@ -1,11 +1,13 @@
 package be.lymaes.race.data;
 
+import be.lymaes.race.model.RaceType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public interface IRaceData {
 
-
+    RaceType getRace();
+    int getSubrace();
 
     int getRank();
     void rankUp();

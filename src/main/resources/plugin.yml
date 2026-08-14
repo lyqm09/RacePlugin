@@ -46,6 +46,13 @@ commands:
     permission-message: Tu n'as pas la permission d'utiliser cette commande.
     usage: /bless <player>
 
+  home:
+    aliases: [foyer]
+    description: Défini le centre de la zone d'action d'un Tamashi.
+    permission: race.tamashi.home
+    permission-message: Tu n'es pas un Tamashi.
+    usage: /foyer
+
 permissions:
   race.*:
     description: Donne accès à presque toutes les permissions du plugin.
@@ -90,7 +97,7 @@ permissions:
 
   race.karyu.merchant.villager:
     description: Permet d'utiliser la commande /villager.
-    default: op
+    default: false
 
   race.karyu.adorer.sharpness:
     description: Permet d'utiliser la commande /sharpness.
@@ -98,4 +105,4 @@ permissions:
 
   race.karyu.adorer.bless:
     description: Permet d'utiliser la commande /bless.
-    default: op
+    default: false

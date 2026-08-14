@@ -47,7 +47,7 @@ public class RaceManager {
 
         save(profile);
 
-        getRaceModel(profile.race).cleanup(profile);
+        getRaceModel(profile.raceData.getRace()).cleanup(profile);
         removePlayerFromRaces(profile);
 
         RaceProfile.loadProfile(player, race, subrace).thenAccept(newProfile -> {
@@ -56,8 +56,8 @@ public class RaceManager {
             addPlayerToRaces(newProfile);
 
             getRaceModel(race).loadRank(newProfile);
-            player.getPersistentDataContainer().set(RACE_KEY, PersistentDataType.STRING, newProfile.race.name());
-            player.getPersistentDataContainer().set(SUBRACE_KEY, PersistentDataType.INTEGER, newProfile.subRace);
+            player.getPersistentDataContainer().set(RACE_KEY, PersistentDataType.STRING, newProfile.raceData.getRace().name());
+            player.getPersistentDataContainer().set(SUBRACE_KEY, PersistentDataType.INTEGER, newProfile.raceData.getSubrace());
 
             newProfile.setTabName();
             newProfile.updateTabInfo();
@@ -65,38 +65,40 @@ public class RaceManager {
     }
 
     private void verifyAndLoadRace(RaceProfile profile) {
-        String raceName = profile.player.getPersistentDataContainer().get(RACE_KEY, PersistentDataType.STRING);
-        int subRaceId = profile.player.getPersistentDataContainer().getOrDefault(SUBRACE_KEY, PersistentDataType.INTEGER, 0);
-        int rank = profile.player.getPersistentDataContainer().getOrDefault(RANK_KEY, PersistentDataType.INTEGER, 0);
+        Player player = profile.getPlayer();;
+
+        String raceName = player.getPersistentDataContainer().get(RACE_KEY, PersistentDataType.STRING);
+        int subRaceId = player.getPersistentDataContainer().getOrDefault(SUBRACE_KEY, PersistentDataType.INTEGER, 0);
+        int rank = player.getPersistentDataContainer().getOrDefault(RANK_KEY, PersistentDataType.INTEGER, 0);
 
         IRace oldRace = getRaceModel(RaceType.fromName(raceName));
 
         if (raceName == null) {
-            getRaceModel(profile.race).loadRank(profile);
-            profile.player.getPersistentDataContainer().set(RACE_KEY, PersistentDataType.STRING, profile.race.name());
-            profile.player.getPersistentDataContainer().set(SUBRACE_KEY, PersistentDataType.INTEGER, profile.subRace);
+            getRaceModel(profile.raceData.getRace()).loadRank(profile);
+            player.getPersistentDataContainer().set(RACE_KEY, PersistentDataType.STRING, profile.raceData.getRace().name());
+            player.getPersistentDataContainer().set(SUBRACE_KEY, PersistentDataType.INTEGER, profile.raceData.getSubrace());
         }
 
-        else if (!raceName.equalsIgnoreCase(profile.race.name())) {
+        else if (!raceName.equalsIgnoreCase(profile.raceData.getRace().name())) {
             oldRace.cleanup(profile);
 
-            getRaceModel(profile.race).loadRank(profile);
-            profile.player.getPersistentDataContainer().set(RACE_KEY, PersistentDataType.STRING, profile.race.name());
-            profile.player.getPersistentDataContainer().set(SUBRACE_KEY, PersistentDataType.INTEGER, profile.subRace);
+            getRaceModel(profile.raceData.getRace()).loadRank(profile);
+            player.getPersistentDataContainer().set(RACE_KEY, PersistentDataType.STRING, profile.raceData.getRace().name());
+            player.getPersistentDataContainer().set(SUBRACE_KEY, PersistentDataType.INTEGER, profile.raceData.getSubrace());
         }
 
         else if (oldRace instanceof ISubRaceable) {
-            if(subRaceId != profile.subRace) {
+            if(subRaceId != profile.raceData.getSubrace()) {
                 oldRace.cleanup(profile);
 
-                getRaceModel(profile.race).loadRank(profile);
-                profile.player.getPersistentDataContainer().set(SUBRACE_KEY, PersistentDataType.INTEGER, profile.subRace);
+                getRaceModel(profile.raceData.getRace()).loadRank(profile);
+                player.getPersistentDataContainer().set(SUBRACE_KEY, PersistentDataType.INTEGER, profile.raceData.getSubrace());
             }
         }
 
-        if(rank != profile.getRank()) {
-            getRaceModel(profile.race).loadRank(profile);
-            profile.player.getPersistentDataContainer().set(RANK_KEY, PersistentDataType.INTEGER, profile.getRank());
+        if(rank != profile.raceData.getRank()) {
+            getRaceModel(profile.raceData.getRace()).loadRank(profile);
+            player.getPersistentDataContainer().set(RANK_KEY, PersistentDataType.INTEGER, profile.raceData.getRank());
         }
     }
 
@@ -117,7 +119,7 @@ public class RaceManager {
         RaceProfile profile = getProfile(player);
 
         save(profile);
-        player.getPersistentDataContainer().set(RANK_KEY, PersistentDataType.INTEGER, profile.getRank());
+        player.getPersistentDataContainer().set(RANK_KEY, PersistentDataType.INTEGER, profile.raceData.getRank());
 
         removePlayerFromRaces(profile);
 
@@ -138,23 +140,23 @@ public class RaceManager {
 
     public RaceProfile getProfile(Player player) {
         if(!profiles.containsKey(player))
-            return new RaceProfile(player, RaceType.HUMAN);
+            return new RaceProfile(player.getUniqueId(), RaceType.HUMAN.loadData.apply(null, null));
         return profiles.get(player);
     }
 
     private void addPlayerToRaces(RaceProfile profile) {
-        if(races.containsKey(profile.race)) {
+        if(races.containsKey(profile.raceData.getRace())) {
             List<RaceProfile> players = new ArrayList<>();
             players.add(profile);
-            races.put(profile.race, players);
+            races.put(profile.raceData.getRace(), players);
         } else {
-            races.get(profile.race).add(profile);
+            races.get(profile.raceData.getRace()).add(profile);
         }
     }
 
     private void removePlayerFromRaces(RaceProfile profile) {
-        if(races.containsKey(profile.race)) {
-            races.get(profile.race).remove(profile);
+        if(races.containsKey(profile.raceData.getRace())) {
+            races.get(profile.raceData.getRace()).remove(profile);
         }
     }
 

@@ -73,10 +73,10 @@ public class Karyu implements IRace, ISubRaceable {
             return;
 
         RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
-        if(profile.race != RaceType.KARYU)
+        if(profile.raceData.getRace() != RaceType.KARYU)
             return;
 
-        if(profile.subRace == SubRace.MERCHANT.id) {
+        if(profile.raceData.getSubrace() == SubRace.MERCHANT.id) {
             if(e.getSlotType() != InventoryType.SlotType.RESULT)
                 return;
 
@@ -121,10 +121,10 @@ public class Karyu implements IRace, ISubRaceable {
             return;
 
         RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
-        if(profile.race != RaceType.KARYU)
+        if(profile.raceData.getRace() != RaceType.KARYU)
             return;
 
-        if(profile.subRace == SubRace.ADORER.id) {
+        if(profile.raceData.getSubrace() == SubRace.ADORER.id) {
             addExp(profile, 1);
         }
     }
@@ -133,15 +133,15 @@ public class Karyu implements IRace, ISubRaceable {
     public void onInteract(PlayerInteractEvent e) {
         Player player = e.getPlayer();
         RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
-        if(profile.race != RaceType.KARYU)
+        if(profile.raceData.getRace() != RaceType.KARYU)
             return;
 
         ItemStack item = e.getItem();
 
-        if(profile.subRace == SubRace.MERCHANT.id
-        || (profile.subRace == SubRace.ADORER.id && profile.getRank() >= Rank.DRAGON.rank)) {
+        if(profile.raceData.getSubrace() == SubRace.MERCHANT.id
+        || (profile.raceData.getSubrace() == SubRace.ADORER.id && profile.raceData.getRank() >= Rank.DRAGON.rank)) {
 
-            emeraldExchange: if(profile.getRank() >= Rank.ADVANCE.rank) {
+            emeraldExchange: if(profile.raceData.getRank() >= Rank.ADVANCE.rank) {
 
                 if (item == null || item.getType() != Material.EMERALD)
                     break emeraldExchange;
@@ -166,7 +166,7 @@ public class Karyu implements IRace, ISubRaceable {
                 e.setCancelled(true);
             }
 
-            summonMilicien: if(profile.getRank() >= Rank.BIG.rank) {
+            summonMilicien: if(profile.raceData.getRank() >= Rank.BIG.rank) {
                 if(!(Race.getInstance().getItemManager().getItem(item) instanceof MilicienEgg))
                     break summonMilicien;
 
@@ -201,13 +201,13 @@ public class Karyu implements IRace, ISubRaceable {
             return;
 
         RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
-        if(profile.race != RaceType.KARYU)
+        if(profile.raceData.getRace() != RaceType.KARYU)
             return;
 
-        if(profile.subRace == SubRace.ADORER.id
-        || (profile.subRace == SubRace.MERCHANT.id && profile.getRank() >= Rank.DRAGON.rank)) {
+        if(profile.raceData.getSubrace() == SubRace.ADORER.id
+        || (profile.raceData.getSubrace() == SubRace.MERCHANT.id && profile.raceData.getRank() >= Rank.DRAGON.rank)) {
 
-            double factor = switch(Rank.fromRank(profile.getRank())) {
+            double factor = switch(Rank.fromRank(profile.raceData.getRank())) {
                 case BEGINNER -> 0.05;
                 case NOVICE -> 0.10;
                 case INTERMEDIATE -> 0.20;
@@ -247,36 +247,42 @@ public class Karyu implements IRace, ISubRaceable {
     }
 
     private void loadMerchantPermission(RaceProfile profile) {
-        if(profile.getRank() >= Rank.BEGINNER.rank) {
-            if(!profile.player.hasPermission(PERM_FORTUNE)) {
-                addPermission(profile.player, PERM_FORTUNE);
+        Player player = profile.getPlayer();
+
+        if(profile.raceData.getRank() >= Rank.BEGINNER.rank) {
+            if(!player.hasPermission(PERM_FORTUNE)) {
+                addPermission(player, PERM_FORTUNE);
             }
         }
 
-        if(profile.getRank() >= Rank.NOVICE.rank) {
-            if(!profile.player.hasPermission(PERM_VILLAGER)) {
-                addPermission(profile.player, PERM_VILLAGER);
+        if(profile.raceData.getRank() >= Rank.NOVICE.rank) {
+            if(!player.hasPermission(PERM_VILLAGER)) {
+                addPermission(player, PERM_VILLAGER);
             }
         }
     }
 
     private void loadMerchantEffect(RaceProfile profile) {
-        if(profile.getRank() >= Rank.INTERMEDIATE.rank) {
-            if(profile.player.hasPotionEffect(PotionEffectType.HERO_OF_THE_VILLAGE)) {
-                profile.player.removePotionEffect(PotionEffectType.HERO_OF_THE_VILLAGE);
+        Player player = profile.getPlayer();
+
+        if(profile.raceData.getRank() >= Rank.INTERMEDIATE.rank) {
+            if(player.hasPotionEffect(PotionEffectType.HERO_OF_THE_VILLAGE)) {
+                player.removePotionEffect(PotionEffectType.HERO_OF_THE_VILLAGE);
             }
-            profile.player.addPotionEffect(new PotionEffect(PotionEffectType.HERO_OF_THE_VILLAGE, PotionEffect.INFINITE_DURATION, 0, true, false, true));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.HERO_OF_THE_VILLAGE, PotionEffect.INFINITE_DURATION, 0, true, false, true));
         }
     }
 
     private void giveMerchantItem(RaceProfile profile) {
-        if(profile.getRank() >= Rank.BIG.rank) {
-            ItemStack item = profile.player.getInventory().getContents()[8];
-            if(!(Race.getInstance().getItemManager().getItem(item) instanceof MilicienEgg)) {
-                profile.player.getInventory().setItem(8, RaceItem.MILICIEN_EGG.getItem());
+        Player player = profile.getPlayer();
 
-                if(item != null && !profile.player.getInventory().addItem(item).isEmpty()) {
-                    profile.player.getWorld().dropItemNaturally(profile.player.getLocation(), item);
+        if(profile.raceData.getRank() >= Rank.BIG.rank) {
+            ItemStack item = player.getInventory().getContents()[8];
+            if(!(Race.getInstance().getItemManager().getItem(item) instanceof MilicienEgg)) {
+                player.getInventory().setItem(8, RaceItem.MILICIEN_EGG.getItem());
+
+                if(item != null && !player.getInventory().addItem(item).isEmpty()) {
+                    player.getWorld().dropItemNaturally(player.getLocation(), item);
                 }
             }
         }
@@ -287,27 +293,31 @@ public class Karyu implements IRace, ISubRaceable {
         loadMerchantEffect(profile);
         giveMerchantItem(profile);
 
-        if(profile.getRank() >= Rank.DRAGON.rank && profile.subRace == SubRace.MERCHANT.id) {
+        if(profile.raceData.getRank() >= Rank.DRAGON.rank && profile.raceData.getSubrace() == SubRace.MERCHANT.id) {
             loadAdorer(profile);
         }
     }
 
     private void loadAdorerPermission(RaceProfile profile) {
-        if(profile.getRank() >= Rank.ADVANCE.rank) {
-            if(!profile.player.hasPermission(PERM_SHARPNESS)) {
-                addPermission(profile.player, PERM_SHARPNESS);
+        Player player = profile.getPlayer();
+
+        if(profile.raceData.getRank() >= Rank.ADVANCE.rank) {
+            if(!player.hasPermission(PERM_SHARPNESS)) {
+                addPermission(player, PERM_SHARPNESS);
             }
         }
 
-        if(profile.getRank() >= Rank.BIG.rank) {
-            if(!profile.player.hasPermission(PERM_BLESS)) {
-                addPermission(profile.player, PERM_BLESS);
+        if(profile.raceData.getRank() >= Rank.BIG.rank) {
+            if(!player.hasPermission(PERM_BLESS)) {
+                addPermission(player, PERM_BLESS);
             }
         }
     }
 
     private void loadAdorerAttribute(RaceProfile profile) {
-        double multiplier = switch(Rank.fromRank(profile.getRank())) {
+        Player player = profile.getPlayer();
+
+        double multiplier = switch(Rank.fromRank(profile.raceData.getRank())) {
             case BEGINNER -> 0.05;
             case NOVICE -> 0.10;
             case INTERMEDIATE -> 0.20;
@@ -315,8 +325,8 @@ public class Karyu implements IRace, ISubRaceable {
             case BIG, DRAGON -> 0.50;
         };
 
-        IRace.replaceAttribute(profile.player, Attribute.ATTACK_DAMAGE, STRENGTH, multiplier, AttributeModifier.Operation.ADD_SCALAR);
-        IRace.replaceAttribute(profile.player, Attribute.MOVEMENT_SPEED, SPEED, multiplier, AttributeModifier.Operation.ADD_SCALAR);
+        IRace.replaceAttribute(player, Attribute.ATTACK_DAMAGE, STRENGTH, multiplier, AttributeModifier.Operation.ADD_SCALAR);
+        IRace.replaceAttribute(player, Attribute.MOVEMENT_SPEED, SPEED, multiplier, AttributeModifier.Operation.ADD_SCALAR);
 
     }
 
@@ -324,14 +334,14 @@ public class Karyu implements IRace, ISubRaceable {
         loadAdorerPermission(profile);
         loadAdorerAttribute(profile);
 
-        if(profile.getRank() >= Rank.DRAGON.rank && profile.subRace == SubRace.ADORER.id) {
+        if(profile.raceData.getRank() >= Rank.DRAGON.rank && profile.raceData.getSubrace() == SubRace.ADORER.id) {
             loadMerchant(profile);
         }
     }
 
     @Override
     public void reloadEffect(RaceProfile profile) {
-        if (Objects.requireNonNull(SubRace.fromId(profile.subRace)) == SubRace.MERCHANT) {
+        if (Objects.requireNonNull(SubRace.fromId(profile.raceData.getSubrace())) == SubRace.MERCHANT) {
             loadMerchantEffect(profile);
             giveMerchantItem(profile);
         }
@@ -339,52 +349,54 @@ public class Karyu implements IRace, ISubRaceable {
 
     @Override
     public void cleanup(RaceProfile profile) {
+        Player player = profile.getPlayer();
+
         // Adorer
-        IRace.removeAttribute(profile.player, Attribute.ATTACK_DAMAGE, STRENGTH);
-        IRace.removeAttribute(profile.player, Attribute.MOVEMENT_SPEED, SPEED);
-        removePermission(profile.player, PERM_SHARPNESS);
-        removePermission(profile.player, PERM_BLESS);
+        IRace.removeAttribute(player, Attribute.ATTACK_DAMAGE, STRENGTH);
+        IRace.removeAttribute(player, Attribute.MOVEMENT_SPEED, SPEED);
+        removePermission(player, PERM_SHARPNESS);
+        removePermission(player, PERM_BLESS);
 
         // Merchant
-        removePermission(profile.player, PERM_FORTUNE);
-        removePermission(profile.player, PERM_VILLAGER);
+        removePermission(player, PERM_FORTUNE);
+        removePermission(player, PERM_VILLAGER);
 
-        PotionEffect hotv = profile.player.getPotionEffect(PotionEffectType.HERO_OF_THE_VILLAGE);
+        PotionEffect hotv = player.getPotionEffect(PotionEffectType.HERO_OF_THE_VILLAGE);
         if(hotv != null && hotv.isInfinite()) {
-            profile.player.removePotionEffect(PotionEffectType.HERO_OF_THE_VILLAGE);
+            player.removePotionEffect(PotionEffectType.HERO_OF_THE_VILLAGE);
         }
 
-        if(Race.getInstance().getItemManager().getItem(profile.player.getInventory().getContents()[8]) instanceof IStaticItem) {
-            profile.player.getInventory().setItem(8, null);
+        if(Race.getInstance().getItemManager().getItem(player.getInventory().getContents()[8]) instanceof IStaticItem) {
+            player.getInventory().setItem(8, null);
         }
     }
 
     public void rankUp(RaceProfile profile) {
         profile.rankUp();
 
-        Messager.sendRankupTitle(profile, Rank.fromRank(profile.getRank()).name);
+        Messager.sendRankupTitle(profile, Rank.fromRank(profile.raceData.getRank()).name);
 
         loadRank(profile);
     }
 
     @Override
     public void loadRank(RaceProfile profile) {
-        switch(SubRace.fromId(profile.subRace)) {
+        switch(SubRace.fromId(profile.raceData.getSubrace())) {
             case MERCHANT -> loadMerchant(profile);
             case ADORER -> loadAdorer(profile);
         }
     }
 
     public void checkRankup(RaceProfile profile) {
-        if(profile.getRank() < Rank.values().length-1) {
+        if(profile.raceData.getRank() < Rank.values().length-1) {
 
-            Rank rank = Rank.fromRank(profile.getRank() + 1);
+            Rank rank = Rank.fromRank(profile.raceData.getRank() + 1);
 
             int required = rank.expRequired;
-            if (profile.getExp() < required)
+            if (profile.raceData.getExp() < required)
                 return;
 
-            profile.subExp(required);
+            profile.raceData.subExp(required);
             rankUp(profile);
             checkRankup(profile);
         }

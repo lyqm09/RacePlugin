@@ -24,6 +24,17 @@ public class TamashiData extends RaceData {
         this(subrace, rank, exp, null);
     }
 
+    public void setHome(Location newHome) {
+        this.home = newHome;
+    }
+
+    public Location getHome() {
+        if(home == null) {
+            return Bukkit.getWorlds().getFirst().getSpawnLocation();
+        }
+        return home;
+    }
+
     @Override
     protected void saveSpecificData(ObjectNode node) {
         if(home != null && home.getWorld() != null) {
@@ -40,7 +51,7 @@ public class TamashiData extends RaceData {
     public static TamashiData loadProfileData(JsonNode rootNode, RaceType.PrimaryData primaryData) {
         RaceType race = RaceType.KITSUNE;
 
-        if (rootNode.has(race.name())) {
+        if (rootNode != null && rootNode.has(race.name())) {
             JsonNode raceNode = rootNode.get(race.name());
 
             RaceType.PrimaryData data = loadProfileData(raceNode, race, primaryData.subrace());

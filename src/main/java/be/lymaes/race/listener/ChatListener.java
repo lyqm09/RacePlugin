@@ -2,6 +2,7 @@ package be.lymaes.race.listener;
 
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
+import be.lymaes.race.model.RaceType;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -30,12 +31,13 @@ public class ChatListener implements Listener {
         String message = e.getMessage();
 
         RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
+        RaceType race = profile.raceData.getRace();
 
         Component chatFormat = Component.empty()
                 .append(Component.text("[").color(NamedTextColor.WHITE))
-                .append(Component.text(profile.race.name).color(profile.race.color))
+                .append(Component.text(race.name).color(race.color))
                 .append(Component.text("] ").color(NamedTextColor.WHITE))
-                .append(Component.text(player.getDisplayName()).color(profile.race.color))
+                .append(Component.text(player.getDisplayName()).color(race.color))
                 .append(Component.text(" > ").color(NamedTextColor.WHITE))
                 .append(Component.text(message).color(NamedTextColor.WHITE));
 

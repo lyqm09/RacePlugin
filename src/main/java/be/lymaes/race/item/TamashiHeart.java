@@ -51,7 +51,7 @@ public class TamashiHeart implements IRaceItem, Eatable {
         Player player = e.getPlayer();
         RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
 
-        IRace race = plugin.getRaceManager().getRaceModel(profile.race);
+        IRace race = plugin.getRaceManager().getRaceModel(profile.raceData.getRace());
         race.addExp(profile, BONUS_EXP);
     }
 }

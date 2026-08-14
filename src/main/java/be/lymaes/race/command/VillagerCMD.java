@@ -2,6 +2,8 @@ package be.lymaes.race.command;
 
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
+import be.lymaes.race.data.KaryuData;
+import be.lymaes.race.model.Karyu;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -19,7 +21,6 @@ import java.util.UUID;
 
 public class VillagerCMD implements CommandExecutor {
 
-    private static final String TIME_KEY = "spawn_villager_cmd";
     private static final long COOLDOWN = 1000 * 60 * 5;
 
     private Map<UUID, Villager> villagers = new HashMap<>();
@@ -36,8 +37,9 @@ public class VillagerCMD implements CommandExecutor {
         }
 
         RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
+        KaryuData data = ((KaryuData)profile.raceData);
 
-        long time = profile.getTime(TIME_KEY);
+        long time = data.getVillagerCMDTime();
         long currentTime = System.currentTimeMillis();
 
         if(time != 0 && time > currentTime) {
@@ -53,7 +55,7 @@ public class VillagerCMD implements CommandExecutor {
         Villager newVillager = player.getWorld().spawn(player.getLocation(), Villager.class, CreatureSpawnEvent.SpawnReason.CUSTOM, true, null);
         villagers.put(player.getUniqueId(), newVillager);
 
-        profile.putTime(TIME_KEY, currentTime + COOLDOWN);
+        data.setVillagerCMDTime(currentTime + COOLDOWN);
 
         return true;
     }

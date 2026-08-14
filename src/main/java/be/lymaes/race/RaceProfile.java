@@ -1,5 +1,7 @@
 package be.lymaes.race;
 
+import be.lymaes.race.data.IRaceData;
+import be.lymaes.race.data.RaceData;
 import be.lymaes.race.model.IRace;
 import be.lymaes.race.model.ISubRaceable;
 import be.lymaes.race.model.RaceType;
@@ -21,80 +23,41 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class RaceProfile {
 
-    public final Player player;
+    public final UUID uuid;
+    public final IRaceData raceData;
 
-    public final RaceType race;
-    public final int subRace;
-
-    private int exp;
-    private int rank;
-
-    private Map<String, Long> times;
-
-    public RaceProfile(Player player, RaceType race, int subRace, int exp, int rank, Map<String, Long> times) {
-        this.player = player;
-        this.race = race;
-        this.subRace = subRace;
-        this.exp = exp;
-        this.rank = rank;
-        if(times != null) {
-            this.times = times;
-        } else {
-            this.times = new HashMap<>();
-        }
+    public RaceProfile(UUID uuid, IRaceData raceData) {
+        this.uuid = uuid;
+        this.raceData = raceData;
     }
 
-    public RaceProfile(Player player, RaceType race) {
-        this(player, race, 0, 0, 0, new HashMap<>());
+    public Player getPlayer() {
+        return Bukkit.getPlayer(uuid);
     }
 
-    public void setExp(int n) {
-        exp = n;
+    // RaceData
+
+    public void rankUp() {
+        raceData.rankUp();
+        updateTabInfo();
     }
 
     public void addExp(int n) {
-        exp += n;
+        raceData.addExp(n);
         updateTabInfo();
-    }
-
-    public void subExp(int n) {
-        exp -= n;
-        updateTabInfo();
-    }
-
-    public int getExp() {
-        return exp;
-    }
-
-    public void rankUp() {
-        rank++;
-        updateTabInfo();
-    }
-
-    public int getRank() {
-        return rank;
-    }
-
-    public long getTime(String key) {
-        Long time = times.get(key);
-        return time != null ? time : 0L;
-    }
-
-    public void putTime(String key, Long value) {
-        times.put(key, value);
-    }
-
-    public void removeTime(String key) {
-        times.remove(key);
     }
 
     // utils functions
 
     public void setTabName() {
+        RaceType race = raceData.getRace();
+        Player player = getPlayer();
+
         Component tabNameComponent = Component.empty()
                 .append(Component.text("[").color(NamedTextColor.WHITE))
                 .append(Component.text(race.name).color(race.color))
@@ -111,12 +74,16 @@ public class RaceProfile {
     }
 
     public void updateTabInfo() {
-        IRace irace = Race.getInstance().getRaceManager().getRaceModel(race);
+        Player player = getPlayer();
+        int rank = raceData.getRank();
+        int exp = raceData.getExp();
+
+        IRace irace = Race.getInstance().getRaceManager().getRaceModel(raceData.getRace());
 
         String info;
 
         if(irace instanceof ISubRaceable) {
-            info = ((ISubRaceable) irace).getSubraceName(subRace) + " - " + irace.getRankName(rank);
+            info = ((ISubRaceable) irace).getSubraceName(raceData.getSubrace()) + " - " + irace.getRankName(rank);
         } else {
             info = irace.getRankName(rank);
         }
@@ -145,7 +112,7 @@ public class RaceProfile {
 
     }
 
-    // sauvegarde
+    // save and load
 
     public static CompletableFuture<RaceProfile> loadProfile(Player player, RaceType race, int subrace) {
         CompletableFuture<RaceProfile> future = new CompletableFuture<>();
@@ -164,56 +131,19 @@ public class RaceProfile {
                     rootNode = Race.MAPPER.createObjectNode();
                 }
 
-                String raceName;
                 RaceType raceType;
                 if (race != null) {
-                    raceName = race.name();
                     raceType = race;
                 } else {
-                    raceName = rootNode.path("current").asText(RaceType.HUMAN.name());
-                    raceType = RaceType.fromName(raceName);
+                    raceType = RaceType.fromName(rootNode.path("current").asText(RaceType.HUMAN.name()));
                 }
 
-                if (rootNode.has(raceName)) {
-                    JsonNode raceNode = rootNode.get(raceName);
-
-                    int sub;
-                    int exp = 0;
-                    int rank = 0;
-                    HashMap<String, Long> times = null;
-
-                    if (Race.getInstance().getRaceManager().getRaceModel(raceType) instanceof ISubRaceable) {
-                        sub = subrace < 0 ? raceNode.path("subrace").asInt(0) : subrace;
-
-                        JsonNode subraceNode = raceNode.get(Integer.toString(sub));
-                        if(subraceNode != null) {
-                            exp = subraceNode.path("exp").asInt(0);
-                            rank = subraceNode.path("rank").asInt(0);
-
-                            JsonNode timesNode = subraceNode.get("times");
-                            if (timesNode != null) {
-                                times = Race.MAPPER.convertValue(timesNode, new TypeReference<HashMap<String, Long>>() {
-                                });
-                            }
-                        }
-
-                    } else {
-                        sub = -1;
-                        exp = raceNode.path("exp").asInt(0);
-                        rank = raceNode.path("rank").asInt(0);
-
-                        JsonNode timesNode = raceNode.get("times");
-                        if(timesNode != null) {
-                            times = Race.MAPPER.convertValue(timesNode, new TypeReference<HashMap<String, Long>>(){});
-                        }
-                    }
-
-                    RaceProfile profile = new RaceProfile(player, raceType, sub, exp, rank, times);
-                    Bukkit.getScheduler().runTask(Race.getInstance(), () -> future.complete(profile));
-                }
+                IRaceData data = raceType.loadData.apply(rootNode, new RaceType.PrimaryData(subrace, 0, 0));
+                RaceProfile profile = new RaceProfile(player.getUniqueId(), data);
+                Bukkit.getScheduler().runTask(Race.getInstance(), () -> future.complete(profile));
             }
 
-            RaceProfile defaultProfile = new RaceProfile(player, race != null ? race : RaceType.HUMAN);
+            RaceProfile defaultProfile = new RaceProfile(player.getUniqueId(), race != null ? race.loadData.apply(null, new RaceType.PrimaryData(-1, 0, 0)) : RaceType.HUMAN.loadData.apply(null, null));
             Bukkit.getScheduler().runTask(Race.getInstance(), () -> future.complete(defaultProfile));
         });
 
@@ -229,7 +159,7 @@ public class RaceProfile {
     }
 
     public void saveSynchronously() {
-        Path file = Paths.get(Race.getInstance().getDataFolder().toPath() + "Race/profiles/" + player.getUniqueId() + ".json");
+        Path file = Paths.get(Race.getInstance().getDataFolder().toPath() + "Race/profiles/" + uuid + ".json");
 
         try {
             Files.createDirectories(file.getParent());
@@ -241,29 +171,11 @@ public class RaceProfile {
                 rootNode = Race.MAPPER.createObjectNode();
             }
 
-            rootNode.put("current", race.name());
-
-            ObjectNode raceNode = rootNode.withObjectProperty(race.name());
-
-            JsonNode timesNode = Race.MAPPER.valueToTree(times);
-
-            if (Race.getInstance().getRaceManager().getRaceModel(race) instanceof ISubRaceable) {
-                raceNode.put("subrace", subRace);
-
-                ObjectNode subraceNode = raceNode.withObjectProperty(Integer.toString(subRace));
-                subraceNode.put("exp", exp);
-                subraceNode.put("rank", rank);
-                subraceNode.set("times", timesNode);
-            } else {
-                raceNode.put("exp", exp);
-                raceNode.put("rank", rank);
-                raceNode.set("times", timesNode);
-            }
-
+            raceData.saveProfileData(rootNode);
             Race.MAPPER.writerWithDefaultPrettyPrinter().writeValue(file.toFile(), rootNode);
 
         } catch (IOException e) {
-            throw new RuntimeException("Unable to save the profile file for " + player.getUniqueId(), e);
+            throw new RuntimeException("Unable to save the profile file for " + uuid, e);
         }
     }
 

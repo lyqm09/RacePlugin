@@ -34,7 +34,7 @@ public class OniData extends RaceData {
     public static OniData loadProfileData(JsonNode rootNode, RaceType.PrimaryData primaryData) {
         RaceType race = RaceType.ONI;
 
-        if (rootNode.has(race.name())) {
+        if (rootNode != null && rootNode.has(race.name())) {
             JsonNode node = rootNode.get(race.name());
 
             RaceType.PrimaryData data = loadProfileData(node, race, -1);

@@ -2,6 +2,7 @@ package be.lymaes.race.command;
 
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
+import be.lymaes.race.data.KaryuData;
 import com.google.common.collect.Lists;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
@@ -21,8 +22,6 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class BlessCMD implements CommandExecutor {
-
-    private static final String TIME_KEY = "bless_cmd";
 
     private final List<Enchantment> ENCHANTMENTS;
 
@@ -66,8 +65,9 @@ public class BlessCMD implements CommandExecutor {
         }
 
         RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
+        KaryuData data = ((KaryuData)profile.raceData);
 
-        long time = profile.getTime(TIME_KEY);
+        long time = data.getBlessCMDTime();
         long currentTime = System.currentTimeMillis();
 
         if(time != 0 && time > currentTime) {
@@ -75,8 +75,9 @@ public class BlessCMD implements CommandExecutor {
             return true;
         }
 
-        if(target.getInventory().addItem().isEmpty()) {
-            profile.putTime(TIME_KEY, currentTime + 1000 * 60 * 10);
+        ItemStack book = getEnchantedBook();
+        if(target.getInventory().addItem(book).isEmpty()) {
+            data.setBlessCMDTime(currentTime + 1000 * 60 * 10);
         }
         else {
             player.sendMessage(ChatColor.RED + "Erreur : Le joueur spécifié n'a pas la place dans son inventaire.");
