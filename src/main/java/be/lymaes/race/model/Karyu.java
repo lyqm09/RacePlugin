@@ -219,45 +219,18 @@ public class Karyu implements IRace, ISubRaceable {
         }
     }
 
-    public static PermissionAttachment getPermission(Player player) {
-        for (PermissionAttachmentInfo info : player.getEffectivePermissions()) {
-            PermissionAttachment attachment = info.getAttachment();
-
-            if (attachment != null && attachment.getPlugin().equals(Race.getInstance())) {
-                return attachment;
-            }
-        }
-        return null;
-    }
-
-    public static void addPermission(Player player, String perm) {
-        PermissionAttachment attachment = getPermission(player);
-        if(attachment == null)
-            attachment = player.addAttachment(Race.getInstance());
-
-        attachment.setPermission(perm, true);
-    }
-
-    public static void removePermission(Player player, String perm) {
-        PermissionAttachment attachment = getPermission(player);
-        if(attachment == null)
-            return;
-
-        attachment.setPermission(perm, false);
-    }
-
     private void loadMerchantPermission(RaceProfile profile) {
         Player player = profile.getPlayer();
 
         if(profile.raceData.getRank() >= Rank.BEGINNER.rank) {
             if(!player.hasPermission(PERM_FORTUNE)) {
-                addPermission(player, PERM_FORTUNE);
+                IRace.addPermission(player, PERM_FORTUNE);
             }
         }
 
         if(profile.raceData.getRank() >= Rank.NOVICE.rank) {
             if(!player.hasPermission(PERM_VILLAGER)) {
-                addPermission(player, PERM_VILLAGER);
+                IRace.addPermission(player, PERM_VILLAGER);
             }
         }
     }
@@ -303,13 +276,13 @@ public class Karyu implements IRace, ISubRaceable {
 
         if(profile.raceData.getRank() >= Rank.ADVANCE.rank) {
             if(!player.hasPermission(PERM_SHARPNESS)) {
-                addPermission(player, PERM_SHARPNESS);
+                IRace.addPermission(player, PERM_SHARPNESS);
             }
         }
 
         if(profile.raceData.getRank() >= Rank.BIG.rank) {
             if(!player.hasPermission(PERM_BLESS)) {
-                addPermission(player, PERM_BLESS);
+                IRace.addPermission(player, PERM_BLESS);
             }
         }
     }
@@ -354,12 +327,12 @@ public class Karyu implements IRace, ISubRaceable {
         // Adorer
         IRace.removeAttribute(player, Attribute.ATTACK_DAMAGE, STRENGTH);
         IRace.removeAttribute(player, Attribute.MOVEMENT_SPEED, SPEED);
-        removePermission(player, PERM_SHARPNESS);
-        removePermission(player, PERM_BLESS);
+        IRace.removePermission(player, PERM_SHARPNESS);
+        IRace.removePermission(player, PERM_BLESS);
 
         // Merchant
-        removePermission(player, PERM_FORTUNE);
-        removePermission(player, PERM_VILLAGER);
+        IRace.removePermission(player, PERM_FORTUNE);
+        IRace.removePermission(player, PERM_VILLAGER);
 
         PotionEffect hotv = player.getPotionEffect(PotionEffectType.HERO_OF_THE_VILLAGE);
         if(hotv != null && hotv.isInfinite()) {

@@ -65,12 +65,14 @@ public class Tamashi implements IRace, ISubRaceable {
                 }
             }
 
-            if(isAlone && playerLoc.distance(home) > DISTANCE) {
-                if(!player.hasPotionEffect(PotionEffectType.HUNGER)) {
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 2 * 20, 0, true, false, true));
-                }
-                if(!player.hasPotionEffect(PotionEffectType.WEAKNESS)) {
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 2 * 20, 0, true, false, true));
+            if(playerLoc.distance(home) > DISTANCE) {
+                if(isAlone) {
+                    if (!player.hasPotionEffect(PotionEffectType.HUNGER)) {
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 2 * 20, 0, true, false, true));
+                    }
+                    if (!player.hasPotionEffect(PotionEffectType.WEAKNESS)) {
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 2 * 20, 0, true, false, true));
+                    }
                 }
             }
             else {
@@ -266,6 +268,8 @@ public class Tamashi implements IRace, ISubRaceable {
     public void cleanup(RaceProfile profile) {
         Player player = profile.getPlayer();
 
+        IRace.removePermission(player, PERM_HOME);
+
         // water
         PotionEffect conduit = player.getPotionEffect(PotionEffectType.CONDUIT_POWER);
         if(conduit != null && conduit.isInfinite()) {
@@ -394,6 +398,11 @@ public class Tamashi implements IRace, ISubRaceable {
 
     @Override
     public void loadRank(RaceProfile profile) {
+        Player player = profile.getPlayer();
+        if(!player.hasPermission(PERM_HOME)) {
+            IRace.addPermission(player, PERM_HOME);
+        }
+
         switch(SubRace.fromId(profile.raceData.getSubrace())) {
             case WATER -> loadWater(profile);
             case FIRE -> loadFire(profile);
