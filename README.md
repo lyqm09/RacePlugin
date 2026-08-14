@@ -130,6 +130,10 @@ L'item est obtenu suite à un craft sur table de craft : (Image bientôt disponi
 `/mtail give [kitsune] [amount]` Ajoute le montant de queues au joueur (Kitsune).  
 `/giver [player] [item]` Donne l'item demandé.
 
+## Commande de Tamashi
+
+`/foyer` Défini le foyer autour duquel le joueur peut opérer.
+
 ## Commande de Kitsune
 
 `/setkami` Le bloc sous le joueur devient un bloc d'or pendant 10min. Si le joueur lance des diamants sur ce bloc, ils seront converti effet de *Luck IV* (diamant/min).  
