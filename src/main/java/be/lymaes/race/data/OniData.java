@@ -25,6 +25,9 @@ public class OniData extends RaceData {
         if(overlay == null)
             return;
 
+        if(!overlayNode.isEmpty())
+            return;
+
         overlay.saveProfileData(overlayNode);
     }
 
@@ -32,16 +35,20 @@ public class OniData extends RaceData {
         RaceType race = RaceType.ONI;
 
         if (rootNode.has(race.name())) {
-            JsonNode raceNode = rootNode.get(race.name());
+            JsonNode node = rootNode.get(race.name());
 
-            RaceType.PrimaryData data = loadProfileData(raceNode, race, -1);
-            RaceData overlay = null;
+            RaceType.PrimaryData data = loadProfileData(node, race, -1);
+            RaceData overlayData = null;
 
-            if(raceNode.has("overlay")) {
-                // TODO load overlay profile
+            node = node.get("overlay");
+            if(node != null && !node.isEmpty()) {
+                String name = node.fieldNames().next();
+                RaceType overlay = RaceType.fromName(name);
+
+                overlay.loadData.apply(node, new RaceType.PrimaryData(-1, 0, 0));
             }
 
-            return new OniData(data.rank(), data.exp(), overlay);
+            return new OniData(data.rank(), data.exp(), overlayData);
         }
 
         return new OniData(primaryData.rank(), primaryData.exp());

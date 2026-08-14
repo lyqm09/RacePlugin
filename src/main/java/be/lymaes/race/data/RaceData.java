@@ -11,7 +11,7 @@ import java.util.HashMap;
 
 public abstract class RaceData implements IRaceData {
 
-    private final RaceType race;
+    protected final RaceType race;
     private final int subrace;
 
     private int rank;
