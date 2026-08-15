@@ -210,6 +210,7 @@ public class RaceProfile {
 
                     RaceProfile profile = new RaceProfile(player, raceType, sub, exp, rank, times);
                     Bukkit.getScheduler().runTask(Race.getInstance(), () -> future.complete(profile));
+                    return;
                 }
             }
 
