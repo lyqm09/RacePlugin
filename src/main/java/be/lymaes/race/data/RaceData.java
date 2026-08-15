@@ -55,6 +55,8 @@ public abstract class RaceData implements IRaceData {
     // save and load
 
     public final void saveProfileData(ObjectNode rootNode) {
+        rootNode.put("current", race.name());
+
         ObjectNode node = rootNode.withObjectProperty(race.name());
 
         if(Race.getInstance().getRaceManager().getRaceModel(race) instanceof ISubRaceable) {

@@ -16,8 +16,14 @@ commands:
 
   giver:
     description: Donne l'item demandé.
-    usage: /giver <player> <item>
     default: op
+    usage: /giver <player> <item>
+
+  mexp:
+    description: Ajoute ou retire le montant d'expérience mentionné au joueur concerné.
+    permission: race.mexp
+    permission-message: Tu n'as pas la permission d'utiliser cette commande.
+    usage: /mexp give <player> <amount>
 
   fortune:
     description: Pose l'enchantement fortune et curse of binding sur l'objet en main.
@@ -58,8 +64,13 @@ permissions:
     description: Donne accès à presque toutes les permissions du plugin.
     default: op
     children:
+      race.mexp: true
       race.tamashi: true
       race.karyu: true
+
+  race.mexp:
+    description: Donne accès à la commande /mexp
+    default: op
 
   race.tamashi:
     description: Aucun effet.

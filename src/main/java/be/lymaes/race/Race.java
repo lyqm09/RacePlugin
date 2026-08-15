@@ -61,6 +61,9 @@ public final class Race extends JavaPlugin {
         getCommand("giver").setExecutor(give);
         getCommand("giver").setTabCompleter(give);
 
+        MexpCMD mexp = new MexpCMD();
+        getCommand("mexp").setExecutor(mexp);
+
         HomeCMD home = new HomeCMD();
         getCommand("home").setExecutor(home);
 
