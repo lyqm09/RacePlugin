@@ -6,9 +6,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class HumanData implements IRaceData {
 
+    public static final RaceType RACE_TYPE = RaceType.HUMAN;
+
     @Override
     public RaceType getRace() {
-        return RaceType.HUMAN;
+        return RACE_TYPE;
     }
 
     @Override

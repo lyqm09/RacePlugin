@@ -6,10 +6,12 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class KitsuneData extends RaceData {
 
+    public static final RaceType RACE_TYPE = RaceType.KITSUNE;
+
     private long timeInForest;
 
     public KitsuneData(int rank, int exp, long timeInForest) {
-        super(RaceType.KITSUNE, -1, rank, exp);
+        super(RACE_TYPE, -1, rank, exp);
 
         this.timeInForest = timeInForest;
     }
@@ -32,12 +34,10 @@ public class KitsuneData extends RaceData {
     }
 
     public static KitsuneData loadProfileData(JsonNode rootNode, RaceType.PrimaryData primaryData) {
-        RaceType race = RaceType.KITSUNE;
+        if (rootNode != null && rootNode.has(RACE_TYPE.name())) {
+            JsonNode raceNode = rootNode.get(RACE_TYPE.name());
 
-        if (rootNode != null && rootNode.has(race.name())) {
-            JsonNode raceNode = rootNode.get(race.name());
-
-            RaceType.PrimaryData data = loadProfileData(raceNode, race, -1);
+            RaceType.PrimaryData data = loadProfileData(raceNode, RACE_TYPE, -1);
 
             long time = raceNode.path("time_in_forest").asLong(0);
 

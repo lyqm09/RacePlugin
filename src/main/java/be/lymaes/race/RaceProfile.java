@@ -141,6 +141,7 @@ public class RaceProfile {
                 IRaceData data = raceType.loadData.apply(rootNode, new RaceType.PrimaryData(subrace, 0, 0));
                 RaceProfile profile = new RaceProfile(player.getUniqueId(), data);
                 Bukkit.getScheduler().runTask(Race.getInstance(), () -> future.complete(profile));
+                return;
             }
 
             RaceProfile defaultProfile = new RaceProfile(player.getUniqueId(), race != null ? race.loadData.apply(null, new RaceType.PrimaryData(-1, 0, 0)) : RaceType.HUMAN.loadData.apply(null, null));

@@ -6,10 +6,12 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class OniData extends RaceData {
 
+    public static final RaceType RACE_TYPE = RaceType.ONI;
+
     private final IRaceData overlay;
 
     public OniData(int rank, int exp, IRaceData overlay) {
-        super(RaceType.ONI, -1, rank, exp);
+        super(RACE_TYPE, -1, rank, exp);
 
         this.overlay = overlay;
     }
@@ -32,12 +34,10 @@ public class OniData extends RaceData {
     }
 
     public static OniData loadProfileData(JsonNode rootNode, RaceType.PrimaryData primaryData) {
-        RaceType race = RaceType.ONI;
+        if (rootNode != null && rootNode.has(RACE_TYPE.name())) {
+            JsonNode node = rootNode.get(RACE_TYPE.name());
 
-        if (rootNode != null && rootNode.has(race.name())) {
-            JsonNode node = rootNode.get(race.name());
-
-            RaceType.PrimaryData data = loadProfileData(node, race, -1);
+            RaceType.PrimaryData data = loadProfileData(node, RACE_TYPE, -1);
             RaceData overlayData = null;
 
             node = node.get("overlay");

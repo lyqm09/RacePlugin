@@ -49,18 +49,21 @@ public class RaceManager {
 
         getRaceModel(profile.raceData.getRace()).cleanup(profile);
         removePlayerFromRaces(profile);
-
         RaceProfile.loadProfile(player, race, subrace).thenAccept(newProfile -> {
-            profiles.put(player, newProfile);
+            try {
+                profiles.put(player, newProfile);
 
-            addPlayerToRaces(newProfile);
+                addPlayerToRaces(newProfile);
 
-            getRaceModel(race).loadRank(newProfile);
-            player.getPersistentDataContainer().set(RACE_KEY, PersistentDataType.STRING, newProfile.raceData.getRace().name());
-            player.getPersistentDataContainer().set(SUBRACE_KEY, PersistentDataType.INTEGER, newProfile.raceData.getSubrace());
+                getRaceModel(race).loadRank(newProfile);
+                player.getPersistentDataContainer().set(RACE_KEY, PersistentDataType.STRING, newProfile.raceData.getRace().name());
+                player.getPersistentDataContainer().set(SUBRACE_KEY, PersistentDataType.INTEGER, newProfile.raceData.getSubrace());
 
-            newProfile.setTabName();
-            newProfile.updateTabInfo();
+                newProfile.setTabName();
+                newProfile.updateTabInfo();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
     }
 

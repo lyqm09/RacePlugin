@@ -12,10 +12,12 @@ public class TamashiData extends RaceData {
 
     private record SimpleLocation(String world, double x, double y, double z) {}
 
+    public static final RaceType RACE_TYPE = RaceType.TAMASHI;
+
     private Location home;
 
     public TamashiData(int subrace, int rank, int exp, Location home) {
-        super(RaceType.TAMASHI, subrace, rank, exp);
+        super(RACE_TYPE, subrace, rank, exp);
 
         this.home = home;
     }
@@ -49,12 +51,11 @@ public class TamashiData extends RaceData {
     }
 
     public static TamashiData loadProfileData(JsonNode rootNode, RaceType.PrimaryData primaryData) {
-        RaceType race = RaceType.KITSUNE;
 
-        if (rootNode != null && rootNode.has(race.name())) {
-            JsonNode raceNode = rootNode.get(race.name());
+        if (rootNode != null && rootNode.has(RACE_TYPE.name())) {
+            JsonNode raceNode = rootNode.get(RACE_TYPE.name());
 
-            RaceType.PrimaryData data = loadProfileData(raceNode, race, primaryData.subrace());
+            RaceType.PrimaryData data = loadProfileData(raceNode, RACE_TYPE, primaryData.subrace());
 
             Location home = null;
             String stringLocation = raceNode.path("home").asText();
