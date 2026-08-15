@@ -50,8 +50,8 @@ public class KaryuData extends RaceData {
 
             RaceType.PrimaryData data = loadProfileData(raceNode, race, primaryData.subrace());
 
-            long villagerCMDTime = raceNode.get("time_villager_cmd").asLong(0);
-            long blessCMDTime = raceNode.get("time_bless_cmd").asLong(0);
+            long villagerCMDTime = raceNode.path("time_villager_cmd").asLong(0);
+            long blessCMDTime = raceNode.path("time_bless_cmd").asLong(0);
 
             return new KaryuData(data.subrace(), data.rank(), data.exp(), villagerCMDTime, blessCMDTime);
         }

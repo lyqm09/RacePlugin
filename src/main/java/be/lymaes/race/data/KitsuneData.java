@@ -39,7 +39,7 @@ public class KitsuneData extends RaceData {
 
             RaceType.PrimaryData data = loadProfileData(raceNode, race, -1);
 
-            long time = raceNode.get("time_in_forest").asLong(0);
+            long time = raceNode.path("time_in_forest").asLong(0);
 
             return new KitsuneData(data.rank(), data.exp(), time);
         }

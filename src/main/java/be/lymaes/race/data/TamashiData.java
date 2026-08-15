@@ -57,7 +57,7 @@ public class TamashiData extends RaceData {
             RaceType.PrimaryData data = loadProfileData(raceNode, race, primaryData.subrace());
 
             Location home = null;
-            String stringLocation = raceNode.get("home").asText();
+            String stringLocation = raceNode.path("home").asText();
 
             if(stringLocation != null && !stringLocation.isEmpty()) {
                 try {
