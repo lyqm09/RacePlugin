@@ -64,6 +64,7 @@ public interface IRace extends Listener {
             attachment = player.addAttachment(Race.getInstance());
 
         attachment.setPermission(perm, true);
+        player.updateCommands();
     }
 
     static void removePermission(Player player, String perm) {
@@ -72,5 +73,6 @@ public interface IRace extends Listener {
             return;
 
         attachment.setPermission(perm, false);
+        player.updateCommands();
     }
 }

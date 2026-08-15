@@ -43,7 +43,7 @@ public class MexpCMD implements CommandExecutor {
         IRace model = manager.getRaceModel(profile.raceData.getRace());
 
         model.addExp(profile, exp);
-        sender.sendMessage("Un don de " + exp + "exp a été fait à " + player.getDisplayName());
+        sender.sendMessage("Un don de " + exp + "exp a été fait à " + player.getDisplayName() + ".");
         return true;
     }
 }

@@ -26,7 +26,7 @@ public class HomeCMD implements CommandExecutor  {
         TamashiData data = ((TamashiData)profile.raceData);
 
         data.setHome(player.getLocation());
-
+        sender.sendMessage("Nouveau foyer défini.");
         return true;
     }
 
