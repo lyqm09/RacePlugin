@@ -94,6 +94,7 @@ permissions:
     children:
       race.karyu.merchant.fortune: true
       race.karyu.merchant.villager: true
+      race.karyu.merchant.milicien: true
 
   race.karyu.adorer:
     description: Donne toutes les permissions de la sous-race Adorateur de Karyu.
@@ -109,6 +110,10 @@ permissions:
   race.karyu.merchant.villager:
     description: Permet d'utiliser la commande /villager.
     default: false
+
+  race.karyu.merchant.milicien:
+    description: Permet l'invocation des miliciens.
+    default: op
 
   race.karyu.adorer.sharpness:
     description: Permet d'utiliser la commande /sharpness.

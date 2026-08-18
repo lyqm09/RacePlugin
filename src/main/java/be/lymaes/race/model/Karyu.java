@@ -41,6 +41,7 @@ public class Karyu implements IRace, ISubRaceable {
 
     public static final String PERM_FORTUNE = "race.karyu.merchant.fortune";
     public static final String PERM_VILLAGER = "race.karyu.merchant.villager";
+    public static final String PERM_MILICIEN = "race.karyu.merchant.milicien";
     public static final String PERM_SHARPNESS = "race.karyu.adorer.sharpness";
     public static final String PERM_BLESS = "race.karyu.adorer.bless";
 
@@ -165,33 +166,6 @@ public class Karyu implements IRace, ISubRaceable {
 
                 e.setCancelled(true);
             }
-
-            summonMilicien: if(profile.raceData.getRank() >= Rank.BIG.rank) {
-                if(!(Race.getInstance().getItemManager().getItem(item) instanceof MilicienEgg))
-                    break summonMilicien;
-
-                Block clickedBlock = e.getClickedBlock();
-                if (clickedBlock == null) {
-                    break summonMilicien;
-                }
-
-                e.setCancelled(true);
-
-                if(player.hasCooldown(item)) {
-                    break summonMilicien;
-                }
-
-                Location spawnLoc = clickedBlock.getRelative(e.getBlockFace())
-                        .getLocation()
-                        .add(0.5, 0, 0.5);
-
-                player.getWorld().spawn(spawnLoc, IronGolem.class, golem -> {
-                    golem.setCustomName("Milicien");
-                    golem.setCustomNameVisible(true);
-                });
-
-                player.setCooldown(item, 60 * 20);
-            }
         }
     }
 
@@ -231,6 +205,12 @@ public class Karyu implements IRace, ISubRaceable {
         if(profile.raceData.getRank() >= Rank.NOVICE.rank) {
             if(!player.hasPermission(PERM_VILLAGER)) {
                 IRace.addPermission(player, PERM_VILLAGER);
+            }
+        }
+
+        if(profile.raceData.getRank() >= Rank.BIG.rank) {
+            if(!player.hasPermission(PERM_MILICIEN)) {
+                IRace.addPermission(player, PERM_MILICIEN);
             }
         }
     }
