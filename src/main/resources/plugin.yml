@@ -73,13 +73,22 @@ permissions:
     default: op
 
   race.tamashi:
-    description: Aucun effet.
+    description: Donne certaines permissions de Tamashi.
     children:
       race.tamashi.home: false
+      race.tamashi.air: true
 
   race.tamashi.home:
     description: Permet d'utiliser la commande /home.
     default: false
+
+  race.tamashi.air:
+    description: Donne les permissions des Tamashi d'Air.
+    race.tamashi.air.fly_charge: true
+
+  race.tamashi.air.fly_charge:
+    description: Permet l'utilisation de la Charge de Vol.
+    default: op
 
   race.karyu:
     description: Donne toutes les permissions de la race Karyu.

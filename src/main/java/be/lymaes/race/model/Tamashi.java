@@ -30,6 +30,7 @@ import org.bukkit.potion.PotionEffectType;
 public class Tamashi implements IRace, ISubRaceable {
 
     public static final String PERM_HOME = "race.tamashi.home";
+    public static final String PERM_FLY_CHARGE = "race.tamashi.air.fly_charge";
 
     private static final double DISTANCE = 200;
 
@@ -151,35 +152,6 @@ public class Tamashi implements IRace, ISubRaceable {
             };
 
             e.setDamage(e.getFinalDamage() * (1.0 + factor));
-        }
-    }
-
-    @EventHandler
-    public void onItemSwitch(PlayerItemHeldEvent e) {
-        Player player = e.getPlayer();
-
-        if(player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR)
-            return;
-
-        RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
-        if(profile.raceData.getRace() != RaceType.TAMASHI)
-            return;
-
-        ItemStack oldItem = player.getInventory().getItem(e.getPreviousSlot());
-        ItemStack newItem = player.getInventory().getItem(e.getNewSlot());
-
-        if(profile.raceData.getSubrace() == SubRace.AIR.id) {
-            if(profile.raceData.getRank() < Rank.OKAMI.rank)
-                return;
-
-            ItemManager manager = Race.getInstance().getItemManager();
-
-            if(newItem != null && manager.getItem(newItem) instanceof FlyCharge) {
-                player.setAllowFlight(true);
-            }
-            else if(oldItem != null && manager.getItem(oldItem) instanceof FlyCharge) {
-                player.setAllowFlight(false);
-            }
         }
     }
 
@@ -316,6 +288,16 @@ public class Tamashi implements IRace, ISubRaceable {
         loadFireAttribute(profile);
     }
 
+    private void loadAirPermission(RaceProfile profile) {
+        Player player = profile.getPlayer();
+
+        if(profile.raceData.getRank() >= Rank.OKAMI.rank) {
+            if(!player.hasPermission(PERM_FLY_CHARGE)) {
+                IRace.addPermission(player, PERM_FLY_CHARGE);
+            }
+        }
+    }
+
     private void loadAirAttribute(RaceProfile profile) {
         double multiplier = switch(Rank.fromRank(profile.raceData.getRank())) {
             case EMBRYO -> 0.05;
@@ -343,6 +325,7 @@ public class Tamashi implements IRace, ISubRaceable {
     }
 
     private void loadAir(RaceProfile profile) {
+        loadAirPermission(profile);
         loadAirAttribute(profile);
         giveAirItem(profile);
     }
@@ -402,6 +385,7 @@ public class Tamashi implements IRace, ISubRaceable {
 
         IRace.removeAttribute(player, Attribute.MOVEMENT_SPEED, SPEED);
 
+        IRace.removePermission(player, PERM_FLY_CHARGE);
         player.setAllowFlight(false);
     }
 

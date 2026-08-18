@@ -321,6 +321,7 @@ public class Karyu implements IRace, ISubRaceable {
         // Merchant
         IRace.removePermission(player, PERM_FORTUNE);
         IRace.removePermission(player, PERM_VILLAGER);
+        IRace.removePermission(player, PERM_MILICIEN);
 
         PotionEffect hotv = player.getPotionEffect(PotionEffectType.HERO_OF_THE_VILLAGE);
         if(hotv != null && hotv.isInfinite()) {
