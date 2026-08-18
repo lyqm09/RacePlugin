@@ -141,45 +141,6 @@ public class Kitsune implements IRace {
         e.setCancelled(true);
     }
 
-    @Override
-    public void cleanup(RaceProfile profile) {
-        Player player = profile.getPlayer();
-
-        IRace.removeAttribute(player, Attribute.ATTACK_DAMAGE, STRENGTH);
-        IRace.removeAttribute(player, Attribute.MOVEMENT_SPEED, SPEED);
-        IRace.removeAttribute(player, Attribute.JUMP_STRENGTH, JUMP);
-        IRace.removeAttribute(player, Attribute.SAFE_FALL_DISTANCE, FALL);
-
-        PotionEffect nightVision = player.getPotionEffect(PotionEffectType.NIGHT_VISION);
-        if(nightVision != null && nightVision.isInfinite()) {
-            player.removePotionEffect(PotionEffectType.NIGHT_VISION);
-        }
-
-        PotionEffect luck = player.getPotionEffect(PotionEffectType.LUCK);
-        if(luck != null && luck.isInfinite()) {
-            player.removePotionEffect(PotionEffectType.LUCK);
-        }
-
-        PotionEffect invisibility = player.getPotionEffect(PotionEffectType.INVISIBILITY);
-        if(invisibility != null && invisibility.isInfinite()) {
-            player.removePotionEffect(PotionEffectType.INVISIBILITY);
-        }
-
-        if (DisguiseAPI.isDisguised(player) && DisguiseAPI.getDisguise(player).getType() == DisguiseType.FOX) {
-            DisguiseAPI.undisguiseToAll(player);
-        }
-    }
-
-    private void rankUp(RaceProfile profile) {
-        profile.rankUp();
-
-        Rank rank = Rank.fromRank(profile.raceData.getRank());
-
-        Messager.sendRankupTitle(profile, rank.name);
-
-        loadRank(profile);
-    }
-
     private void loadAttribute(RaceProfile profile) {
         Player player = profile.getPlayer();
 
@@ -288,6 +249,45 @@ public class Kitsune implements IRace {
     @Override
     public void reloadEffect(RaceProfile profile) {
         loadEffect(profile);
+    }
+
+    @Override
+    public void cleanup(RaceProfile profile) {
+        Player player = profile.getPlayer();
+
+        IRace.removeAttribute(player, Attribute.ATTACK_DAMAGE, STRENGTH);
+        IRace.removeAttribute(player, Attribute.MOVEMENT_SPEED, SPEED);
+        IRace.removeAttribute(player, Attribute.JUMP_STRENGTH, JUMP);
+        IRace.removeAttribute(player, Attribute.SAFE_FALL_DISTANCE, FALL);
+
+        PotionEffect nightVision = player.getPotionEffect(PotionEffectType.NIGHT_VISION);
+        if(nightVision != null && nightVision.isInfinite()) {
+            player.removePotionEffect(PotionEffectType.NIGHT_VISION);
+        }
+
+        PotionEffect luck = player.getPotionEffect(PotionEffectType.LUCK);
+        if(luck != null && luck.isInfinite()) {
+            player.removePotionEffect(PotionEffectType.LUCK);
+        }
+
+        PotionEffect invisibility = player.getPotionEffect(PotionEffectType.INVISIBILITY);
+        if(invisibility != null && invisibility.isInfinite()) {
+            player.removePotionEffect(PotionEffectType.INVISIBILITY);
+        }
+
+        if (DisguiseAPI.isDisguised(player) && DisguiseAPI.getDisguise(player).getType() == DisguiseType.FOX) {
+            DisguiseAPI.undisguiseToAll(player);
+        }
+    }
+
+    private void rankUp(RaceProfile profile) {
+        profile.rankUp();
+
+        Rank rank = Rank.fromRank(profile.raceData.getRank());
+
+        Messager.sendRankupTitle(profile, rank.name);
+
+        loadRank(profile);
     }
 
     @Override

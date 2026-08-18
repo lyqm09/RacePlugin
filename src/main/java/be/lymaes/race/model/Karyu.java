@@ -313,6 +313,14 @@ public class Karyu implements IRace, ISubRaceable {
     }
 
     @Override
+    public void loadRank(RaceProfile profile) {
+        switch(SubRace.fromId(profile.raceData.getSubrace())) {
+            case MERCHANT -> loadMerchant(profile);
+            case ADORER -> loadAdorer(profile);
+        }
+    }
+
+    @Override
     public void reloadEffect(RaceProfile profile) {
         if (Objects.requireNonNull(SubRace.fromId(profile.raceData.getSubrace())) == SubRace.MERCHANT) {
             loadMerchantEffect(profile);
@@ -350,14 +358,6 @@ public class Karyu implements IRace, ISubRaceable {
         Messager.sendRankupTitle(profile, Rank.fromRank(profile.raceData.getRank()).name);
 
         loadRank(profile);
-    }
-
-    @Override
-    public void loadRank(RaceProfile profile) {
-        switch(SubRace.fromId(profile.raceData.getSubrace())) {
-            case MERCHANT -> loadMerchant(profile);
-            case ADORER -> loadAdorer(profile);
-        }
     }
 
     public void checkRankup(RaceProfile profile) {

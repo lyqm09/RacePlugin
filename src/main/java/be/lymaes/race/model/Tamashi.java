@@ -264,55 +264,6 @@ public class Tamashi implements IRace, ISubRaceable {
         }
     }
 
-    @Override
-    public void cleanup(RaceProfile profile) {
-        Player player = profile.getPlayer();
-
-        IRace.removePermission(player, PERM_HOME);
-
-        // water
-        PotionEffect conduit = player.getPotionEffect(PotionEffectType.CONDUIT_POWER);
-        if(conduit != null && conduit.isInfinite()) {
-            player.removePotionEffect(PotionEffectType.CONDUIT_POWER);
-        }
-
-        PotionEffect dolphinGrace = player.getPotionEffect(PotionEffectType.DOLPHINS_GRACE);
-        if(dolphinGrace != null && dolphinGrace.isInfinite()) {
-            player.removePotionEffect(PotionEffectType.DOLPHINS_GRACE);
-        }
-
-        // fire
-        PotionEffect fireResistance = player.getPotionEffect(PotionEffectType.FIRE_RESISTANCE);
-        if(fireResistance != null && fireResistance.isInfinite()) {
-            player.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
-        }
-
-        IRace.removeAttribute(player, Attribute.ATTACK_DAMAGE, STRENGTH);
-
-        // air
-        if(Race.getInstance().getItemManager().getItem(player.getInventory().getContents()[8]) instanceof IStaticItem) {
-            player.getInventory().setItem(8, null);
-        }
-
-        IRace.removeAttribute(player, Attribute.MOVEMENT_SPEED, SPEED);
-
-        player.setAllowFlight(false);
-    }
-
-
-    private void rankUp(RaceProfile profile) {
-        profile.rankUp();
-
-        Rank rank = Rank.fromRank(profile.raceData.getRank());
-
-        Messager.sendRankupTitle(profile, rank.name);
-        // TODO ajouter a une queue de title
-
-        loadRank(profile);
-    }
-
-
-
     private void loadWaterEffect(RaceProfile profile) {
         Player player = profile.getPlayer();
 
@@ -419,6 +370,52 @@ public class Tamashi implements IRace, ISubRaceable {
         }
     }
 
+    @Override
+    public void cleanup(RaceProfile profile) {
+        Player player = profile.getPlayer();
+
+        IRace.removePermission(player, PERM_HOME);
+
+        // water
+        PotionEffect conduit = player.getPotionEffect(PotionEffectType.CONDUIT_POWER);
+        if(conduit != null && conduit.isInfinite()) {
+            player.removePotionEffect(PotionEffectType.CONDUIT_POWER);
+        }
+
+        PotionEffect dolphinGrace = player.getPotionEffect(PotionEffectType.DOLPHINS_GRACE);
+        if(dolphinGrace != null && dolphinGrace.isInfinite()) {
+            player.removePotionEffect(PotionEffectType.DOLPHINS_GRACE);
+        }
+
+        // fire
+        PotionEffect fireResistance = player.getPotionEffect(PotionEffectType.FIRE_RESISTANCE);
+        if(fireResistance != null && fireResistance.isInfinite()) {
+            player.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
+        }
+
+        IRace.removeAttribute(player, Attribute.ATTACK_DAMAGE, STRENGTH);
+
+        // air
+        if(Race.getInstance().getItemManager().getItem(player.getInventory().getContents()[8]) instanceof IStaticItem) {
+            player.getInventory().setItem(8, null);
+        }
+
+        IRace.removeAttribute(player, Attribute.MOVEMENT_SPEED, SPEED);
+
+        player.setAllowFlight(false);
+    }
+
+    private void rankUp(RaceProfile profile) {
+        profile.rankUp();
+
+        Rank rank = Rank.fromRank(profile.raceData.getRank());
+
+        Messager.sendRankupTitle(profile, rank.name);
+        // TODO ajouter a une queue de title
+
+        loadRank(profile);
+    }
+
     public void checkRankup(RaceProfile profile) {
         if(profile.raceData.getRank() < Rank.values().length-1) {
 
@@ -450,7 +447,7 @@ public class Tamashi implements IRace, ISubRaceable {
         if(rank < Rank.values().length) {
             return Rank.fromRank(rank).expRequired;
         }
-        return 0;
+        return -1;
     }
 
     @Override

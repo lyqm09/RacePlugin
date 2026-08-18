@@ -168,30 +168,6 @@ public class Oni implements IRace {
         e.setCancelled(true);
     }
 
-    @Override
-    public void cleanup(RaceProfile profile) {
-        Player player = profile.getPlayer();
-
-        IRace.removeAttribute(player, Attribute.ATTACK_DAMAGE, STRENGTH);
-        IRace.removeAttribute(player, Attribute.MOVEMENT_SPEED, SPEED);
-        IRace.removeAttribute(player, Attribute.MAX_HEALTH, HEALTH);
-
-        PotionEffect regeneration = player.getPotionEffect(PotionEffectType.REGENERATION);
-        if(regeneration != null && regeneration.isInfinite()) {
-            player.removePotionEffect(PotionEffectType.REGENERATION);
-        }
-    }
-
-    private void rankUp(RaceProfile profile) {
-        profile.rankUp();
-
-        Rank rank = Rank.fromRank(profile.raceData.getRank());
-
-        Messager.sendRankupTitle(profile, rank.name);
-
-        loadRank(profile);
-    }
-
     private void loadAttribute(RaceProfile profile) {
         Rank rank = Rank.fromRank(profile.raceData.getRank());
         Player player = profile.getPlayer();;
@@ -249,6 +225,30 @@ public class Oni implements IRace {
     @Override
     public void reloadEffect(RaceProfile profile) {
         loadEffect(profile);
+    }
+
+    @Override
+    public void cleanup(RaceProfile profile) {
+        Player player = profile.getPlayer();
+
+        IRace.removeAttribute(player, Attribute.ATTACK_DAMAGE, STRENGTH);
+        IRace.removeAttribute(player, Attribute.MOVEMENT_SPEED, SPEED);
+        IRace.removeAttribute(player, Attribute.MAX_HEALTH, HEALTH);
+
+        PotionEffect regeneration = player.getPotionEffect(PotionEffectType.REGENERATION);
+        if(regeneration != null && regeneration.isInfinite()) {
+            player.removePotionEffect(PotionEffectType.REGENERATION);
+        }
+    }
+
+    private void rankUp(RaceProfile profile) {
+        profile.rankUp();
+
+        Rank rank = Rank.fromRank(profile.raceData.getRank());
+
+        Messager.sendRankupTitle(profile, rank.name);
+
+        loadRank(profile);
     }
 
     public void checkRankup(RaceProfile profile, boolean hasKazanStone) {
