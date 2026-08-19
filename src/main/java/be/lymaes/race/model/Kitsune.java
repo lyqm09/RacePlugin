@@ -55,7 +55,7 @@ public class Kitsune implements IRace, IRankable {
             || currentBiome == Biome.CHERRY_GROVE) {
                 if (currentTime - time >= 1000 * 60 * 60) {
                     if (ThreadLocalRandom.current().nextDouble() <= TOL) {
-                        rankUp(profile);
+                        profile.rankUp();
                     }
                     data.setTimeInForest(currentTime);
                 }
@@ -81,7 +81,7 @@ public class Kitsune implements IRace, IRankable {
             IRace race = manager.getRaceModel(profile.raceData.getRace());
 
             if(race instanceof Kitsune) {
-                rankUp(profile);
+                profile.rankUp();
             }
 
         }
@@ -140,7 +140,7 @@ public class Kitsune implements IRace, IRankable {
         e.setCancelled(true);
     }
 
-    private void loadAttribute(RaceProfile profile) {
+    private void applyAttribute(RaceProfile profile) {
         Player player = profile.getPlayer();
 
         double speedMultiplier = 0.0;
@@ -218,7 +218,7 @@ public class Kitsune implements IRace, IRankable {
         }
     }
 
-    private void loadEffect(RaceProfile profile) {
+    private void applyEffect(RaceProfile profile) {
         Player player = profile.getPlayer();
 
         if(player.hasPotionEffect(PotionEffectType.NIGHT_VISION)) {
@@ -236,9 +236,9 @@ public class Kitsune implements IRace, IRankable {
     }
 
     @Override
-    public void load(RaceProfile profile) {
-        loadEffect(profile);
-        loadAttribute(profile);
+    public void applyRacePerks(RaceProfile profile) {
+        applyEffect(profile);
+        applyAttribute(profile);
 
         if(profile.raceData.getRank() >= Rank.NINE.rank) {
             profile.getPlayer().setAllowFlight(true);
@@ -246,8 +246,8 @@ public class Kitsune implements IRace, IRankable {
     }
 
     @Override
-    public void reloadEffect(RaceProfile profile) {
-        loadEffect(profile);
+    public void reapplyEffect(RaceProfile profile) {
+        applyEffect(profile);
     }
 
     @Override
@@ -279,20 +279,6 @@ public class Kitsune implements IRace, IRankable {
         }
     }
 
-    private void rankUp(RaceProfile profile) {
-        profile.rankUp();
-
-        Rank rank = Rank.fromRank(profile.raceData.getRank());
-
-        Messager.sendRankupTitle(profile, rank.name);
-
-        load(profile);
-    }
-
-    @Override
-    public void addExp(RaceProfile profile, int n) {
-    }
-
     @Override
     public String getRankName(int rank) {
         return Rank.fromRank(rank).name;
@@ -300,7 +286,10 @@ public class Kitsune implements IRace, IRankable {
 
     @Override
     public int getExpRequired(int rank) {
-        return 0;
+        if(rank < Rank.values().length) {
+            return 0;
+        }
+        return -1;
     }
 
     public enum Rank {

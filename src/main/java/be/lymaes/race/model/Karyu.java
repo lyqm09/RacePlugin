@@ -87,7 +87,7 @@ public class Karyu implements IRace, ISubRaceable, IRankable {
 
             int tradeCount = e.isShiftClick() ? calculateRealTradeCount(inventory, recipe) : 1;
 
-            addExp(profile, 10 * tradeCount);
+            profile.addExp(10 * tradeCount);
         }
     }
 
@@ -122,7 +122,7 @@ public class Karyu implements IRace, ISubRaceable, IRankable {
             return;
 
         if(profile.raceData.getSubrace() == SubRace.ADORER.id) {
-            addExp(profile, 1);
+            profile.addExp(1);
         }
     }
 
@@ -189,7 +189,7 @@ public class Karyu implements IRace, ISubRaceable, IRankable {
         }
     }
 
-    private void loadMerchantPermission(RaceProfile profile) {
+    private void applyMerchantPermission(RaceProfile profile) {
         Player player = profile.getPlayer();
 
         if(profile.raceData.getRank() >= Rank.BEGINNER.rank) {
@@ -211,7 +211,7 @@ public class Karyu implements IRace, ISubRaceable, IRankable {
         }
     }
 
-    private void loadMerchantEffect(RaceProfile profile) {
+    private void applyMerchantEffect(RaceProfile profile) {
         Player player = profile.getPlayer();
 
         if(profile.raceData.getRank() >= Rank.INTERMEDIATE.rank) {
@@ -237,17 +237,17 @@ public class Karyu implements IRace, ISubRaceable, IRankable {
         }
     }
 
-    public void loadMerchant(RaceProfile profile) {
-        loadMerchantPermission(profile);
-        loadMerchantEffect(profile);
+    public void applyMerchant(RaceProfile profile) {
+        applyMerchantPermission(profile);
+        applyMerchantEffect(profile);
         giveMerchantItem(profile);
 
         if(profile.raceData.getRank() >= Rank.DRAGON.rank && profile.raceData.getSubrace() == SubRace.MERCHANT.id) {
-            loadAdorer(profile);
+            applyAdorer(profile);
         }
     }
 
-    private void loadAdorerPermission(RaceProfile profile) {
+    private void applyAdorerPermission(RaceProfile profile) {
         Player player = profile.getPlayer();
 
         if(profile.raceData.getRank() >= Rank.ADVANCE.rank) {
@@ -263,7 +263,7 @@ public class Karyu implements IRace, ISubRaceable, IRankable {
         }
     }
 
-    private void loadAdorerAttribute(RaceProfile profile) {
+    private void applyAdorerAttribute(RaceProfile profile) {
         Player player = profile.getPlayer();
 
         double multiplier = switch(Rank.fromRank(profile.raceData.getRank())) {
@@ -279,27 +279,27 @@ public class Karyu implements IRace, ISubRaceable, IRankable {
 
     }
 
-    public void loadAdorer(RaceProfile profile) {
-        loadAdorerPermission(profile);
-        loadAdorerAttribute(profile);
+    public void applyAdorer(RaceProfile profile) {
+        applyAdorerPermission(profile);
+        applyAdorerAttribute(profile);
 
         if(profile.raceData.getRank() >= Rank.DRAGON.rank && profile.raceData.getSubrace() == SubRace.ADORER.id) {
-            loadMerchant(profile);
+            applyMerchant(profile);
         }
     }
 
     @Override
-    public void load(RaceProfile profile) {
+    public void applyRacePerks(RaceProfile profile) {
         switch(SubRace.fromId(profile.raceData.getSubrace())) {
-            case MERCHANT -> loadMerchant(profile);
-            case ADORER -> loadAdorer(profile);
+            case MERCHANT -> applyMerchant(profile);
+            case ADORER -> applyAdorer(profile);
         }
     }
 
     @Override
-    public void reloadEffect(RaceProfile profile) {
+    public void reapplyEffect(RaceProfile profile) {
         if (Objects.requireNonNull(SubRace.fromId(profile.raceData.getSubrace())) == SubRace.MERCHANT) {
-            loadMerchantEffect(profile);
+            applyMerchantEffect(profile);
             giveMerchantItem(profile);
         }
     }
@@ -327,35 +327,6 @@ public class Karyu implements IRace, ISubRaceable, IRankable {
         if(Race.getInstance().getItemManager().getItem(player.getInventory().getContents()[8]) instanceof IStaticItem) {
             player.getInventory().setItem(8, null);
         }
-    }
-
-    public void rankUp(RaceProfile profile) {
-        profile.rankUp();
-
-        Messager.sendRankupTitle(profile, Rank.fromRank(profile.raceData.getRank()).name);
-
-        load(profile);
-    }
-
-    public void checkRankup(RaceProfile profile) {
-        if(profile.raceData.getRank() < Rank.values().length-1) {
-
-            Rank rank = Rank.fromRank(profile.raceData.getRank() + 1);
-
-            int required = rank.expRequired;
-            if (profile.raceData.getExp() < required)
-                return;
-
-            profile.raceData.subExp(required);
-            rankUp(profile);
-            checkRankup(profile);
-        }
-    }
-
-    @Override
-    public void addExp(RaceProfile profile, int n) {
-        profile.addExp(n);
-        checkRankup(profile);
     }
 
     @Override

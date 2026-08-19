@@ -5,12 +5,12 @@ import be.lymaes.race.RaceProfile;
 public class Human implements IRace {
 
     @Override
-    public void load(RaceProfile profile) {
+    public void applyRacePerks(RaceProfile profile) {
 
     }
 
     @Override
-    public void reloadEffect(RaceProfile profile) {
+    public void reapplyEffect(RaceProfile profile) {
 
     }
 

@@ -14,8 +14,8 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 
 public interface IRace extends Listener {
 
-    void load(RaceProfile profile);
-    void reloadEffect(RaceProfile profile);
+    void applyRacePerks(RaceProfile profile);
+    void reapplyEffect(RaceProfile profile);
     void cleanup(RaceProfile profile);
 
     static void removeAttribute(Player player, Attribute attribute, NamespacedKey key) {

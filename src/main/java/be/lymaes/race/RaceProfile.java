@@ -43,14 +43,36 @@ public class RaceProfile {
 
     // RaceData
 
-    public void rankUp() {
-        raceData.rankUp();
+    public void addExp(int n) {
+        raceData.addExp(n);
+        tryRankUp();
         updateTabInfo();
     }
 
-    public void addExp(int n) {
-        raceData.addExp(n);
-        updateTabInfo();
+    public void rankUp() {
+        raceData.rankUp();
+
+        IRace irace = Race.getInstance().getRaceManager().getRaceModel(raceData.getRace());
+        if(!(irace instanceof IRankable)) return;
+
+        irace.applyRacePerks(this);
+
+        // TODO add title to queue.
+    }
+
+    void tryRankUp() {
+        IRace irace = Race.getInstance().getRaceManager().getRaceModel(raceData.getRace());
+        if(!(irace instanceof IRankable rankable)) return;
+
+        while (true) { // WARNING Kitsune grow infinitely
+            int expRequired = rankable.getExpRequired(raceData.getRank() + 1);
+            if(expRequired < 0) break;
+            if (raceData.getExp() < expRequired) break;
+            if(!rankable.canRankUp(this)) break;
+
+            raceData.subExp(expRequired);
+            rankUp();
+        }
     }
 
     // utils functions

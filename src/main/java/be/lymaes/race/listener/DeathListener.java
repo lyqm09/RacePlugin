@@ -21,7 +21,7 @@ public class DeathListener implements Listener {
         RaceProfile profile = manager.getProfile(e.getPlayer());
 
         Bukkit.getScheduler().runTaskLater(Race.getInstance(), () -> {
-            manager.getRaceModel(profile.raceData.getRace()).reloadEffect(profile);
+            manager.getRaceModel(profile.raceData.getRace()).reapplyEffect(profile);
         }, 1L);
     }
 

@@ -73,7 +73,7 @@ public class Oni implements IRace, IRankable {
         if(profile.raceData.getRace() != RaceType.ONI)
             return;
 
-        addExp(profile, 1);
+        profile.addExp(1);
     }
 
     @EventHandler
@@ -167,7 +167,7 @@ public class Oni implements IRace, IRankable {
         e.setCancelled(true);
     }
 
-    private void loadAttribute(RaceProfile profile) {
+    private void applyAttribute(RaceProfile profile) {
         Rank rank = Rank.fromRank(profile.raceData.getRank());
         Player player = profile.getPlayer();;
 
@@ -204,7 +204,7 @@ public class Oni implements IRace, IRankable {
         }
     }
 
-    private void loadEffect(RaceProfile profile) {
+    private void applyEffect(RaceProfile profile) {
         Player player = profile.getPlayer();
 
         if(profile.raceData.getRank() >= Rank.COMMANDER.rank) {
@@ -216,14 +216,14 @@ public class Oni implements IRace, IRankable {
     }
 
     @Override
-    public void load(RaceProfile profile) {
-        loadEffect(profile);
-        loadAttribute(profile);
+    public void applyRacePerks(RaceProfile profile) {
+        applyEffect(profile);
+        applyAttribute(profile);
     }
 
     @Override
-    public void reloadEffect(RaceProfile profile) {
-        loadEffect(profile);
+    public void reapplyEffect(RaceProfile profile) {
+        applyEffect(profile);
     }
 
     @Override
@@ -240,46 +240,6 @@ public class Oni implements IRace, IRankable {
         }
     }
 
-    private void rankUp(RaceProfile profile) {
-        profile.rankUp();
-
-        Rank rank = Rank.fromRank(profile.raceData.getRank());
-
-        Messager.sendRankupTitle(profile, rank.name);
-
-        load(profile);
-    }
-
-    public void checkRankup(RaceProfile profile, boolean hasKazanStone) {
-        if(profile.raceData.getRank() < Rank.values().length-1) {
-
-            Rank rank = Rank.fromRank(profile.raceData.getRank() + 1);
-
-            if (rank == Rank.GENERAL) {
-                if(!hasKazanStone)
-                    return;
-            }
-
-            int required = rank.expRequired;
-            if (profile.raceData.getExp() < required)
-                return;
-
-            profile.raceData.subExp(required);
-            rankUp(profile);
-            checkRankup(profile);
-        }
-    }
-
-    public void checkRankup(RaceProfile profile) {
-        checkRankup(profile, false);
-    }
-
-    @Override
-    public void addExp(RaceProfile profile, int n) {
-        profile.raceData.addExp(n);
-        checkRankup(profile);
-    }
-
     @Override
     public String getRankName(int rank) {
         return Rank.fromRank(rank).name;
@@ -290,7 +250,12 @@ public class Oni implements IRace, IRankable {
         if(rank < Rank.values().length) {
             return Rank.fromRank(rank).expRequired;
         }
-        return 0;
+        return -1;
+    }
+
+    @Override
+    public boolean canRankUp(RaceProfile profile) {
+        return profile.raceData.getRank() < Rank.GENERAL.rank;
     }
 
     public enum Rank {

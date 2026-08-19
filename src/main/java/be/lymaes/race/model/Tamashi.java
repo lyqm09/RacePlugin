@@ -56,11 +56,11 @@ public class Tamashi implements IRace, ISubRaceable, IRankable {
 
                 if (other.getLocation().distance(playerLoc) <= DISTANCE) {
                     isAlone = false;
-                    addExp(profile, 1);
+                    profile.addExp(1);
                 }
 
                 if (other.getLocation().distance(home) <= DISTANCE) {
-                    addExp(profile, 1);
+                    profile.addExp(1);
                 }
             }
 
@@ -75,7 +75,7 @@ public class Tamashi implements IRace, ISubRaceable, IRankable {
                 }
             }
             else {
-                addExp(profile, 1);
+                profile.addExp(1);
             }
 
         }
@@ -234,7 +234,7 @@ public class Tamashi implements IRace, ISubRaceable, IRankable {
         }
     }
 
-    private void loadWaterEffect(RaceProfile profile) {
+    private void applyWaterEffect(RaceProfile profile) {
         Player player = profile.getPlayer();
 
         int dolphinGraceLvl = switch(Rank.fromRank(profile.raceData.getRank())) {
@@ -255,11 +255,11 @@ public class Tamashi implements IRace, ISubRaceable, IRankable {
         player.addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, PotionEffect.INFINITE_DURATION, dolphinGraceLvl-1, true, false, true));
     }
 
-    private void loadWater(RaceProfile profile) {
-        loadWaterEffect(profile);
+    private void applyWater(RaceProfile profile) {
+        applyWaterEffect(profile);
     }
 
-    private void loadFireAttribute(RaceProfile profile) {
+    private void applyFireAttribute(RaceProfile profile) {
         double multiplier = switch(Rank.fromRank(profile.raceData.getRank())) {
             case EMBRYO, CHILD -> 0.00;
             case ACCOMPLISHED -> 0.10;
@@ -272,7 +272,7 @@ public class Tamashi implements IRace, ISubRaceable, IRankable {
         }
     }
 
-    private void loadFireEffect(RaceProfile profile) {
+    private void applyFireEffect(RaceProfile profile) {
         Player player = profile.getPlayer();
 
         if(player.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE)) {
@@ -281,12 +281,12 @@ public class Tamashi implements IRace, ISubRaceable, IRankable {
         player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, PotionEffect.INFINITE_DURATION, 0, true, false, true));
     }
 
-    private void loadFire(RaceProfile profile) {
-        loadFireEffect(profile);
-        loadFireAttribute(profile);
+    private void applyFire(RaceProfile profile) {
+        applyFireEffect(profile);
+        applyFireAttribute(profile);
     }
 
-    private void loadAirPermission(RaceProfile profile) {
+    private void applyAirPermission(RaceProfile profile) {
         Player player = profile.getPlayer();
 
         if(profile.raceData.getRank() >= Rank.OKAMI.rank) {
@@ -296,7 +296,7 @@ public class Tamashi implements IRace, ISubRaceable, IRankable {
         }
     }
 
-    private void loadAirAttribute(RaceProfile profile) {
+    private void applyAirAttribute(RaceProfile profile) {
         double multiplier = switch(Rank.fromRank(profile.raceData.getRank())) {
             case EMBRYO -> 0.05;
             case CHILD -> 0.10;
@@ -322,31 +322,31 @@ public class Tamashi implements IRace, ISubRaceable, IRankable {
         }
     }
 
-    private void loadAir(RaceProfile profile) {
-        loadAirPermission(profile);
-        loadAirAttribute(profile);
+    private void applyAir(RaceProfile profile) {
+        applyAirPermission(profile);
+        applyAirAttribute(profile);
         giveAirItem(profile);
     }
 
     @Override
-    public void load(RaceProfile profile) {
+    public void applyRacePerks(RaceProfile profile) {
         Player player = profile.getPlayer();
         if(!player.hasPermission(PERM_HOME)) {
             IRace.addPermission(player, PERM_HOME);
         }
 
         switch(SubRace.fromId(profile.raceData.getSubrace())) {
-            case WATER -> loadWater(profile);
-            case FIRE -> loadFire(profile);
-            case AIR -> loadAir(profile);
+            case WATER -> applyWater(profile);
+            case FIRE -> applyFire(profile);
+            case AIR -> applyAir(profile);
         }
     }
 
     @Override
-    public void reloadEffect(RaceProfile profile) {
+    public void reapplyEffect(RaceProfile profile) {
         switch(SubRace.fromId(profile.raceData.getSubrace())) {
-            case WATER -> loadWaterEffect(profile);
-            case FIRE -> loadFireEffect(profile);
+            case WATER -> applyWaterEffect(profile);
+            case FIRE -> applyFireEffect(profile);
             case AIR -> giveAirItem(profile);
         }
     }
@@ -385,38 +385,6 @@ public class Tamashi implements IRace, ISubRaceable, IRankable {
 
         IRace.removePermission(player, PERM_FLY_CHARGE);
         player.setAllowFlight(false);
-    }
-
-    private void rankUp(RaceProfile profile) {
-        profile.rankUp();
-
-        Rank rank = Rank.fromRank(profile.raceData.getRank());
-
-        Messager.sendRankupTitle(profile, rank.name);
-        // TODO ajouter a une queue de title
-
-        load(profile);
-    }
-
-    public void checkRankup(RaceProfile profile) {
-        if(profile.raceData.getRank() < Rank.values().length-1) {
-
-            Rank rank = Rank.fromRank(profile.raceData.getRank() + 1);
-
-            int required = rank.expRequired;
-            if (profile.raceData.getExp() < required)
-                return;
-
-            profile.raceData.subExp(required);
-            rankUp(profile);
-            checkRankup(profile);
-        }
-    }
-
-    @Override
-    public void addExp(RaceProfile profile, int n) {
-        profile.addExp(n);
-        checkRankup(profile);
     }
 
     @Override
