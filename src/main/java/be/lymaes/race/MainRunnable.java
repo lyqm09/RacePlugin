@@ -11,9 +11,9 @@ public class MainRunnable extends BukkitRunnable {
 
     private final RaceManager raceManager;
 
-    public MainRunnable() {
-        this.runTaskTimer(Race.getInstance(), 0, 20L);
-        this.raceManager = Race.getInstance().getRaceManager();
+    public MainRunnable(Race plugin) {
+        this.raceManager = plugin.getRaceManager();
+        this.runTaskTimer(plugin, 0, 20L);
     }
 
     @Override

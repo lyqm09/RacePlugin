@@ -80,7 +80,7 @@ public final class Race extends JavaPlugin {
         getCommand("villager").setExecutor(villager);
 
         // Runnable
-        this.mainRunnable = new MainRunnable();
+        this.mainRunnable = new MainRunnable(this);
     }
 
     @Override
