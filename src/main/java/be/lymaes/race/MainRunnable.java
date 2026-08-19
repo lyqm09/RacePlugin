@@ -16,6 +16,12 @@ public class MainRunnable extends BukkitRunnable {
         this.runTaskTimer(plugin, 0, 20L);
     }
 
+    public void terminate() {
+        if(!this.isCancelled()) {
+            this.cancel();
+        }
+    }
+
     @Override
     public void run() {
 

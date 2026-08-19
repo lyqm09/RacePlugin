@@ -24,7 +24,7 @@ public final class Race extends JavaPlugin {
     private GUIManager guiManager;
     private ItemManager itemManager;
 
-    private BukkitRunnable mainRunnable;
+    private MainRunnable mainRunnable;
 
     @Override
     public void onEnable() {
@@ -85,10 +85,7 @@ public final class Race extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        if(mainRunnable != null && !mainRunnable.isCancelled()) {
-            mainRunnable.cancel();
-            this.mainRunnable = null;
-        }
+        mainRunnable.terminate();
 
         itemManager.terminate();
         guiManager.terminate();
