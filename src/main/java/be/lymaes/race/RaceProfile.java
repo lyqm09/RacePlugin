@@ -1,44 +1,72 @@
 package be.lymaes.race;
 
 import be.lymaes.race.data.IRaceData;
-import be.lymaes.race.data.RaceData;
 import be.lymaes.race.model.IRace;
 import be.lymaes.race.model.IRankable;
 import be.lymaes.race.model.ISubRaceable;
 import be.lymaes.race.model.RaceType;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class RaceProfile {
 
     public final UUID uuid;
     public final IRaceData raceData;
+    private transient Queue<Runnable> visualQueue;
 
     public RaceProfile(UUID uuid, IRaceData raceData) {
         this.uuid = uuid;
         this.raceData = raceData;
+        this.visualQueue = new LinkedList<>();
     }
 
     public Player getPlayer() {
         return Bukkit.getPlayer(uuid);
+    }
+
+    public void addVisualEffect(Runnable effect) {
+        boolean wasEmpty = visualQueue.isEmpty();
+        visualQueue.add(effect);
+
+        if(wasEmpty) {
+            playNextVisualEffect();
+        }
+    }
+
+    public void playNextVisualEffect() {
+        if(visualQueue.isEmpty()) return;
+
+        Player player = getPlayer();
+        if(player != null && player.isOnline()) {
+
+            Runnable runnable = visualQueue.poll();
+            if(runnable != null) {
+                runnable.run();
+                Bukkit.getScheduler().runTaskLater(Race.getInstance(), this::playNextVisualEffect, 50L);
+            } else {
+                playNextVisualEffect();
+            }
+
+        } else {
+            visualQueue.clear();
+        }
+    }
+
+    public void clearVisualQueue() {
+        visualQueue.clear();
     }
 
     // RaceData
@@ -53,18 +81,22 @@ public class RaceProfile {
         raceData.rankUp();
 
         IRace irace = Race.getInstance().getRaceManager().getRaceModel(raceData.getRace());
-        if(!(irace instanceof IRankable)) return;
+        if(!(irace instanceof IRankable rankable)) return;
 
         irace.applyRacePerks(this);
 
-        // TODO add title to queue.
+        String rankName = rankable.getRankName(raceData.getRank());
+        addVisualEffect(() -> {
+            Messager messager = Race.getInstance().getMessager();
+            messager.sendRankUpTitle(uuid, rankName);
+        });
     }
 
     void tryRankUp() {
         IRace irace = Race.getInstance().getRaceManager().getRaceModel(raceData.getRace());
         if(!(irace instanceof IRankable rankable)) return;
 
-        while (true) { // WARNING Kitsune grow infinitely
+        while (true) {
             int expRequired = rankable.getExpRequired(raceData.getRank() + 1);
             if(expRequired < 0) break;
             if (raceData.getExp() < expRequired) break;

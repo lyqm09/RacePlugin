@@ -292,6 +292,11 @@ public class Kitsune implements IRace, IRankable {
         return -1;
     }
 
+    @Override
+    public boolean canRankUp(RaceProfile profile) {
+        return false;
+    }
+
     public enum Rank {
         ONE(0, "Une Queue"),
         TWO(1, "Deux Queues"),

@@ -18,7 +18,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -26,20 +25,18 @@ public class BlessCMD implements CommandExecutor {
 
     private final RaceManager raceManager;
 
-    private final List<Enchantment> ENCHANTMENTS;
+    private final List<Enchantment> enchantments;
 
     public BlessCMD(Race plugin) {
         this.raceManager = plugin.getRaceManager();
 
-        ENCHANTMENTS = Lists.newArrayList(Registry.ENCHANTMENT);
+        enchantments = Lists.newArrayList(Registry.ENCHANTMENT);
     }
 
     private ItemStack getEnchantedBook() {
-
-        Enchantment enchantment = ENCHANTMENTS.get(ThreadLocalRandom.current().nextInt(ENCHANTMENTS.size()));
+        Enchantment enchantment = enchantments.get(ThreadLocalRandom.current().nextInt(enchantments.size()));
 
         int lvl = ThreadLocalRandom.current().nextInt(enchantment.getStartLevel(), enchantment.getMaxLevel() + 1);
-
         ItemStack book = new ItemStack(Material.ENCHANTED_BOOK);
 
         EnchantmentStorageMeta meta = (EnchantmentStorageMeta) book.getItemMeta();

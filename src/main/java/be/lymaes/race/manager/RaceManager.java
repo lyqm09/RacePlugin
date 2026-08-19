@@ -30,12 +30,12 @@ public class RaceManager {
             profile.saveSynchronously();
         }
 
-        register.clear();
-        profiles.clear();
         for(List<RaceProfile> lists : races.values()) {
             lists.clear();
         }
         races.clear();
+        profiles.clear();
+        register.clear();
     }
 
     public void changeRace(Player player, RaceType race) {
@@ -47,8 +47,10 @@ public class RaceManager {
 
         save(profile);
 
+        profile.clearVisualQueue();
         getRaceModel(profile.raceData.getRace()).cleanup(profile);
         removePlayerFromRaces(profile);
+
         RaceProfile.loadProfile(player, race, subrace).thenAccept(newProfile -> {
             try {
                 profiles.put(player, newProfile);
@@ -124,8 +126,9 @@ public class RaceManager {
         save(profile);
         player.getPersistentDataContainer().set(RANK_KEY, PersistentDataType.INTEGER, profile.raceData.getRank());
 
-        removePlayerFromRaces(profile);
+        profile.clearVisualQueue();
 
+        removePlayerFromRaces(profile);
         profiles.remove(player);
     }
 
