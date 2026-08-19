@@ -3,6 +3,7 @@ package be.lymaes.race.command;
 import be.lymaes.race.Race;
 import be.lymaes.race.item.IRaceItem;
 import be.lymaes.race.item.RaceItem;
+import be.lymaes.race.manager.ItemManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -17,11 +18,14 @@ import java.util.List;
 
 public class GiveCMD implements CommandExecutor, TabCompleter {
 
+    private final ItemManager itemManager;
+
     private final List<String> items;
 
-    public GiveCMD() {
-        this.items = new ArrayList<>();
+    public GiveCMD(Race plugin) {
+        this.itemManager = plugin.getItemManager();
 
+        this.items = new ArrayList<>();
         for(RaceItem ritem : RaceItem.values()) {
             items.add(ritem.id);
         }
@@ -44,7 +48,7 @@ public class GiveCMD implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        IRaceItem item = Race.getInstance().getItemManager().getItem(args[1]);
+        IRaceItem item = itemManager.getItem(args[1]);
         if(item == null) {
             sender.sendMessage("Erreur : Un problème s'est produit.");
             return true;

@@ -13,6 +13,12 @@ import org.jspecify.annotations.NonNull;
 
 public class MexpCMD implements CommandExecutor {
 
+    private final RaceManager raceManager;
+
+    public MexpCMD(Race plugin) {
+        this.raceManager = plugin.getRaceManager();
+    }
+
     @Override
     public boolean onCommand(@NonNull CommandSender sender, @NonNull Command command, @NonNull String label, @NonNull String[] args) {
         if(args.length != 3) {
@@ -38,8 +44,7 @@ public class MexpCMD implements CommandExecutor {
             return true;
         }
 
-        RaceManager manager = Race.getInstance().getRaceManager();
-        RaceProfile profile = manager.getProfile(player);
+        RaceProfile profile = raceManager.getProfile(player);
 
         profile.addExp(exp);
         sender.sendMessage("Un don de " + exp + "exp a été fait à " + player.getDisplayName() + ".");

@@ -3,6 +3,7 @@ package be.lymaes.race.command;
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
 import be.lymaes.race.data.TamashiData;
+import be.lymaes.race.manager.RaceManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -10,6 +11,12 @@ import org.bukkit.entity.Player;
 import org.jspecify.annotations.NonNull;
 
 public class HomeCMD implements CommandExecutor  {
+
+    private final RaceManager raceManager;
+
+    public HomeCMD(Race plugin) {
+        this.raceManager = plugin.getRaceManager();
+    }
 
     @Override
     public boolean onCommand(@NonNull CommandSender sender, @NonNull Command command, @NonNull String label, @NonNull String[] args) {
@@ -22,7 +29,7 @@ public class HomeCMD implements CommandExecutor  {
             return false;
         }
 
-        RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
+        RaceProfile profile = raceManager.getProfile(player);
         TamashiData data = ((TamashiData)profile.raceData);
 
         data.setHome(player.getLocation());

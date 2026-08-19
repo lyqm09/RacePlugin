@@ -1,11 +1,6 @@
 package be.lymaes.race.command;
 
-import be.lymaes.race.Race;
-import be.lymaes.race.RaceProfile;
-import be.lymaes.race.model.Karyu;
-import be.lymaes.race.model.RaceType;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

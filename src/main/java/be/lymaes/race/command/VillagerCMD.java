@@ -3,6 +3,7 @@ package be.lymaes.race.command;
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
 import be.lymaes.race.data.KaryuData;
+import be.lymaes.race.manager.RaceManager;
 import be.lymaes.race.model.Karyu;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Color;
@@ -23,7 +24,13 @@ public class VillagerCMD implements CommandExecutor {
 
     private static final long COOLDOWN = 1000 * 60 * 5;
 
+    private final RaceManager raceManager;
+
     private Map<UUID, Villager> villagers = new HashMap<>();
+
+    public VillagerCMD(Race plugin) {
+        this.raceManager = plugin.getRaceManager();
+    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -36,7 +43,7 @@ public class VillagerCMD implements CommandExecutor {
             return false;
         }
 
-        RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
+        RaceProfile profile = raceManager.getProfile(player);
         KaryuData data = ((KaryuData)profile.raceData);
 
         long time = data.getVillagerCMDTime();

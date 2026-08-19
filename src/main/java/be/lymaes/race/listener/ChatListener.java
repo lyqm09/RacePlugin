@@ -16,8 +16,8 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 public class ChatListener implements Listener {
 
-    public final RaceManager raceManager;
-    public final BukkitAudiences adventure;
+    private final RaceManager raceManager;
+    private final BukkitAudiences adventure;
 
     public ChatListener(Race plugin) {
         this.raceManager = plugin.getRaceManager();

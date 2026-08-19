@@ -54,20 +54,20 @@ public final class Race extends JavaPlugin {
         }
 
         // command
-        MutsuharaCMD mutsuhara = new MutsuharaCMD();
+        MutsuharaCMD mutsuhara = new MutsuharaCMD(this);
         getCommand("mutsuhara").setExecutor(mutsuhara);
 
-        GiveCMD give = new GiveCMD();
+        GiveCMD give = new GiveCMD(this);
         getCommand("giver").setExecutor(give);
         getCommand("giver").setTabCompleter(give);
 
-        MexpCMD mexp = new MexpCMD();
+        MexpCMD mexp = new MexpCMD(this);
         getCommand("mexp").setExecutor(mexp);
 
-        HomeCMD home = new HomeCMD();
+        HomeCMD home = new HomeCMD(this);
         getCommand("home").setExecutor(home);
 
-        BlessCMD bless = new BlessCMD();
+        BlessCMD bless = new BlessCMD(this);
         getCommand("bless").setExecutor(bless);
 
         FortuneCMD fortune = new FortuneCMD();
@@ -76,7 +76,7 @@ public final class Race extends JavaPlugin {
         SharpnessCMD sharpness = new SharpnessCMD();
         getCommand("sharpness").setExecutor(sharpness);
 
-        VillagerCMD villager = new VillagerCMD();
+        VillagerCMD villager = new VillagerCMD(this);
         getCommand("villager").setExecutor(villager);
 
         // Runnable
