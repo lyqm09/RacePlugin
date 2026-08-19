@@ -8,7 +8,6 @@ import be.lymaes.race.manager.RaceManager;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.DisguiseType;
 import me.libraryaddict.disguise.disguisetypes.MobDisguise;
-import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
@@ -26,7 +25,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Kitsune implements IRace {
+public class Kitsune implements IRace, IRankable {
 
     private static final double TOL = 0.02;
 
@@ -237,7 +236,7 @@ public class Kitsune implements IRace {
     }
 
     @Override
-    public void loadRank(RaceProfile profile) {
+    public void load(RaceProfile profile) {
         loadEffect(profile);
         loadAttribute(profile);
 
@@ -287,7 +286,7 @@ public class Kitsune implements IRace {
 
         Messager.sendRankupTitle(profile, rank.name);
 
-        loadRank(profile);
+        load(profile);
     }
 
     @Override

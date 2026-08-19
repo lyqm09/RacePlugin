@@ -14,13 +14,9 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 
 public interface IRace extends Listener {
 
-    void loadRank(RaceProfile profile);
+    void load(RaceProfile profile);
     void reloadEffect(RaceProfile profile);
     void cleanup(RaceProfile profile);
-    void addExp(RaceProfile profile, int n);
-
-    String getRankName(int rank);
-    int getExpRequired(int rank);
 
     static void removeAttribute(Player player, Attribute attribute, NamespacedKey key) {
         AttributeInstance attributeInstance = player.getAttribute(attribute);

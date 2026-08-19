@@ -3,6 +3,7 @@ package be.lymaes.race;
 import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.data.RaceData;
 import be.lymaes.race.model.IRace;
+import be.lymaes.race.model.IRankable;
 import be.lymaes.race.model.ISubRaceable;
 import be.lymaes.race.model.RaceType;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -78,7 +79,7 @@ public class RaceProfile {
         int rank = raceData.getRank();
         int exp = raceData.getExp();
 
-        IRace irace = Race.getInstance().getRaceManager().getRaceModel(raceData.getRace());
+        if(!(Race.getInstance().getRaceManager().getRaceModel(raceData.getRace()) instanceof IRankable irace)) return;
 
         String info;
 

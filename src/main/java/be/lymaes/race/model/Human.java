@@ -5,7 +5,7 @@ import be.lymaes.race.RaceProfile;
 public class Human implements IRace {
 
     @Override
-    public void loadRank(RaceProfile profile) {
+    public void load(RaceProfile profile) {
 
     }
 
@@ -17,21 +17,6 @@ public class Human implements IRace {
     @Override
     public void cleanup(RaceProfile profile) {
 
-    }
-
-    @Override
-    public void addExp(RaceProfile profile, int n) {
-
-    }
-
-    @Override
-    public String getRankName(int rank) {
-        return null;
-    }
-
-    @Override
-    public int getExpRequired(int rank) {
-        return 0;
     }
 
 }

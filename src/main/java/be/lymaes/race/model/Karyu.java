@@ -10,9 +10,7 @@ import be.lymaes.race.item.RaceItem;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
@@ -25,8 +23,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantInventory;
 import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.permissions.PermissionAttachment;
-import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -34,7 +30,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Karyu implements IRace, ISubRaceable {
+public class Karyu implements IRace, ISubRaceable, IRankable {
 
     private static final NamespacedKey STRENGTH = NamespacedKey.fromString("karyu:strength");
     private static final NamespacedKey SPEED = NamespacedKey.fromString("karyu:speed");
@@ -293,7 +289,7 @@ public class Karyu implements IRace, ISubRaceable {
     }
 
     @Override
-    public void loadRank(RaceProfile profile) {
+    public void load(RaceProfile profile) {
         switch(SubRace.fromId(profile.raceData.getSubrace())) {
             case MERCHANT -> loadMerchant(profile);
             case ADORER -> loadAdorer(profile);
@@ -338,7 +334,7 @@ public class Karyu implements IRace, ISubRaceable {
 
         Messager.sendRankupTitle(profile, Rank.fromRank(profile.raceData.getRank()).name);
 
-        loadRank(profile);
+        load(profile);
     }
 
     public void checkRankup(RaceProfile profile) {

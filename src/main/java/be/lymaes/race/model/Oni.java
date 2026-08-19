@@ -3,7 +3,6 @@ package be.lymaes.race.model;
 import be.lymaes.race.Messager;
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
-import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.manager.RaceManager;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -25,7 +24,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.EnumSet;
 
-public class Oni implements IRace {
+public class Oni implements IRace, IRankable {
 
     private static final NamespacedKey STRENGTH = NamespacedKey.fromString("oni:strength");
     private static final NamespacedKey SPEED = NamespacedKey.fromString("oni:speed");
@@ -217,7 +216,7 @@ public class Oni implements IRace {
     }
 
     @Override
-    public void loadRank(RaceProfile profile) {
+    public void load(RaceProfile profile) {
         loadEffect(profile);
         loadAttribute(profile);
     }
@@ -248,7 +247,7 @@ public class Oni implements IRace {
 
         Messager.sendRankupTitle(profile, rank.name);
 
-        loadRank(profile);
+        load(profile);
     }
 
     public void checkRankup(RaceProfile profile, boolean hasKazanStone) {

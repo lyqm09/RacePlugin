@@ -8,7 +8,6 @@ import be.lymaes.race.gui.GUITypes;
 import be.lymaes.race.item.FlyCharge;
 import be.lymaes.race.item.IStaticItem;
 import be.lymaes.race.item.RaceItem;
-import be.lymaes.race.manager.ItemManager;
 import be.lymaes.race.manager.RaceManager;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.*;
@@ -21,13 +20,12 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class Tamashi implements IRace, ISubRaceable {
+public class Tamashi implements IRace, ISubRaceable, IRankable {
 
     public static final String PERM_HOME = "race.tamashi.home";
     public static final String PERM_FLY_CHARGE = "race.tamashi.air.fly_charge";
@@ -331,7 +329,7 @@ public class Tamashi implements IRace, ISubRaceable {
     }
 
     @Override
-    public void loadRank(RaceProfile profile) {
+    public void load(RaceProfile profile) {
         Player player = profile.getPlayer();
         if(!player.hasPermission(PERM_HOME)) {
             IRace.addPermission(player, PERM_HOME);
@@ -397,7 +395,7 @@ public class Tamashi implements IRace, ISubRaceable {
         Messager.sendRankupTitle(profile, rank.name);
         // TODO ajouter a une queue de title
 
-        loadRank(profile);
+        load(profile);
     }
 
     public void checkRankup(RaceProfile profile) {

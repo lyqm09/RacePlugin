@@ -55,7 +55,7 @@ public class RaceManager {
 
                 addPlayerToRaces(newProfile);
 
-                getRaceModel(race).loadRank(newProfile);
+                getRaceModel(race).load(newProfile);
                 player.getPersistentDataContainer().set(RACE_KEY, PersistentDataType.STRING, newProfile.raceData.getRace().name());
                 player.getPersistentDataContainer().set(SUBRACE_KEY, PersistentDataType.INTEGER, newProfile.raceData.getSubrace());
 
@@ -77,7 +77,7 @@ public class RaceManager {
         IRace oldRace = getRaceModel(RaceType.fromName(raceName));
 
         if (raceName == null) {
-            getRaceModel(profile.raceData.getRace()).loadRank(profile);
+            getRaceModel(profile.raceData.getRace()).load(profile);
             player.getPersistentDataContainer().set(RACE_KEY, PersistentDataType.STRING, profile.raceData.getRace().name());
             player.getPersistentDataContainer().set(SUBRACE_KEY, PersistentDataType.INTEGER, profile.raceData.getSubrace());
         }
@@ -85,7 +85,7 @@ public class RaceManager {
         else if (!raceName.equalsIgnoreCase(profile.raceData.getRace().name())) {
             oldRace.cleanup(profile);
 
-            getRaceModel(profile.raceData.getRace()).loadRank(profile);
+            getRaceModel(profile.raceData.getRace()).load(profile);
             player.getPersistentDataContainer().set(RACE_KEY, PersistentDataType.STRING, profile.raceData.getRace().name());
             player.getPersistentDataContainer().set(SUBRACE_KEY, PersistentDataType.INTEGER, profile.raceData.getSubrace());
         }
@@ -94,13 +94,13 @@ public class RaceManager {
             if(subRaceId != profile.raceData.getSubrace()) {
                 oldRace.cleanup(profile);
 
-                getRaceModel(profile.raceData.getRace()).loadRank(profile);
+                getRaceModel(profile.raceData.getRace()).load(profile);
                 player.getPersistentDataContainer().set(SUBRACE_KEY, PersistentDataType.INTEGER, profile.raceData.getSubrace());
             }
         }
 
         if(rank != profile.raceData.getRank()) {
-            getRaceModel(profile.raceData.getRace()).loadRank(profile);
+            getRaceModel(profile.raceData.getRace()).load(profile);
             player.getPersistentDataContainer().set(RANK_KEY, PersistentDataType.INTEGER, profile.raceData.getRank());
         }
     }
