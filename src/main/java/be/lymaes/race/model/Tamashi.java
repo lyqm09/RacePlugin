@@ -1,8 +1,10 @@
 package be.lymaes.race.model;
 
-import be.lymaes.race.Messager;
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
+import be.lymaes.race.ability.Damageable;
+import be.lymaes.race.ability.Damager;
+import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.data.TamashiData;
 import be.lymaes.race.gui.GUITypes;
 import be.lymaes.race.item.FlyCharge;
@@ -25,7 +27,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class Tamashi implements IRace, ISubRaceable, IRankable {
+public class Tamashi implements IRace, ISubRaceable, IRankable, Damageable, Damager {
 
     public static final String PERM_HOME = "race.tamashi.home";
     public static final String PERM_FLY_CHARGE = "race.tamashi.air.fly_charge";
@@ -78,78 +80,6 @@ public class Tamashi implements IRace, ISubRaceable, IRankable {
                 profile.addExp(1);
             }
 
-        }
-    }
-
-    @EventHandler
-    public void onDamage(EntityDamageEvent e) {
-        if(!(e.getEntity() instanceof Player player))
-            return;
-
-        RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
-        if(profile.raceData.getRace() != RaceType.TAMASHI)
-            return;
-
-        if(profile.raceData.getSubrace() == SubRace.EARTH.id) {
-
-            double factor = switch (Rank.fromRank(profile.raceData.getRank())) {
-                case EMBRYO -> 0.10;
-                case CHILD -> 0.20;
-                case ACCOMPLISHED -> 0.40;
-                case HALF_GOD -> 0.60;
-                case KAMI -> 0.80;
-                case OKAMI -> 0.90;
-            };
-
-            e.setDamage(e.getFinalDamage() * (1.0 - factor));
-        }
-        else if(profile.raceData.getSubrace() == SubRace.AIR.id) {
-            if(e.getCause() != EntityDamageEvent.DamageCause.FALL)
-                return;
-
-            e.setCancelled(true);
-        }
-    }
-
-    @EventHandler
-    public void onEntityDamageEntity(EntityDamageByEntityEvent e) {
-        if(!(e.getDamager() instanceof Player player))
-            return;
-
-        RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
-        if(profile.raceData.getRace() != RaceType.TAMASHI)
-            return;
-
-        Rank rank = Rank.fromRank(profile.raceData.getRank());
-
-        if(profile.raceData.getSubrace() == SubRace.FIRE.id) {
-
-            int time = switch(rank) {
-                case EMBRYO -> 1;
-                case CHILD -> 2;
-                case ACCOMPLISHED -> 5;
-                case HALF_GOD -> 10;
-                case KAMI -> 20;
-                case OKAMI -> 30;
-            };
-
-            e.getEntity().setFireTicks(time * 20);
-        }
-        else if(profile.raceData.getSubrace() == SubRace.WATER.id) {
-
-            if(!player.isInWater())
-                return;
-
-            double factor = switch (rank) {
-                case EMBRYO -> 0.05;
-                case CHILD -> 0.10;
-                case ACCOMPLISHED -> 0.20;
-                case HALF_GOD -> 0.30;
-                case KAMI -> 0.40;
-                case OKAMI -> 0.50;
-            };
-
-            e.setDamage(e.getFinalDamage() * (1.0 + factor));
         }
     }
 
@@ -231,6 +161,64 @@ public class Tamashi implements IRace, ISubRaceable, IRankable {
                 player.removePotionEffect(PotionEffectType.LEVITATION);
                 player.setCooldown(item, 10 * 20);
             }
+        }
+    }
+
+    @Override
+    public void onAttack(EntityDamageByEntityEvent e, Player player, IRaceData raceData) {
+        Rank rank = Rank.fromRank(raceData.getRank());
+
+        if(raceData.getSubrace() == SubRace.FIRE.id) {
+
+            int time = switch(rank) {
+                case EMBRYO -> 1;
+                case CHILD -> 2;
+                case ACCOMPLISHED -> 5;
+                case HALF_GOD -> 10;
+                case KAMI -> 20;
+                case OKAMI -> 30;
+            };
+
+            e.getEntity().setFireTicks(time * 20);
+        }
+        else if(raceData.getSubrace() == SubRace.WATER.id) {
+
+            if(!player.isInWater())
+                return;
+
+            double factor = switch(rank) {
+                case EMBRYO -> 0.05;
+                case CHILD -> 0.10;
+                case ACCOMPLISHED -> 0.20;
+                case HALF_GOD -> 0.30;
+                case KAMI -> 0.40;
+                case OKAMI -> 0.50;
+            };
+
+            e.setDamage(e.getFinalDamage() * (1.0 + factor));
+        }
+    }
+
+    @Override
+    public void onDefend(EntityDamageEvent e, Player player, IRaceData raceData) {
+        if(raceData.getSubrace() == SubRace.EARTH.id) {
+
+            double factor = switch (Rank.fromRank(raceData.getRank())) {
+                case EMBRYO -> 0.10;
+                case CHILD -> 0.20;
+                case ACCOMPLISHED -> 0.40;
+                case HALF_GOD -> 0.60;
+                case KAMI -> 0.80;
+                case OKAMI -> 0.90;
+            };
+
+            e.setDamage(e.getFinalDamage() * (1.0 - factor));
+        }
+        else if(raceData.getSubrace() == SubRace.AIR.id) {
+            if(e.getCause() != EntityDamageEvent.DamageCause.FALL)
+                return;
+
+            e.setCancelled(true);
         }
     }
 

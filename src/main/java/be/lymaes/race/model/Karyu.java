@@ -3,6 +3,8 @@ package be.lymaes.race.model;
 import be.lymaes.race.Messager;
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
+import be.lymaes.race.ability.Damageable;
+import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.gui.GUITypes;
 import be.lymaes.race.item.IStaticItem;
 import be.lymaes.race.item.MilicienEgg;
@@ -30,7 +32,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Karyu implements IRace, ISubRaceable, IRankable {
+public class Karyu implements IRace, ISubRaceable, IRankable, Damageable {
 
     private static final NamespacedKey STRENGTH = NamespacedKey.fromString("karyu:strength");
     private static final NamespacedKey SPEED = NamespacedKey.fromString("karyu:speed");
@@ -165,19 +167,12 @@ public class Karyu implements IRace, ISubRaceable, IRankable {
         }
     }
 
-    @EventHandler
-    public void onDamage(EntityDamageEvent e) {
-        if(!(e.getEntity() instanceof Player player))
-            return;
+    @Override
+    public void onDefend(EntityDamageEvent e, Player player, IRaceData raceData) {
+        if (raceData.getSubrace() == SubRace.ADORER.id
+        || (raceData.getSubrace() == SubRace.MERCHANT.id && raceData.getRank() >= Rank.DRAGON.rank)) {
 
-        RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
-        if(profile.raceData.getRace() != RaceType.KARYU)
-            return;
-
-        if(profile.raceData.getSubrace() == SubRace.ADORER.id
-        || (profile.raceData.getSubrace() == SubRace.MERCHANT.id && profile.raceData.getRank() >= Rank.DRAGON.rank)) {
-
-            double factor = switch(Rank.fromRank(profile.raceData.getRank())) {
+            double factor = switch (Rank.fromRank(raceData.getRank())) {
                 case BEGINNER -> 0.05;
                 case NOVICE -> 0.10;
                 case INTERMEDIATE -> 0.20;

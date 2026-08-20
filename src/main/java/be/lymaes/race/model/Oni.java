@@ -3,6 +3,8 @@ package be.lymaes.race.model;
 import be.lymaes.race.Messager;
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
+import be.lymaes.race.ability.Damageable;
+import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.manager.RaceManager;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -24,7 +26,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.EnumSet;
 
-public class Oni implements IRace, IRankable {
+public class Oni implements IRace, IRankable, Damageable {
 
     private static final NamespacedKey STRENGTH = NamespacedKey.fromString("oni:strength");
     private static final NamespacedKey SPEED = NamespacedKey.fromString("oni:speed");
@@ -99,28 +101,6 @@ public class Oni implements IRace, IRankable {
     }
 
     @EventHandler
-    public void onDamage(EntityDamageEvent e) {
-        if(!(e.getEntity() instanceof Player player))
-            return;
-
-        RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
-        if(profile.raceData.getRace() != RaceType.ONI)
-            return;
-
-        double factor = switch(Rank.fromRank(profile.raceData.getRank())) {
-            case EVOLVED -> 0.05;
-            case LIEUTENANT -> 0.10;
-            case CAPTAIN -> 0.15;
-            case COMMANDER -> 0.20;
-            case LORD -> 0.25;
-            case GENERAL -> 0.50;
-            default -> 0.0;
-        };
-
-        e.setDamage(e.getFinalDamage() * (1.0 - factor));
-    }
-
-    @EventHandler
     public void onTarget(EntityTargetLivingEntityEvent e) {
         if(!(e.getEntity() instanceof Monster))
             return;
@@ -165,6 +145,21 @@ public class Oni implements IRace, IRankable {
         player.launchProjectile(Fireball.class);
 
         e.setCancelled(true);
+    }
+
+    @Override
+    public void onDefend(EntityDamageEvent e, Player player, IRaceData raceData) {
+        double factor = switch(Rank.fromRank(raceData.getRank())) {
+            case EVOLVED -> 0.05;
+            case LIEUTENANT -> 0.10;
+            case CAPTAIN -> 0.15;
+            case COMMANDER -> 0.20;
+            case LORD -> 0.25;
+            case GENERAL -> 0.50;
+            default -> 0.0;
+        };
+
+        e.setDamage(e.getFinalDamage() * (1.0 - factor));
     }
 
     private void applyAttribute(RaceProfile profile) {

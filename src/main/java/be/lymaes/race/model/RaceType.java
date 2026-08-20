@@ -4,7 +4,6 @@ import be.lymaes.race.data.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
