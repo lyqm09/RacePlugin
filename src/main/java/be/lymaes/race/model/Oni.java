@@ -1,12 +1,8 @@
 package be.lymaes.race.model;
 
-import be.lymaes.race.Messager;
-import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
-import be.lymaes.race.ability.Consumer;
+import be.lymaes.race.ability.*;
 import be.lymaes.race.ability.Damageable;
-import be.lymaes.race.ability.Interactable;
-import be.lymaes.race.ability.Targetable;
 import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.manager.RaceManager;
 import org.bukkit.Material;
@@ -15,21 +11,19 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.*;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.EnumSet;
 
-public class Oni implements IRace, IRankable, Damageable, Interactable, Targetable, Consumer {
+public class Oni implements IRace, IRankable, Damageable, Interactable, Targetable, Consumer, Killer {
 
     private static final NamespacedKey STRENGTH = NamespacedKey.fromString("oni:strength");
     private static final NamespacedKey SPEED = NamespacedKey.fromString("oni:speed");
@@ -65,17 +59,9 @@ public class Oni implements IRace, IRankable, Damageable, Interactable, Targetab
 
     }
 
-    @EventHandler
-    public void onKill(EntityDeathEvent e) {
+    @Override
+    public void onKill(EntityDeathEvent e, RaceProfile profile) {
         if(!(e.getEntity() instanceof Mob))
-            return;
-
-        Entity damager = e.getDamageSource().getCausingEntity();
-        if(!(damager instanceof Player player))
-            return;
-
-        RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
-        if(profile.raceData.getRace() != RaceType.ONI)
             return;
 
         profile.addExp(1);
@@ -144,7 +130,7 @@ public class Oni implements IRace, IRankable, Damageable, Interactable, Targetab
 
     private void applyAttribute(RaceProfile profile) {
         Rank rank = Rank.fromRank(profile.raceData.getRank());
-        Player player = profile.getPlayer();;
+        Player player = profile.getPlayer();
 
         double multiplier = switch(rank) {
             case EVOLVED -> 0.05;
@@ -171,8 +157,8 @@ public class Oni implements IRace, IRankable, Damageable, Interactable, Targetab
                 }
 
                 if(isAbsent) {
+                    IRace.replaceAttribute(player, Attribute.MAX_HEALTH, HEALTH, 20, AttributeModifier.Operation.ADD_NUMBER);
                     double ratio = player.getHealth()/health.getValue();
-                    health.addModifier(new AttributeModifier(HEALTH, 20, AttributeModifier.Operation.ADD_NUMBER, EquipmentSlotGroup.ANY));
                     player.setHealth(ratio * health.getValue());
                 }
             }
