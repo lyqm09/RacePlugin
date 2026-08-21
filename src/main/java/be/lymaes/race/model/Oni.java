@@ -5,11 +5,11 @@ import be.lymaes.race.ability.*;
 import be.lymaes.race.ability.Damageable;
 import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.manager.RaceManager;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.block.Biome;
 import org.bukkit.entity.*;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -22,6 +22,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.EnumSet;
+import java.util.Set;
 
 public class Oni implements IRace, IRankable, Taskable, Damageable, Interactable, Targetable, Consumer, Killer {
 
@@ -47,10 +48,34 @@ public class Oni implements IRace, IRankable, Taskable, Damageable, Interactable
             Material.HONEY_BOTTLE
     );
 
+    private static final Set<Biome> NOT_RAINING_BIOMES = Set.of(
+            Biome.DESERT,
+            Biome.SAVANNA,
+            Biome.SAVANNA_PLATEAU,
+            Biome.WINDSWEPT_SAVANNA,
+            Biome.BASALT_DELTAS,
+            Biome.BADLANDS,
+            Biome.ERODED_BADLANDS,
+            Biome.WOODED_BADLANDS
+    );
+
+    private boolean isUnderRain(Player player) {
+        World world = player.getWorld();
+        if(!world.hasStorm()) return false;
+
+        Location location = player.getLocation();
+        int highestBlockY = world.getHighestBlockYAt(location);
+        if(highestBlockY > location.getBlockY()) return false;
+
+        Biome biome = world.getBiome(location);
+        if(NOT_RAINING_BIOMES.contains(biome)) return false;
+
+        return true;
+    }
+
     @Override
     public void onTask(Player player, RaceProfile profile) {
-        // TODO add rain ! (weather == storm (or rain) || highest bloc <= playerLoc)
-        if(player.isInWater()) {
+        if(player.isInWater() || isUnderRain(player)) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 2 * 20, 1, true, false, true));
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 2 * 20, 1, true, false, true));
         }
