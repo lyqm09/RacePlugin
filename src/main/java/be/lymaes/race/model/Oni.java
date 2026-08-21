@@ -23,7 +23,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.EnumSet;
 
-public class Oni implements IRace, IRankable, Damageable, Interactable, Targetable, Consumer, Killer {
+public class Oni implements IRace, IRankable, Taskable, Damageable, Interactable, Targetable, Consumer, Killer {
 
     private static final NamespacedKey STRENGTH = NamespacedKey.fromString("oni:strength");
     private static final NamespacedKey SPEED = NamespacedKey.fromString("oni:speed");
@@ -47,16 +47,13 @@ public class Oni implements IRace, IRankable, Damageable, Interactable, Targetab
             Material.HONEY_BOTTLE
     );
 
-    public void task(RaceManager manager) {
-
-        for(RaceProfile profile : manager.getRaceProfiles(RaceType.ONI)) {
-            Player player = profile.getPlayer();
-            if(player.isInWater()) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 2 * 20, 1, true, false, true));
-                player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 2 * 20, 1, true, false, true));
-            }
+    @Override
+    public void onTask(Player player, RaceProfile profile) {
+        // TODO add rain ! (weather == storm (or rain) || highest bloc <= playerLoc)
+        if(player.isInWater()) {
+            player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 2 * 20, 1, true, false, true));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 2 * 20, 1, true, false, true));
         }
-
     }
 
     @Override

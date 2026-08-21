@@ -1,10 +1,10 @@
 package be.lymaes.race;
 
+import be.lymaes.race.ability.Taskable;
 import be.lymaes.race.manager.RaceManager;
-import be.lymaes.race.model.Kitsune;
-import be.lymaes.race.model.Oni;
-import be.lymaes.race.model.RaceType;
-import be.lymaes.race.model.Tamashi;
+import be.lymaes.race.model.*;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class MainRunnable extends BukkitRunnable {
@@ -25,9 +25,15 @@ public class MainRunnable extends BukkitRunnable {
     @Override
     public void run() {
 
-        ((Oni) raceManager.getRaceModel(RaceType.ONI)).task(raceManager);
-        ((Kitsune) raceManager.getRaceModel(RaceType.KITSUNE)).task(raceManager);
-        ((Tamashi) raceManager.getRaceModel(RaceType.TAMASHI)).task(raceManager);
+        for(Player player : Bukkit.getOnlinePlayers()) {
+            RaceProfile profile = raceManager.getProfile(player);
+            if(profile == null) continue;
+
+            IRace model = raceManager.getRaceModel(profile.raceData.getRace());
+            if(!(model instanceof Taskable taskable)) continue;
+
+            taskable.onTask(player, profile);
+        }
 
     }
 

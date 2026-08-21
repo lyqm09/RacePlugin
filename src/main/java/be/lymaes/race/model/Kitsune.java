@@ -3,6 +3,7 @@ package be.lymaes.race.model;
 import be.lymaes.race.Messager;
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
+import be.lymaes.race.ability.Taskable;
 import be.lymaes.race.data.KitsuneData;
 import be.lymaes.race.manager.RaceManager;
 import me.libraryaddict.disguise.DisguiseAPI;
@@ -23,9 +24,12 @@ import org.bukkit.event.raid.RaidFinishEvent;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import java.util.EnumSet;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Kitsune implements IRace, IRankable {
+public class Kitsune implements IRace, IRankable, Taskable {
 
     private static final double TOL = 0.02;
 
@@ -34,41 +38,41 @@ public class Kitsune implements IRace, IRankable {
     private static final NamespacedKey JUMP = NamespacedKey.fromString("kitsune:jump");
     private static final NamespacedKey FALL = NamespacedKey.fromString("kitsune:fall");
 
-    public void task(RaceManager manager) {
+    private static final Set<Biome> AVAILABLE_BIOMES = Set.of(
+            Biome.JUNGLE,
+            Biome.SPARSE_JUNGLE,
+            Biome.BAMBOO_JUNGLE,
+            Biome.BIRCH_FOREST,
+            Biome.OLD_GROWTH_BIRCH_FOREST,
+            Biome.DARK_FOREST,
+            Biome.FOREST,
+            Biome.FLOWER_FOREST,
+            Biome.CHERRY_GROVE
+    );
+
+    @Override
+    public void onTask(Player player, RaceProfile profile) {
         long currentTime = System.currentTimeMillis();
 
-        for(RaceProfile profile : manager.getRaceProfiles(RaceType.KITSUNE)) {
-            Player player = profile.getPlayer();
-            KitsuneData data = ((KitsuneData)profile.raceData);
+        KitsuneData data = ((KitsuneData)profile.raceData);
+        long time = data.getTimeInForest();
 
-            Biome currentBiome = player.getWorld().getBiome(player.getLocation());
-
-            long time = data.getTimeInForest();
-            if(currentBiome == Biome.JUNGLE
-            || currentBiome == Biome.SPARSE_JUNGLE
-            || currentBiome == Biome.BAMBOO_JUNGLE
-            || currentBiome == Biome.BIRCH_FOREST
-            || currentBiome == Biome.OLD_GROWTH_BIRCH_FOREST
-            || currentBiome == Biome.DARK_FOREST
-            || currentBiome == Biome.FOREST
-            || currentBiome == Biome.FLOWER_FOREST
-            || currentBiome == Biome.CHERRY_GROVE) {
-                if (currentTime - time >= 1000 * 60 * 60) {
-                    if (ThreadLocalRandom.current().nextDouble() <= TOL) {
-                        profile.rankUp();
-                    }
-                    data.setTimeInForest(currentTime);
+        Biome currentBiome = player.getWorld().getBiome(player.getLocation());
+        if(AVAILABLE_BIOMES.contains(currentBiome)) {
+            if (currentTime - time >= 1000 * 60 * 60) {
+                if (ThreadLocalRandom.current().nextDouble() <= TOL) {
+                    profile.rankUp();
                 }
-                else if(time <= 0) {
-                    data.setTimeInForest(currentTime);
-                }
+                data.setTimeInForest(currentTime);
             }
-            else {
-                if(time != 0) {
-                    data.setTimeInForest(0L);
-                }
+            else if(time <= 0) {
+                data.setTimeInForest(currentTime);
             }
-
+        }
+        else {
+            if(time != 0) {
+                data.setTimeInForest(0L);
+            }
         }
     }
 

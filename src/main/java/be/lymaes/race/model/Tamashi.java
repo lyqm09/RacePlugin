@@ -4,6 +4,7 @@ import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.Damageable;
 import be.lymaes.race.ability.Damager;
+import be.lymaes.race.ability.Taskable;
 import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.data.TamashiData;
 import be.lymaes.race.gui.GUITypes;
@@ -27,7 +28,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class Tamashi implements IRace, ISubRaceable, IRankable, Damageable, Damager {
+public class Tamashi implements IRace, ISubRaceable, IRankable, Taskable, Damageable, Damager {
 
     public static final String PERM_HOME = "race.tamashi.home";
     public static final String PERM_FLY_CHARGE = "race.tamashi.air.fly_charge";
@@ -37,50 +38,47 @@ public class Tamashi implements IRace, ISubRaceable, IRankable, Damageable, Dama
     private static final NamespacedKey STRENGTH = NamespacedKey.fromString("tamashi:strength");
     private static final NamespacedKey SPEED = NamespacedKey.fromString("tamashi:speed");
 
-    public void task(RaceManager manager) {
+    @Override
+    public void onTask(Player player, RaceProfile profile) {
         long currentTime = System.currentTimeMillis();
 
         if((currentTime / 1000) % 60 != 0) {
             return;
         }
 
-        for(RaceProfile profile : manager.getRaceProfiles(RaceType.TAMASHI)) {
-            Player player = profile.getPlayer();
+        Location playerLoc = player.getLocation();
+        Location home = ((TamashiData)profile.raceData).getHome();
 
-            Location playerLoc = player.getLocation();
-            Location home = ((TamashiData)profile.raceData).getHome();
+        boolean isAlone = true;
 
-            boolean isAlone = true;
+        for (Player other : Bukkit.getOnlinePlayers()) {
+            if (other.equals(player))
+                continue;
 
-            for (Player other : Race.getInstance().getServer().getOnlinePlayers()) {
-                if (other.equals(player))
-                    continue;
-
-                if (other.getLocation().distance(playerLoc) <= DISTANCE) {
-                    isAlone = false;
-                    profile.addExp(1);
-                }
-
-                if (other.getLocation().distance(home) <= DISTANCE) {
-                    profile.addExp(1);
-                }
-            }
-
-            if(playerLoc.distance(home) > DISTANCE) {
-                if(isAlone) {
-                    if (!player.hasPotionEffect(PotionEffectType.HUNGER)) {
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 2 * 20, 0, true, false, true));
-                    }
-                    if (!player.hasPotionEffect(PotionEffectType.WEAKNESS)) {
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 2 * 20, 0, true, false, true));
-                    }
-                }
-            }
-            else {
+            if (other.getLocation().distance(playerLoc) <= DISTANCE) {
+                isAlone = false;
                 profile.addExp(1);
             }
 
+            if (other.getLocation().distance(home) <= DISTANCE) {
+                profile.addExp(1);
+            }
         }
+
+        if(playerLoc.distance(home) > DISTANCE) {
+            if(isAlone) {
+                if (!player.hasPotionEffect(PotionEffectType.HUNGER)) {
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 2 * 20, 0, true, false, true));
+                }
+                if (!player.hasPotionEffect(PotionEffectType.WEAKNESS)) {
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 2 * 20, 0, true, false, true));
+                }
+            }
+        }
+        else {
+            profile.addExp(1);
+        }
+
     }
 
     @EventHandler
