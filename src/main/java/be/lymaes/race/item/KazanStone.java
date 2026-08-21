@@ -2,7 +2,7 @@ package be.lymaes.race.item;
 
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
-import be.lymaes.race.manager.ItemManager;
+import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.model.IRace;
 import be.lymaes.race.model.Oni;
 import org.bukkit.entity.Player;
@@ -16,7 +16,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class KazanStone implements IRaceItem, Eatable {
+public class KazanStone implements IRaceItem, Consumable {
 
     private static final double TOL = 0.0005;
 
@@ -38,21 +38,9 @@ public class KazanStone implements IRaceItem, Eatable {
         e.getDrops().add(kazanStone);
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onConsume(PlayerItemConsumeEvent e) {
-        Race plugin = Race.getInstance();
-        IRaceItem item = plugin.getItemManager().getItem(e.getItem());
-        if(!(item instanceof KazanStone)) return;
-
-        if(e.isCancelled()) {
-            e.setCancelled(false);
-        }
-
-        Player player = e.getPlayer();
-        RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
-
-        IRace race = plugin.getRaceManager().getRaceModel(profile.raceData.getRace());
-        if(race instanceof Oni oni) {
+    @Override
+    public void onConsume(Player player, RaceProfile profile, IRace model) {
+        if(model instanceof Oni oni) {
             int nextRank = profile.raceData.getRank() + 1;
             if(nextRank < Oni.Rank.GENERAL.rank) return;
 

@@ -3,7 +3,10 @@ package be.lymaes.race.model;
 import be.lymaes.race.Messager;
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
+import be.lymaes.race.ability.Consumer;
 import be.lymaes.race.ability.Damageable;
+import be.lymaes.race.ability.Interactable;
+import be.lymaes.race.ability.Targetable;
 import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.manager.RaceManager;
 import org.bukkit.Material;
@@ -26,7 +29,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.EnumSet;
 
-public class Oni implements IRace, IRankable, Damageable {
+public class Oni implements IRace, IRankable, Damageable, Interactable, Targetable, Consumer {
 
     private static final NamespacedKey STRENGTH = NamespacedKey.fromString("oni:strength");
     private static final NamespacedKey SPEED = NamespacedKey.fromString("oni:speed");
@@ -78,54 +81,31 @@ public class Oni implements IRace, IRankable, Damageable {
         profile.addExp(1);
     }
 
-    @EventHandler
-    public void onConsume(PlayerItemConsumeEvent e) {
-        Player player = e.getPlayer();
-        RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
-        if(profile.raceData.getRace() != RaceType.ONI)
-            return;
-
+    @Override
+    public void onConsume(PlayerItemConsumeEvent e, Player player, IRaceData raceData) {
         ItemStack item = e.getItem();
         Material consumedItem = item.getType();
 
-        if (IGNORED_CONSUMABLES.contains(consumedItem)) {
-            return;
-        }
-
-        if (MEATS.contains(consumedItem)) {
-            return;
-        }
+        if (IGNORED_CONSUMABLES.contains(consumedItem)) return;
+        if (MEATS.contains(consumedItem)) return;
 
         player.sendMessage("Beurk !");
         e.setCancelled(true);
     }
 
-    @EventHandler
-    public void onTarget(EntityTargetLivingEntityEvent e) {
+    @Override
+    public void onTarget(EntityTargetLivingEntityEvent e, Player player, IRaceData raceData) {
         if(!(e.getEntity() instanceof Monster))
             return;
 
-        if(!(e.getTarget() instanceof Player player))
-            return;
-
-        RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
-        if(profile.raceData.getRace() != RaceType.ONI)
-            return;
-
-        if(profile.raceData.getRank() >= Rank.CAPTAIN.rank) {
-
+        if(raceData.getRank() >= Rank.CAPTAIN.rank) {
             e.setCancelled(true);
         }
     }
 
-    @EventHandler
-    public void onInteract(PlayerInteractEvent e) {
-        Player player = e.getPlayer();
-        RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
-        if(profile.raceData.getRace() != RaceType.ONI)
-            return;
-
-        if(profile.raceData.getRank() < Rank.GENERAL.rank)
+    @Override
+    public void onInteract(PlayerInteractEvent e, Player player, IRaceData raceData) {
+        if(raceData.getRank() < Rank.GENERAL.rank)
             return;
 
         ItemStack item = e.getItem();

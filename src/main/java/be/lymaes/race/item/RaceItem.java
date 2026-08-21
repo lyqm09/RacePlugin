@@ -45,7 +45,7 @@ public enum RaceItem {
         meta.setEnchantmentGlintOverride(true);
 
         IRaceItem iitem = Race.getInstance().getItemManager().getItem(id);
-        if(iitem instanceof Eatable) {
+        if(iitem instanceof Consumable) {
             ConsumableComponent consumable = meta.getConsumable();
             consumable.setAnimation(ConsumableComponent.Animation.EAT);
             consumable.setConsumeSeconds(1.6f);
