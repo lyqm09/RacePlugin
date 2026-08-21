@@ -47,4 +47,8 @@ public class Messager {
         audience.playSound(sound);
     }
 
+    public BukkitAudiences adventure() {
+        return adventure;
+    }
+
 }
