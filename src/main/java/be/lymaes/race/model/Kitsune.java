@@ -1,11 +1,13 @@
 package be.lymaes.race.model;
 
-import be.lymaes.race.Messager;
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
+import be.lymaes.race.ability.Interactable;
+import be.lymaes.race.ability.RaidFinisher;
+import be.lymaes.race.ability.SneakyCharacter;
 import be.lymaes.race.ability.Taskable;
+import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.data.KitsuneData;
-import be.lymaes.race.manager.RaceManager;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.DisguiseType;
 import me.libraryaddict.disguise.disguisetypes.MobDisguise;
@@ -20,16 +22,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
-import org.bukkit.event.raid.RaidFinishEvent;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.EnumSet;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Kitsune implements IRace, IRankable, Taskable {
+public class Kitsune implements IRace, IRankable, Taskable, Interactable, RaidFinisher, SneakyCharacter {
 
     private static final double TOL = 0.02;
 
@@ -76,29 +76,14 @@ public class Kitsune implements IRace, IRankable, Taskable {
         }
     }
 
-    @EventHandler
-    public void onRaidFinish(RaidFinishEvent e) {
-        RaceManager manager = Race.getInstance().getRaceManager();
-        for(Player player : e.getWinners()) {
-
-            RaceProfile profile = manager.getProfile(player);
-            IRace race = manager.getRaceModel(profile.raceData.getRace());
-
-            if(race instanceof Kitsune) {
-                profile.rankUp();
-            }
-
-        }
+    @Override
+    public void onRaidFinish(RaceProfile profile) {
+        profile.rankUp();
     }
 
-    @EventHandler
-    public void onSneak(PlayerToggleSneakEvent e) {
-        Player player = e.getPlayer();
-        RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
-        if(profile.raceData.getRace() != RaceType.KITSUNE)
-            return;
-
-        if(profile.raceData.getRank() < Rank.FIVE.rank)
+    @Override
+    public void onToggleSneak(PlayerToggleSneakEvent e, Player player, IRaceData raceData) {
+        if(raceData.getRank() < Rank.FIVE.rank)
             return;
 
         if(e.isSneaking()) {
@@ -114,14 +99,9 @@ public class Kitsune implements IRace, IRankable, Taskable {
         }
     }
 
-    @EventHandler
-    public void onClick(PlayerInteractEvent e) {
-        Player player = e.getPlayer();
-        RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
-        if(profile.raceData.getRace() != RaceType.KITSUNE)
-            return;
-
-        if(profile.raceData.getRank() < Rank.FOUR.rank)
+    @Override
+    public void onInteract(PlayerInteractEvent e, Player player, IRaceData raceData) {
+        if(raceData.getRank() < Rank.FOUR.rank)
             return;
 
         if(!player.isSneaking())
@@ -133,7 +113,7 @@ public class Kitsune implements IRace, IRankable, Taskable {
         if(e.getAction() != Action.LEFT_CLICK_AIR && e.getAction() != Action.LEFT_CLICK_BLOCK) // AIR doesn't work !
             return;
 
-        if (DisguiseAPI.isDisguised(player) && DisguiseAPI.getDisguise(profile.getPlayer()).getType() == DisguiseType.FOX) {
+        if (DisguiseAPI.isDisguised(player) && DisguiseAPI.getDisguise(player).getType() == DisguiseType.FOX) {
             DisguiseAPI.undisguiseToAll(player);
         }
         else {

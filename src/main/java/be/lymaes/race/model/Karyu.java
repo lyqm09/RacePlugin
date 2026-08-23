@@ -1,9 +1,11 @@
 package be.lymaes.race.model;
 
-import be.lymaes.race.Messager;
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.Damageable;
+import be.lymaes.race.ability.Interactable;
+import be.lymaes.race.ability.Killer;
+import be.lymaes.race.ability.Merchant;
 import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.gui.GUITypes;
 import be.lymaes.race.item.IStaticItem;
@@ -14,7 +16,6 @@ import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.*;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -32,7 +33,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Karyu implements IRace, ISubRaceable, IRankable, Damageable {
+public class Karyu implements IRace, ISubRaceable, IRankable, Damageable, Interactable, Killer, Merchant {
 
     private static final NamespacedKey STRENGTH = NamespacedKey.fromString("karyu:strength");
     private static final NamespacedKey SPEED = NamespacedKey.fromString("karyu:speed");
@@ -63,18 +64,8 @@ public class Karyu implements IRace, ISubRaceable, IRankable, Damageable {
 
     );
 
-    @EventHandler
-    public void onMerchant(InventoryClickEvent e) {
-        if(!(e.getClickedInventory() instanceof MerchantInventory inventory))
-            return;
-
-        if(!(e.getWhoClicked() instanceof Player player))
-            return;
-
-        RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
-        if(profile.raceData.getRace() != RaceType.KARYU)
-            return;
-
+    @Override
+    public void onTrade(InventoryClickEvent e, MerchantInventory inventory, RaceProfile profile) {
         if(profile.raceData.getSubrace() == SubRace.MERCHANT.id) {
             if(e.getSlotType() != InventoryType.SlotType.RESULT)
                 return;
@@ -110,17 +101,9 @@ public class Karyu implements IRace, ISubRaceable, IRankable, Damageable {
         return Math.min(Math.min(firstMaxTrades, secondMaxTrades), remainingUses);
     }
 
-    @EventHandler
-    public void onKill(EntityDeathEvent e) {
+    @Override
+    public void onKill(EntityDeathEvent e, RaceProfile profile) {
         if(!(e.getEntity() instanceof Monster))
-            return;
-
-        Entity damager = e.getDamageSource().getCausingEntity();
-        if(!(damager instanceof Player player))
-            return;
-
-        RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
-        if(profile.raceData.getRace() != RaceType.KARYU)
             return;
 
         if(profile.raceData.getSubrace() == SubRace.ADORER.id) {
@@ -128,43 +111,40 @@ public class Karyu implements IRace, ISubRaceable, IRankable, Damageable {
         }
     }
 
-    @EventHandler
-    public void onInteract(PlayerInteractEvent e) {
-        Player player = e.getPlayer();
-        RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
-        if(profile.raceData.getRace() != RaceType.KARYU)
-            return;
-
+    @Override
+    public void onInteract(PlayerInteractEvent e, Player player, IRaceData raceData) {
         ItemStack item = e.getItem();
 
-        if(profile.raceData.getSubrace() == SubRace.MERCHANT.id
-        || (profile.raceData.getSubrace() == SubRace.ADORER.id && profile.raceData.getRank() >= Rank.DRAGON.rank)) {
+        if (raceData.getSubrace() == SubRace.MERCHANT.id
+        || (raceData.getSubrace() == SubRace.ADORER.id && raceData.getRank() >= Rank.DRAGON.rank)) {
 
-            emeraldExchange: if(profile.raceData.getRank() >= Rank.ADVANCE.rank) {
-
-                if (item == null || item.getType() != Material.EMERALD)
-                    break emeraldExchange;
-
-                if (e.getAction() != Action.RIGHT_CLICK_AIR)
-                    break emeraldExchange;
-
-                Material mineral = minerals.get(ThreadLocalRandom.current().nextInt(minerals.size()));
-
-                int amount = item.getAmount();
-                if (amount > 1) {
-                    item.setAmount(amount - 1);
-                } else {
-                    player.getInventory().setItemInMainHand(null);
-                }
-
-                if(!player.getInventory().addItem(new ItemStack(mineral)).isEmpty()) {
-                    item.setAmount(amount);
-                    player.sendMessage(Color.RED + "Erreur : Il n'y a pas de place dans ton inventaire.");
-                }
-
-                e.setCancelled(true);
+            if(raceData.getRank() >= Rank.ADVANCE.rank) {
+                emeraldExchange(e, player, item, raceData);
             }
+
         }
+    }
+
+    public void emeraldExchange(PlayerInteractEvent e, Player player, ItemStack item, IRaceData raceData) {
+        if (item == null || item.getType() != Material.EMERALD) return;
+
+        if (e.getAction() != Action.RIGHT_CLICK_AIR) return;
+
+        Material mineral = minerals.get(ThreadLocalRandom.current().nextInt(minerals.size()));
+
+        int amount = item.getAmount();
+        if (amount > 1) {
+            item.setAmount(amount - 1);
+        } else {
+            player.getInventory().setItemInMainHand(null);
+        }
+
+        if(!player.getInventory().addItem(new ItemStack(mineral)).isEmpty()) {
+            item.setAmount(amount);
+            player.sendMessage(Color.RED + "Erreur : Il n'y a pas de place dans ton inventaire.");
+        }
+
+        e.setCancelled(true);
     }
 
     @Override
