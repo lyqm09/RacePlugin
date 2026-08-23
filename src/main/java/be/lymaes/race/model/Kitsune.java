@@ -162,12 +162,12 @@ public class Kitsune implements IRace, IRankable, Taskable, Interactable, RaidFi
                 JBLvl = 2;
             }
             case EIGHT -> {
-                speedMultiplier = 50.0;
+                speedMultiplier = 0.50;
                 strengthMultiplier = 35.0;
                 JBLvl = 2;
             }
             case NINE -> {
-                speedMultiplier = 100.0;
+                speedMultiplier = 1.0;
                 strengthMultiplier = 50.0;
                 JBLvl = 3;
             }
