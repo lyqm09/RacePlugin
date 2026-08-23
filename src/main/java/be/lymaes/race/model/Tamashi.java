@@ -355,15 +355,20 @@ public class Tamashi implements IRace, ISubRaceable, IRankable, Taskable, Damage
 
     @Override
     public void applyRacePerks(RaceProfile profile) {
-        Player player = profile.getPlayer();
-        if(!player.hasPermission(PERM_HOME)) {
-            IRace.addPermission(player, PERM_HOME);
-        }
+        reapplyPerms(profile);
 
         switch(SubRace.fromId(profile.raceData.getSubrace())) {
             case WATER -> applyWater(profile);
             case FIRE -> applyFire(profile);
             case AIR -> applyAir(profile);
+        }
+    }
+
+    @Override
+    public void reapplyPerms(RaceProfile profile) {
+        Player player = profile.getPlayer();
+        if(!player.hasPermission(PERM_HOME)) {
+            IRace.addPermission(player, PERM_HOME);
         }
     }
 

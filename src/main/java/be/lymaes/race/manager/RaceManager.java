@@ -86,10 +86,12 @@ public class RaceManager {
 
         IRace oldRace = getRaceModel(RaceType.fromName(raceName));
 
+        boolean wasRefreshed = false;
         if (raceName == null) {
             getRaceModel(profile.raceData.getRace()).applyRacePerks(profile);
             player.getPersistentDataContainer().set(RACE_KEY, PersistentDataType.STRING, profile.raceData.getRace().name());
             player.getPersistentDataContainer().set(SUBRACE_KEY, PersistentDataType.INTEGER, profile.raceData.getSubrace());
+            wasRefreshed = true;
         }
 
         else if (!raceName.equalsIgnoreCase(profile.raceData.getRace().name())) {
@@ -98,6 +100,7 @@ public class RaceManager {
             getRaceModel(profile.raceData.getRace()).applyRacePerks(profile);
             player.getPersistentDataContainer().set(RACE_KEY, PersistentDataType.STRING, profile.raceData.getRace().name());
             player.getPersistentDataContainer().set(SUBRACE_KEY, PersistentDataType.INTEGER, profile.raceData.getSubrace());
+            wasRefreshed = true;
         }
 
         else if (oldRace instanceof ISubRaceable) {
@@ -106,12 +109,18 @@ public class RaceManager {
 
                 getRaceModel(profile.raceData.getRace()).applyRacePerks(profile);
                 player.getPersistentDataContainer().set(SUBRACE_KEY, PersistentDataType.INTEGER, profile.raceData.getSubrace());
+                wasRefreshed = true;
             }
         }
 
         if(rank != profile.raceData.getRank()) {
             getRaceModel(profile.raceData.getRace()).applyRacePerks(profile);
             player.getPersistentDataContainer().set(RANK_KEY, PersistentDataType.INTEGER, profile.raceData.getRank());
+            wasRefreshed = true;
+        }
+
+        if(!wasRefreshed) {
+            getRaceModel(profile.raceData.getRace()).reapplyPerms(profile);
         }
     }
 

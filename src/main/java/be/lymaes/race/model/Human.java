@@ -10,6 +10,11 @@ public class Human implements IRace {
     }
 
     @Override
+    public void reapplyPerms(RaceProfile profile) {
+
+    }
+
+    @Override
     public void reapplyEffect(RaceProfile profile) {
 
     }

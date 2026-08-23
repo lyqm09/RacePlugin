@@ -202,6 +202,11 @@ public class Oni implements IRace, IRankable, Taskable, Damageable, Interactable
     }
 
     @Override
+    public void reapplyPerms(RaceProfile profile) {
+        // nothing
+    }
+
+    @Override
     public void reapplyEffect(RaceProfile profile) {
         applyEffect(profile);
     }

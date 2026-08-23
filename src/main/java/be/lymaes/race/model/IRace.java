@@ -15,6 +15,7 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 public interface IRace extends Listener {
 
     void applyRacePerks(RaceProfile profile);
+    void reapplyPerms(RaceProfile profile);
     void reapplyEffect(RaceProfile profile);
     void cleanup(RaceProfile profile);
 

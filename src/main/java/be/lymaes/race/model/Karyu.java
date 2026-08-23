@@ -272,6 +272,14 @@ public class Karyu implements IRace, ISubRaceable, IRankable, Damageable, Intera
     }
 
     @Override
+    public void reapplyPerms(RaceProfile profile) {
+        switch(SubRace.fromId(profile.raceData.getSubrace())) {
+            case MERCHANT -> applyMerchantPermission(profile);
+            case ADORER -> applyAdorerPermission(profile);
+        }
+    }
+
+    @Override
     public void reapplyEffect(RaceProfile profile) {
         if (Objects.requireNonNull(SubRace.fromId(profile.raceData.getSubrace())) == SubRace.MERCHANT) {
             applyMerchantEffect(profile);
