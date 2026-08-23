@@ -4,6 +4,7 @@ import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.Damageable;
 import be.lymaes.race.ability.Damager;
+import be.lymaes.race.ability.Interactable;
 import be.lymaes.race.ability.Taskable;
 import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.data.TamashiData;
@@ -11,14 +12,12 @@ import be.lymaes.race.gui.GUITypes;
 import be.lymaes.race.item.FlyCharge;
 import be.lymaes.race.item.IStaticItem;
 import be.lymaes.race.item.RaceItem;
-import be.lymaes.race.manager.RaceManager;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -28,7 +27,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class Tamashi implements IRace, ISubRaceable, IRankable, Taskable, Damageable, Damager {
+public class Tamashi implements IRace, ISubRaceable, IRankable, Taskable, Damageable, Damager, Interactable {
 
     public static final String PERM_HOME = "race.tamashi.home";
     public static final String PERM_FLY_CHARGE = "race.tamashi.air.fly_charge";
@@ -81,84 +80,88 @@ public class Tamashi implements IRace, ISubRaceable, IRankable, Taskable, Damage
 
     }
 
-    @EventHandler
-    public void onInteract(PlayerInteractEvent e) {
-        Player player = e.getPlayer();
-        RaceProfile profile = Race.getInstance().getRaceManager().getProfile(player);
-        if(profile.raceData.getRace() != RaceType.TAMASHI)
+    @Override
+    public void onInteract(PlayerInteractEvent e, Player player, IRaceData raceData) {
+        ItemStack item = e.getItem();
+
+        if(raceData.getSubrace() == SubRace.EARTH.id) {
+            consumeDirt(e, player, item);
+        }
+        else if(raceData.getSubrace() == SubRace.FIRE.id) {
+            launchFireball(e, player, item);
+        }
+        else if(raceData.getSubrace() == SubRace.AIR.id) {
+            useFlyCharge(e, player, item, raceData);
+        }
+    }
+
+    private void consumeDirt(PlayerInteractEvent e, Player player, ItemStack item) {
+        if(item == null || (item.getType() != Material.DIRT && item.getType() != Material.GRASS_BLOCK))
             return;
 
-        ItemStack item = e.getItem();
-        Rank rank = Rank.fromRank(profile.raceData.getRank());
+        if (e.getAction() != Action.RIGHT_CLICK_AIR)
+            return;
 
-        if(profile.raceData.getSubrace() == SubRace.EARTH.id) {
-
-            if(item == null || (item.getType() != Material.DIRT && item.getType() != Material.GRASS_BLOCK))
-                return;
-
-            if (e.getAction() != Action.RIGHT_CLICK_AIR)
-                return;
-
-            int amount = item.getAmount();
-            if (amount > 1) {
-                item.setAmount(amount - 1);
-            } else {
-                player.getInventory().setItemInMainHand(null);
-            }
-
-            player.setFoodLevel(player.getFoodLevel() + 1);
-            player.setSaturation(player.getSaturation() + 0.5f);
-
-            e.setCancelled(true);
+        int amount = item.getAmount();
+        if (amount > 1) {
+            item.setAmount(amount - 1);
+        } else {
+            player.getInventory().setItemInMainHand(null);
         }
-        else if(profile.raceData.getSubrace() == SubRace.FIRE.id) {
 
-            if(item == null || item.getType() != Material.BLAZE_POWDER)
-                return;
+        player.setFoodLevel(player.getFoodLevel() + 1);
+        player.setSaturation(player.getSaturation() + 0.5f);
 
-            if (e.getAction() != Action.RIGHT_CLICK_AIR)
-                return;
+        e.setCancelled(true);
+    }
 
-            int amount = item.getAmount();
-            if (amount > 1) {
-                item.setAmount(amount - 1);
-            } else {
-                player.getInventory().setItemInMainHand(null);
-            }
+    private void launchFireball(PlayerInteractEvent e, Player player, ItemStack item) {
+        if(item == null || item.getType() != Material.BLAZE_POWDER)
+            return;
 
-            player.launchProjectile(Fireball.class);
+        if (e.getAction() != Action.RIGHT_CLICK_AIR)
+            return;
 
-            e.setCancelled(true);
+        int amount = item.getAmount();
+        if (amount > 1) {
+            item.setAmount(amount - 1);
+        } else {
+            player.getInventory().setItemInMainHand(null);
         }
-        else if(profile.raceData.getSubrace() == SubRace.AIR.id) {
 
-            if(!(Race.getInstance().getItemManager().getItem(item) instanceof FlyCharge))
-                return;
+        player.launchProjectile(Fireball.class);
 
-            e.setCancelled(true);
+        e.setCancelled(true);
+    }
 
-            if(profile.raceData.getRank() >= Rank.OKAMI.rank)
-                return;
+    private void useFlyCharge(PlayerInteractEvent e, Player player, ItemStack item, IRaceData raceData) {
+        if(!(Race.getInstance().getItemManager().getItem(item) instanceof FlyCharge))
+            return;
 
-            if(e.getAction() != Action.RIGHT_CLICK_AIR)
-                return;
+        e.setCancelled(true);
 
-            int time = switch(rank) {
-                case CHILD -> 10;
-                case ACCOMPLISHED -> 20;
-                case HALF_GOD -> 30;
-                case KAMI -> 5 * 60;
-                default -> 5;
-            };
+        if(raceData.getRank() >= Rank.OKAMI.rank)
+            return;
 
-            if(!player.hasCooldown(item)) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, time * 20, 0, true, false, true));
-                player.setCooldown(item, (time + 10) * 20);
-            }
-            else if(player.hasPotionEffect(PotionEffectType.LEVITATION)) {
-                player.removePotionEffect(PotionEffectType.LEVITATION);
-                player.setCooldown(item, 10 * 20);
-            }
+        if(e.getAction() != Action.RIGHT_CLICK_AIR)
+            return;
+
+        Rank rank = Rank.fromRank(raceData.getRank());
+        int time = switch(rank) {
+            case CHILD -> 10;
+            case ACCOMPLISHED -> 20;
+            case HALF_GOD -> 30;
+            case KAMI -> 5 * 60;
+            default -> 5;
+        };
+
+        if(!player.hasCooldown(item)) {
+            player.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, time * 20, 0, true, false, true));
+            player.setCooldown(item, (time + 10) * 20);
+        }
+        else if(player.hasPotionEffect(PotionEffectType.LEVITATION)) {
+            player.removePotionEffect(PotionEffectType.LEVITATION);
+            player.setCooldown(item, 10 * 20);
         }
     }
 

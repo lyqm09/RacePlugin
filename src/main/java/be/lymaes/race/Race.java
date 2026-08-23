@@ -51,6 +51,7 @@ public final class Race extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new DeathListener(this), this);
         getServer().getPluginManager().registerEvents(new RaidListener(this), this);
         getServer().getPluginManager().registerEvents(new SneakListener(this), this);
+        getServer().getPluginManager().registerEvents(new InteractListener(this), this);
 
 
         for(IRace instance : raceManager.getRegisterValues()) {

@@ -119,13 +119,13 @@ public class Karyu implements IRace, ISubRaceable, IRankable, Damageable, Intera
         || (raceData.getSubrace() == SubRace.ADORER.id && raceData.getRank() >= Rank.DRAGON.rank)) {
 
             if(raceData.getRank() >= Rank.ADVANCE.rank) {
-                emeraldExchange(e, player, item, raceData);
+                emeraldExchange(e, player, item);
             }
 
         }
     }
 
-    public void emeraldExchange(PlayerInteractEvent e, Player player, ItemStack item, IRaceData raceData) {
+    public void emeraldExchange(PlayerInteractEvent e, Player player, ItemStack item) {
         if (item == null || item.getType() != Material.EMERALD) return;
 
         if (e.getAction() != Action.RIGHT_CLICK_AIR) return;

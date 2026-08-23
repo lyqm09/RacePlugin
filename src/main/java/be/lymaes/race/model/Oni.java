@@ -4,7 +4,6 @@ import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.*;
 import be.lymaes.race.ability.Damageable;
 import be.lymaes.race.data.IRaceData;
-import be.lymaes.race.manager.RaceManager;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -64,13 +63,11 @@ public class Oni implements IRace, IRankable, Taskable, Damageable, Interactable
         if(!world.hasStorm()) return false;
 
         Location location = player.getLocation();
-        int highestBlockY = world.getHighestBlockYAt(location);
-        if(highestBlockY > location.getBlockY()) return false;
-
         Biome biome = world.getBiome(location);
         if(NOT_RAINING_BIOMES.contains(biome)) return false;
 
-        return true;
+        int highestBlockY = world.getHighestBlockYAt(location);
+        return highestBlockY < location.getBlockY();
     }
 
     @Override
