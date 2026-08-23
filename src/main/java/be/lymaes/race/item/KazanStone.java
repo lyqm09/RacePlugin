@@ -1,22 +1,17 @@
 package be.lymaes.race.item;
 
-import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
-import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.model.IRace;
 import be.lymaes.race.model.Oni;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.WitherSkeleton;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class KazanStone implements IRaceItem, Consumable {
+public class KazanStone implements IRaceItem, Consumable, Droppable {
 
     private static final double TOL = 0.0005;
 
@@ -25,7 +20,7 @@ public class KazanStone implements IRaceItem, Consumable {
         return RaceItem.KAZAN_STONE;
     }
 
-    @EventHandler
+    @Override
     public void onDrop(EntityDeathEvent e) {
         if(!(e.getEntity() instanceof WitherSkeleton))
             return;

@@ -2,10 +2,7 @@ package be.lymaes.race.model;
 
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
-import be.lymaes.race.ability.Damageable;
-import be.lymaes.race.ability.Damager;
-import be.lymaes.race.ability.Interactable;
-import be.lymaes.race.ability.Taskable;
+import be.lymaes.race.ability.*;
 import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.data.TamashiData;
 import be.lymaes.race.gui.GUITypes;
@@ -24,10 +21,12 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.components.FoodComponent;
+import org.bukkit.inventory.meta.components.consumable.ConsumableComponent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class Tamashi implements IRace, ISubRaceable, IRankable, Taskable, Damageable, Damager, Interactable {
+public class Tamashi implements IRace, ISubRaceable, IRankable, Taskable, Damageable, Damager, Interactable, Helder {
 
     public static final String PERM_HOME = "race.tamashi.home";
     public static final String PERM_FLY_CHARGE = "race.tamashi.air.fly_charge";
@@ -78,6 +77,45 @@ public class Tamashi implements IRace, ISubRaceable, IRankable, Taskable, Damage
             profile.addExp(1);
         }
 
+    }
+
+    @Override
+    public void onSwitchOff(IRaceData raceData, ItemStack item) {
+        if(raceData.getSubrace() == SubRace.EARTH.id) {
+            if(item.getType() != Material.DIRT) return;
+
+            ItemMeta meta = item.getItemMeta();
+            if(meta == null) return;
+
+            meta.setConsumable(null);
+            meta.setFood(null);
+
+            item.setItemMeta(meta);
+        }
+    }
+
+    @Override
+    public void onSwitchOn(IRaceData raceData, ItemStack item) {
+        if(raceData.getSubrace() == SubRace.EARTH.id) {
+            if(item.getType() != Material.DIRT) return;
+
+            ItemMeta meta = item.getItemMeta();
+            if(meta == null) return;
+
+            ConsumableComponent consumable = meta.getConsumable();
+            consumable.setAnimation(ConsumableComponent.Animation.EAT);
+            consumable.setConsumeSeconds(1.6f);
+            consumable.setSound(Sound.ENTITY_GENERIC_EAT);
+            meta.setConsumable(consumable);
+
+            FoodComponent food = meta.getFood();
+            food.setNutrition(1);
+            food.setSaturation(0.5f);
+            food.setCanAlwaysEat(true);
+            meta.setFood(food);
+
+            item.setItemMeta(meta);
+        }
     }
 
     @Override
