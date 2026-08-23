@@ -12,10 +12,8 @@ import be.lymaes.race.model.IRace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 
 public class InteractListener implements Listener {
@@ -98,6 +96,19 @@ public class InteractListener implements Listener {
     public void onDrop(PlayerDropItemEvent e) {
         if(itemManager.getItem(e.getItemDrop().getItemStack()) instanceof IStaticItem) {
             e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onPickup(EntityPickupItemEvent e) {
+        if(!(e.getEntity() instanceof Player player)) return;
+
+        RaceProfile profile = raceManager.getProfile(player);
+        if(profile == null) return;
+
+        IRace model = raceManager.getRaceModel(profile.raceData.getRace());
+        if(model instanceof Helder helder) {
+            helder.onSwitchOn(profile.raceData, e.getItem().getItemStack());
         }
     }
 

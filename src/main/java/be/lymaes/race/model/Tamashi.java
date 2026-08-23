@@ -84,7 +84,7 @@ public class Tamashi implements IRace, ISubRaceable, IRankable, Taskable, Damage
     @Override
     public void onSwitchOff(IRaceData raceData, ItemStack item) {
         if(raceData.getSubrace() == SubRace.EARTH.id) {
-            if(item.getType() != Material.DIRT) return;
+            if(item == null || item.getType() != Material.DIRT) return;
 
             ItemMeta meta = item.getItemMeta();
             if(meta == null) return;
@@ -99,7 +99,7 @@ public class Tamashi implements IRace, ISubRaceable, IRankable, Taskable, Damage
     @Override
     public void onSwitchOn(IRaceData raceData, ItemStack item) {
         if(raceData.getSubrace() == SubRace.EARTH.id) {
-            if(item.getType() != Material.DIRT) return;
+            if(item == null || item.getType() != Material.DIRT) return;
 
             ItemMeta meta = item.getItemMeta();
             if(meta == null) return;
@@ -124,35 +124,12 @@ public class Tamashi implements IRace, ISubRaceable, IRankable, Taskable, Damage
     public void onInteract(PlayerInteractEvent e, Player player, IRaceData raceData) {
         ItemStack item = e.getItem();
 
-        if(raceData.getSubrace() == SubRace.EARTH.id) {
-            consumeDirt(e, player, item);
-        }
-        else if(raceData.getSubrace() == SubRace.FIRE.id) {
+        if(raceData.getSubrace() == SubRace.FIRE.id) {
             launchFireball(e, player, item);
         }
         else if(raceData.getSubrace() == SubRace.AIR.id) {
             useFlyCharge(e, player, item, raceData);
         }
-    }
-
-    private void consumeDirt(PlayerInteractEvent e, Player player, ItemStack item) {
-        if(item == null || (item.getType() != Material.DIRT && item.getType() != Material.GRASS_BLOCK))
-            return;
-
-        if (e.getAction() != Action.RIGHT_CLICK_AIR)
-            return;
-
-        int amount = item.getAmount();
-        if (amount > 1) {
-            item.setAmount(amount - 1);
-        } else {
-            player.getInventory().setItemInMainHand(null);
-        }
-
-        player.setFoodLevel(player.getFoodLevel() + 1);
-        player.setSaturation(player.getSaturation() + 0.5f);
-
-        e.setCancelled(true);
     }
 
     private void launchFireball(PlayerInteractEvent e, Player player, ItemStack item) {
