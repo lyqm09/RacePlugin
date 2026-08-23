@@ -210,7 +210,7 @@ public class RaceProfile {
         return loadProfile(player, null, -1);
     }
 
-    public void save() {
+    public void save() { // save after reading
         Bukkit.getScheduler().runTaskAsynchronously(Race.getInstance(), this::saveSynchronously);
     }
 

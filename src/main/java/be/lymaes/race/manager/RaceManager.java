@@ -45,6 +45,14 @@ public class RaceManager {
     public void changeRace(Player player, RaceType race, int subrace) {
         RaceProfile profile = getProfile(player);
 
+        if(profile.raceData.getRace() == race) {
+            if(register.get(race) instanceof ISubRaceable) {
+                if(profile.raceData.getSubrace() == subrace) return;
+            } else {
+                return;
+            }
+        }
+
         save(profile);
 
         profile.clearVisualQueue();

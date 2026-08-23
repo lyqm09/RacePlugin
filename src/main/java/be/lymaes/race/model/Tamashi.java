@@ -40,9 +40,7 @@ public class Tamashi implements IRace, ISubRaceable, IRankable, Taskable, Damage
     public void onTask(Player player, RaceProfile profile) {
         long currentTime = System.currentTimeMillis();
 
-        if((currentTime / 1000) % 60 != 0) {
-            return;
-        }
+        if((currentTime / 1000) % 60 != 0) return;
 
         Location playerLoc = player.getLocation();
         Location home = ((TamashiData)profile.raceData).getHome();
