@@ -52,8 +52,7 @@ commands:
     permission-message: Tu n'as pas la permission d'utiliser cette commande.
     usage: /bless <player>
 
-  home:
-    aliases: [foyer]
+  foyer:
     description: Défini le centre de la zone d'action d'un Tamashi.
     permission: race.tamashi.home
     permission-message: Tu n'es pas un Tamashi.

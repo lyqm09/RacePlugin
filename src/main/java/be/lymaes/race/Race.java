@@ -59,7 +59,7 @@ public final class Race extends JavaPlugin {
         getCommand("mexp").setExecutor(mexp);
 
         HomeCMD home = new HomeCMD(this);
-        getCommand("home").setExecutor(home);
+        getCommand("foyer").setExecutor(home);
 
         BlessCMD bless = new BlessCMD(this);
         getCommand("bless").setExecutor(bless);
