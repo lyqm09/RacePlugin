@@ -12,7 +12,7 @@ import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
-public interface IRace extends Listener {
+public interface IRace {
 
     void applyRacePerks(RaceProfile profile);
     void reapplyPerms(RaceProfile profile);
