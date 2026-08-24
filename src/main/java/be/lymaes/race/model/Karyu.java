@@ -356,10 +356,13 @@ public class Karyu implements IRace, ISubRaceable, IRankable, Damageable, Intera
 
         public static Rank fromRank(int n) {
             Rank[] ranks = Rank.values();
-            if(n < ranks.length) {
+            if(n < 0) {
+                return ranks[0];
+            }
+            else if(n < ranks.length) {
                 return ranks[n];
             }
-            return ranks[0];
+            return ranks[ranks.length-1];
         }
     }
 

@@ -59,7 +59,9 @@ public class Kitsune implements IRace, IRankable, Taskable, Interactable, RaidFi
         if(AVAILABLE_BIOMES.contains(currentBiome)) {
             if (currentTime - time >= 1000 * 60 * 60) {
                 if (ThreadLocalRandom.current().nextDouble() <= TOL) {
-                    profile.rankUp();
+                    if(getExpRequired(profile.raceData.getRank()+1) != -1) {
+                        profile.rankUp();
+                    }
                 }
                 data.setTimeInForest(currentTime);
             }
@@ -76,7 +78,9 @@ public class Kitsune implements IRace, IRankable, Taskable, Interactable, RaidFi
 
     @Override
     public void onRaidFinish(RaceProfile profile) {
-        profile.rankUp();
+        if(getExpRequired(profile.raceData.getRank()+1) != -1) {
+            profile.rankUp();
+        }
     }
 
     @Override
@@ -305,10 +309,13 @@ public class Kitsune implements IRace, IRankable, Taskable, Interactable, RaidFi
 
         public static Rank fromRank(int n) {
             Rank[] ranks = Rank.values();
-            if(n < ranks.length) {
+            if(n < 0) {
+                return ranks[0];
+            }
+            else if(n < ranks.length) {
                 return ranks[n];
             }
-            return ranks[0];
+            return ranks[ranks.length-1];
         }
     }
 }
