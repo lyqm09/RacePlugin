@@ -52,10 +52,13 @@ public class RaceProfile {
         Player player = getPlayer();
         if(player != null && player.isOnline()) {
 
-            Runnable runnable = visualQueue.poll();
+            Runnable runnable = visualQueue.peek();
             if(runnable != null) {
                 runnable.run();
-                Bukkit.getScheduler().runTaskLater(Race.getInstance(), this::playNextVisualEffect, 50L);
+                Bukkit.getScheduler().runTaskLater(Race.getInstance(), () -> {
+                    visualQueue.remove();
+                    playNextVisualEffect();
+                }, 50L);
             } else {
                 playNextVisualEffect();
             }
