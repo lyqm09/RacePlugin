@@ -267,8 +267,8 @@ public class Oni implements IRace, IRankable, Taskable, Damageable, Interactable
             if(n < 0) {
                 return ranks[0];
             }
-            else if(n >= ranks.length) {
-                return ranks[ranks.length-1];
+            else if(n < ranks.length) {
+                return ranks[n];
             }
             return ranks[ranks.length-1];
         }
