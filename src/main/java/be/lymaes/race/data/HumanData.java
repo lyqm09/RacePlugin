@@ -29,6 +29,11 @@ public class HumanData implements IRaceData {
     }
 
     @Override
+    public void setRank(int n) {
+
+    }
+
+    @Override
     public int getExp() {
         return 0;
     }
