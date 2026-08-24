@@ -16,12 +16,10 @@ public class RaceManager {
 
     private Map<RaceType, IRace> register = new EnumMap<>(RaceType.class);
     private Map<Player, RaceProfile> profiles = new HashMap<>();
-    private Map<RaceType, List<RaceProfile>> races = new EnumMap<>(RaceType.class);
 
     public RaceManager() {
         for(RaceType race : RaceType.values()) {
             register.put(race, race.model.get());
-            races.put(race, new ArrayList<>());
         }
     }
 
@@ -30,10 +28,6 @@ public class RaceManager {
             profile.saveSynchronously();
         }
 
-        for(List<RaceProfile> lists : races.values()) {
-            lists.clear();
-        }
-        races.clear();
         profiles.clear();
         register.clear();
     }
@@ -57,13 +51,10 @@ public class RaceManager {
 
         profile.clearVisualQueue();
         getRaceModel(profile.raceData.getRace()).cleanup(profile);
-        removePlayerFromRaces(profile);
 
         RaceProfile.loadProfile(player, race, subrace).thenAccept(newProfile -> {
             try {
                 profiles.put(player, newProfile);
-
-                addPlayerToRaces(newProfile);
 
                 getRaceModel(race).applyRacePerks(newProfile);
                 player.getPersistentDataContainer().set(RACE_KEY, PersistentDataType.STRING, newProfile.raceData.getRace().name());
@@ -130,8 +121,6 @@ public class RaceManager {
 
             verifyAndLoadRace(profile);
 
-            addPlayerToRaces(profile);
-
             profile.setTabName();
             profile.updateTabInfo();
         });
@@ -145,7 +134,6 @@ public class RaceManager {
 
         profile.clearVisualQueue();
 
-        removePlayerFromRaces(profile);
         profiles.remove(player);
     }
 
@@ -165,26 +153,6 @@ public class RaceManager {
         if(!profiles.containsKey(player))
             return new RaceProfile(player.getUniqueId(), RaceType.HUMAN.loadData.apply(null, null));
         return profiles.get(player);
-    }
-
-    private void addPlayerToRaces(RaceProfile profile) {
-        if(races.containsKey(profile.raceData.getRace())) {
-            List<RaceProfile> players = new ArrayList<>();
-            players.add(profile);
-            races.put(profile.raceData.getRace(), players);
-        } else {
-            races.get(profile.raceData.getRace()).add(profile);
-        }
-    }
-
-    private void removePlayerFromRaces(RaceProfile profile) {
-        if(races.containsKey(profile.raceData.getRace())) {
-            races.get(profile.raceData.getRace()).remove(profile);
-        }
-    }
-
-    public List<RaceProfile> getRaceProfiles(RaceType race) {
-        return races.get(race);
     }
 
 }

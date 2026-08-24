@@ -25,6 +25,12 @@ commands:
     permission-message: Tu n'as pas la permission d'utiliser cette commande.
     usage: /mexp give <player> <amount>
 
+  mtail:
+    description: Ajoute ou retire le nombre de queues du Kitsune concerné.
+    permission: race.mtail
+    permission-message: Tu n'as pas la permission d'utiliser cette commande.
+    usage: /mexp <give|remove> <player> <amount>
+
   fortune:
     description: Pose l'enchantement fortune et curse of binding sur l'objet en main.
     permission: race.karyu.merchant.fortune
@@ -64,11 +70,16 @@ permissions:
     default: op
     children:
       race.mexp: true
+      race.mtail: true
       race.tamashi: true
       race.karyu: true
 
   race.mexp:
     description: Donne accès à la commande /mexp
+    default: op
+
+  race.tail:
+    description: Donne accès à la commande /mtail
     default: op
 
   race.tamashi:

@@ -58,6 +58,9 @@ public final class Race extends JavaPlugin {
         MexpCMD mexp = new MexpCMD(this);
         getCommand("mexp").setExecutor(mexp);
 
+        MtailCMD mtail = new MtailCMD(this);
+        getCommand("mtail").setExecutor(mtail);
+
         HomeCMD home = new HomeCMD(this);
         getCommand("foyer").setExecutor(home);
 

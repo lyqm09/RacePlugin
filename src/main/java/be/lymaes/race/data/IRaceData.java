@@ -11,6 +11,7 @@ public interface IRaceData {
 
     int getRank();
     void rankUp();
+    void setRank(int n);
 
     int getExp();
     void addExp(int n);

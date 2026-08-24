@@ -40,6 +40,10 @@ public abstract class RaceData implements IRaceData {
         rank++;
     }
 
+    public void setRank(int n) {
+        rank = n;
+    }
+
     public int getExp() {
         return exp;
     }
