@@ -233,6 +233,8 @@ public class Kitsune implements IRace, IRankable, Taskable, Interactable, RaidFi
     public void reapplyPerms(RaceProfile profile) {
         if(profile.raceData.getRank() >= Rank.NINE.rank) {
             profile.getPlayer().setAllowFlight(true);
+        } else {
+            profile.getPlayer().setAllowFlight(false);
         }
     }
 
