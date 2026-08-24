@@ -57,12 +57,12 @@ public class MtailCMD implements CommandExecutor {
             return true;
         }
 
-
         int newRank = profile.raceData.getRank() + (give ? queues : -queues);
         Kitsune.Rank rank = Kitsune.Rank.fromRank(newRank);
         profile.raceData.setRank(rank.rank);
 
         kitsune.applyRacePerks(profile);
+        profile.updateTabInfo();
 
         sender.sendMessage(player.getDisplayName() + " devient un Kitsune à " + rank.name + ".");
         player.sendMessage("Tu deviens un Kitsune à " + rank.name + ".");
