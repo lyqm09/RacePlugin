@@ -239,6 +239,10 @@ public class Kitsune implements IRace, IRankable, Taskable, Interactable, RaidFi
     @Override
     public void reapplyEffect(RaceProfile profile) {
         applyEffect(profile);
+
+        if(profile.raceData.getRank() >= Rank.NINE.rank) {
+            profile.getPlayer().setAllowFlight(true);
+        }
     }
 
     @Override

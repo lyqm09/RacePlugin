@@ -351,6 +351,10 @@ public class Tamashi implements IRace, ISubRaceable, IRankable, Taskable, Damage
         if(!player.hasPermission(PERM_HOME)) {
             IRace.addPermission(player, PERM_HOME);
         }
+
+        if(profile.raceData.getSubrace() == SubRace.AIR.id) {
+            applyAirPermission(profile);
+        }
     }
 
     @Override
