@@ -57,7 +57,7 @@ public class Kitsune implements IRace, IRankable, Taskable, Interactable, RaidFi
 
         Biome currentBiome = player.getWorld().getBiome(player.getLocation());
         if(AVAILABLE_BIOMES.contains(currentBiome)) {
-            if (currentTime - time >= 1000 * 60 * 60) {
+            if (time > 0 && currentTime - time >= 1000 * 60 * 60) {
                 if (ThreadLocalRandom.current().nextDouble() <= TOL) {
                     if(getExpRequired(profile.raceData.getRank()+1) != -1) {
                         profile.rankUp();
