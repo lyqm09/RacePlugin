@@ -11,6 +11,7 @@ import be.lymaes.race.gui.GUITypes;
 import be.lymaes.race.item.IStaticItem;
 import be.lymaes.race.item.MilicienEgg;
 import be.lymaes.race.item.RaceItem;
+import be.lymaes.race.manager.ItemManager;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -201,9 +202,12 @@ public class Karyu implements IRace, ISubRaceable, IRankable, Damageable, Intera
         Player player = profile.getPlayer();
 
         if(profile.raceData.getRank() >= Rank.BIG.rank) {
+            ItemManager itemManager = Race.getInstance().getItemManager();
+
             ItemStack item = player.getInventory().getContents()[8];
-            if(!(Race.getInstance().getItemManager().getItem(item) instanceof MilicienEgg)) {
-                player.getInventory().setItem(8, RaceItem.MILICIEN_EGG.getItem());
+            if(!(itemManager.getItem(item) instanceof MilicienEgg)) {
+                MilicienEgg milicienEgg = (MilicienEgg) itemManager.getItem(RaceItem.MILICIEN_EGG.id);
+                player.getInventory().setItem(8, milicienEgg.getItem());
 
                 if(item != null && !player.getInventory().addItem(item).isEmpty()) {
                     player.getWorld().dropItemNaturally(player.getLocation(), item);

@@ -9,6 +9,7 @@ import be.lymaes.race.gui.GUITypes;
 import be.lymaes.race.item.FlyCharge;
 import be.lymaes.race.item.IStaticItem;
 import be.lymaes.race.item.RaceItem;
+import be.lymaes.race.manager.ItemManager;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -315,10 +316,12 @@ public class Tamashi implements IRace, ISubRaceable, IRankable, Taskable, Damage
 
     private void giveAirItem(RaceProfile profile) {
         Player player = profile.getPlayer();
+        ItemManager itemManager = Race.getInstance().getItemManager();
 
         ItemStack item = player.getInventory().getContents()[8];
-        if(!(Race.getInstance().getItemManager().getItem(item) instanceof FlyCharge)) {
-            player.getInventory().setItem(8, RaceItem.FLY_CHARGE.getItem());
+        if(!(itemManager.getItem(item) instanceof FlyCharge)) {
+            FlyCharge flyCharge = (FlyCharge) itemManager.getItem(RaceItem.FLY_CHARGE.id);
+            player.getInventory().setItem(8, flyCharge.getItem());
 
             if(item != null && !player.getInventory().addItem(item).isEmpty()) {
                 player.getWorld().dropItemNaturally(player.getLocation(), item);

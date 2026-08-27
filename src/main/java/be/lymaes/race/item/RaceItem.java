@@ -1,15 +1,6 @@
 package be.lymaes.race.item;
 
-import be.lymaes.race.Race;
-import be.lymaes.race.manager.ItemManager;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.components.FoodComponent;
-import org.bukkit.inventory.meta.components.consumable.ConsumableComponent;
-import org.bukkit.persistence.PersistentDataType;
 
 import java.util.function.Supplier;
 
@@ -19,6 +10,7 @@ public enum RaceItem {
     TAMASHI_HEART("tamashi_heart", "Coeur de Tamashi", Material.GLOWSTONE_DUST, TamashiHeart::new),
     FLY_CHARGE("fly_charge", "Charge de vol", Material.WIND_CHARGE, FlyCharge::new),
     MILICIEN_EGG("milicien_egg", "Oeuf de Milicien", Material.IRON_GOLEM_SPAWN_EGG, MilicienEgg::new);
+//    PRIMORDIAL_ONI_BLOOD("primordial_oni_blood", "Sang d'Oni primordial", Material.SPLASH_POTION, PrimordialOniBlood::new);
 
     public final String id;
     public final String name;
@@ -30,37 +22,6 @@ public enum RaceItem {
         this.name = name;
         this.material = material;
         this.factory = factory;
-    }
-
-    public ItemStack getItem() {
-        ItemStack item = new ItemStack(material);
-        ItemMeta meta = item.getItemMeta();
-        if(meta == null)
-            return item;
-
-        meta.getPersistentDataContainer().set(ItemManager.KEY_ITEM_ID, PersistentDataType.STRING, id);
-
-        meta.setDisplayName(ChatColor.WHITE + name);
-
-        meta.setEnchantmentGlintOverride(true);
-
-        IRaceItem iitem = Race.getInstance().getItemManager().getItem(id);
-        if(iitem instanceof Consumable) {
-            ConsumableComponent consumable = meta.getConsumable();
-            consumable.setAnimation(ConsumableComponent.Animation.EAT);
-            consumable.setConsumeSeconds(1.6f);
-            consumable.setSound(Sound.ENTITY_ITEM_BREAK);
-            meta.setConsumable(consumable);
-
-            FoodComponent food = meta.getFood();
-            food.setNutrition(0);
-            food.setSaturation(0);
-            food.setCanAlwaysEat(true);
-            meta.setFood(food);
-        }
-
-        item.setItemMeta(meta);
-        return item;
     }
 
 }

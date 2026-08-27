@@ -3,21 +3,42 @@ package be.lymaes.race.item;
 import be.lymaes.race.RaceProfile;
 import be.lymaes.race.model.IRace;
 import be.lymaes.race.model.Oni;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.WitherSkeleton;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.components.FoodComponent;
+import org.bukkit.inventory.meta.components.consumable.ConsumableComponent;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class KazanStone implements IRaceItem, Consumable, Droppable {
+public class KazanStone extends ARaceItem implements Consumable, Droppable {
 
     private static final double TOL = 0.0005;
 
     @Override
     public RaceItem getType() {
         return RaceItem.KAZAN_STONE;
+    }
+
+    @Override
+    protected void applyMeta(ItemMeta meta) {
+        meta.setEnchantmentGlintOverride(true);
+
+        ConsumableComponent consumable = meta.getConsumable();
+        consumable.setAnimation(ConsumableComponent.Animation.EAT);
+        consumable.setConsumeSeconds(1.6f);
+        consumable.setSound(Sound.ENTITY_ITEM_BREAK);
+        meta.setConsumable(consumable);
+
+        FoodComponent food = meta.getFood();
+        food.setNutrition(0);
+        food.setSaturation(0);
+        food.setCanAlwaysEat(true);
+        meta.setFood(food);
     }
 
     @Override
@@ -29,7 +50,7 @@ public class KazanStone implements IRaceItem, Consumable, Droppable {
         if(random > TOL)
             return;
 
-        ItemStack kazanStone = RaceItem.KAZAN_STONE.getItem();
+        ItemStack kazanStone = this.getItem();
         e.getDrops().add(kazanStone);
     }
 

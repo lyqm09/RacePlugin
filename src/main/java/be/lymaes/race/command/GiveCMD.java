@@ -54,7 +54,7 @@ public class GiveCMD implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        target.getInventory().addItem(item.getType().getItem());
+        target.getInventory().addItem(item.getItem());
         return true;
     }
 
