@@ -1,5 +1,9 @@
-package be.lymaes.race.item;
+package be.lymaes.race.item.model;
 
+import be.lymaes.race.item.ARaceItem;
+import be.lymaes.race.item.Heldable;
+import be.lymaes.race.item.IStaticItem;
+import be.lymaes.race.item.RaceItem;
 import be.lymaes.race.model.Tamashi;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;

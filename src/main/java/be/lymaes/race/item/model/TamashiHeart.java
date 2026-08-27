@@ -1,6 +1,10 @@
-package be.lymaes.race.item;
+package be.lymaes.race.item.model;
 
 import be.lymaes.race.RaceProfile;
+import be.lymaes.race.item.ARaceItem;
+import be.lymaes.race.item.Consumable;
+import be.lymaes.race.item.Droppable;
+import be.lymaes.race.item.RaceItem;
 import be.lymaes.race.model.IRace;
 import org.bukkit.Sound;
 import org.bukkit.entity.Monster;

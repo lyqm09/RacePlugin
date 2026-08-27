@@ -39,9 +39,9 @@ public class RaceManager {
     public void changeRace(Player player, RaceType race, int subrace) {
         RaceProfile profile = getProfile(player);
 
-        if(profile.raceData.getRace() == race) {
-            if(register.get(race) instanceof ISubRaceable) {
-                if(profile.raceData.getSubrace() == subrace) return;
+        if (profile.raceData.getRace() == race) {
+            if (register.get(race) instanceof ISubRaceable) {
+                if (profile.raceData.getSubrace() == subrace) return;
             } else {
                 return;
             }
@@ -52,20 +52,18 @@ public class RaceManager {
         profile.clearVisualQueue();
         getRaceModel(profile.raceData.getRace()).cleanup(profile);
 
-        RaceProfile.loadProfile(player, race, subrace).thenAccept(newProfile -> {
-            try {
-                profiles.put(player, newProfile);
+        RaceProfile.loadProfile(player, race, subrace).thenAccept(newProfile -> addAndApply(player, race, newProfile));
+    }
 
-                getRaceModel(race).applyRacePerks(newProfile);
-                player.getPersistentDataContainer().set(RACE_KEY, PersistentDataType.STRING, newProfile.raceData.getRace().name());
-                player.getPersistentDataContainer().set(SUBRACE_KEY, PersistentDataType.INTEGER, newProfile.raceData.getSubrace());
+    private void addAndApply(Player player, RaceType race, RaceProfile newProfile) {
+        profiles.put(player, newProfile);
 
-                newProfile.setTabName();
-                newProfile.updateTabInfo();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+        getRaceModel(race).applyRacePerks(newProfile);
+        player.getPersistentDataContainer().set(RACE_KEY, PersistentDataType.STRING, newProfile.raceData.getRace().name());
+        player.getPersistentDataContainer().set(SUBRACE_KEY, PersistentDataType.INTEGER, newProfile.raceData.getSubrace());
+
+        newProfile.setTabName();
+        newProfile.updateTabInfo();
     }
 
     private void verifyAndLoadRace(RaceProfile profile) {

@@ -1,23 +1,31 @@
 package be.lymaes.race;
 
+import be.lymaes.race.data.IRaceData;
+import be.lymaes.race.data.OniData;
+import be.lymaes.race.manager.RaceManager;
+import be.lymaes.race.model.RaceType;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.Title.Times;
+import org.bukkit.entity.Player;
 
 import java.time.Duration;
 import java.util.UUID;
 
 public class Messager {
 
+    private final RaceManager raceManager;
     private final BukkitAudiences adventure;
 
     public Messager(Race plugin) {
+        this.raceManager = plugin.getRaceManager();
         this.adventure = BukkitAudiences.create(plugin);
     }
 
@@ -45,6 +53,21 @@ public class Messager {
 
         audience.showTitle(title);
         audience.playSound(sound);
+    }
+
+    public void sendOniChoice(Player player, IRaceData data) {
+        Audience audience = adventure.player(player);
+
+        Component message = Component.text("Veux tu devenir Oni ? ")
+                .append(Component.text("[OUI]")
+                .color(NamedTextColor.GREEN)
+                .clickEvent(ClickEvent.callback(aud -> {
+                    // TODO
+                })))
+                .append(Component.text("[NON]")
+                .color(NamedTextColor.RED));
+
+        audience.sendMessage(message);
     }
 
     public BukkitAudiences adventure() {

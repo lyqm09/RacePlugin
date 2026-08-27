@@ -6,7 +6,7 @@ import be.lymaes.race.ability.*;
 import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.data.TamashiData;
 import be.lymaes.race.gui.GUITypes;
-import be.lymaes.race.item.FlyCharge;
+import be.lymaes.race.item.model.FlyCharge;
 import be.lymaes.race.item.IStaticItem;
 import be.lymaes.race.item.RaceItem;
 import be.lymaes.race.manager.ItemManager;

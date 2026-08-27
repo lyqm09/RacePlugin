@@ -1,5 +1,9 @@
-package be.lymaes.race.item;
+package be.lymaes.race.item.model;
 
+import be.lymaes.race.item.ARaceItem;
+import be.lymaes.race.item.IStaticItem;
+import be.lymaes.race.item.Interactable;
+import be.lymaes.race.item.RaceItem;
 import be.lymaes.race.model.Karyu;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -8,7 +12,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 public class MilicienEgg extends ARaceItem implements IStaticItem, Interactable {
 

@@ -9,7 +9,7 @@ import be.lymaes.race.ability.Merchant;
 import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.gui.GUITypes;
 import be.lymaes.race.item.IStaticItem;
-import be.lymaes.race.item.MilicienEgg;
+import be.lymaes.race.item.model.MilicienEgg;
 import be.lymaes.race.item.RaceItem;
 import be.lymaes.race.manager.ItemManager;
 import net.md_5.bungee.api.ChatColor;
