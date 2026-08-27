@@ -71,7 +71,7 @@ public class Oni implements IRace, IRankable, Taskable, Damageable, Interactable
     }
 
     @Override
-    public void onTask(Player player, RaceProfile profile) {
+    public void onTask(Player player, RaceProfile profile, long currentTime) {
         if(player.isInWater() || isUnderRain(player)) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 3 * 20, 1, true, false, true));
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 3 * 20, 1, true, false, true));

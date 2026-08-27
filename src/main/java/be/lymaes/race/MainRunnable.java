@@ -24,6 +24,7 @@ public class MainRunnable extends BukkitRunnable {
 
     @Override
     public void run() {
+        long currentTime = System.currentTimeMillis();
 
         for(Player player : Bukkit.getOnlinePlayers()) {
             RaceProfile profile = raceManager.getProfile(player);
@@ -32,7 +33,7 @@ public class MainRunnable extends BukkitRunnable {
             IRace model = raceManager.getRaceModel(profile.raceData.getRace());
             if(!(model instanceof Taskable taskable)) continue;
 
-            taskable.onTask(player, profile);
+            taskable.onTask(player, profile, currentTime);
         }
 
     }

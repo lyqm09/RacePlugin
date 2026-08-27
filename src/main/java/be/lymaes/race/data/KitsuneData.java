@@ -4,6 +4,8 @@ import be.lymaes.race.model.RaceType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import static java.lang.System.currentTimeMillis;
+
 public class KitsuneData extends RaceData {
 
     public static final RaceType RACE_TYPE = RaceType.KITSUNE;
@@ -30,7 +32,7 @@ public class KitsuneData extends RaceData {
 
     @Override
     protected void saveSpecificData(ObjectNode node) {
-        node.put("time_in_forest", timeInForest);
+        node.put("time_in_forest", System.currentTimeMillis() - timeInForest);
     }
 
     public static KitsuneData loadProfileData(JsonNode rootNode, RaceType.PrimaryData primaryData) {
@@ -40,8 +42,9 @@ public class KitsuneData extends RaceData {
             RaceType.PrimaryData data = loadProfileData(raceNode, RACE_TYPE, -1);
 
             long time = raceNode.path("time_in_forest").asLong(0);
+            long enterTime = time == 0 ? 0 : System.currentTimeMillis() - time;
 
-            return new KitsuneData(data.rank(), data.exp(), time);
+            return new KitsuneData(data.rank(), data.exp(), enterTime);
         }
 
         return new KitsuneData(primaryData.rank(), primaryData.exp());

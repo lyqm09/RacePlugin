@@ -37,9 +37,7 @@ public class Tamashi implements IRace, ISubRaceable, IRankable, Taskable, Damage
     private static final NamespacedKey SPEED = NamespacedKey.fromString("tamashi:speed");
 
     @Override
-    public void onTask(Player player, RaceProfile profile) {
-        long currentTime = System.currentTimeMillis();
-
+    public void onTask(Player player, RaceProfile profile, long currentTime) {
         Location playerLoc = player.getLocation();
         TamashiData data = ((TamashiData)profile.raceData);
         Location home = data.getHome();

@@ -49,9 +49,7 @@ public class Kitsune implements IRace, IRankable, Taskable, Interactable, RaidFi
     );
 
     @Override
-    public void onTask(Player player, RaceProfile profile) {
-        long currentTime = System.currentTimeMillis();
-
+    public void onTask(Player player, RaceProfile profile, long currentTime) {
         KitsuneData data = ((KitsuneData)profile.raceData);
         long time = data.getTimeInForest();
 
@@ -70,7 +68,7 @@ public class Kitsune implements IRace, IRankable, Taskable, Interactable, RaidFi
             }
         }
         else {
-            if(time != 0) {
+            if(time > 0) {
                 data.setTimeInForest(0L);
             }
         }
