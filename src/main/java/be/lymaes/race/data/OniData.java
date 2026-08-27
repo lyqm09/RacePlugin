@@ -20,6 +20,10 @@ public class OniData extends RaceData {
         this(rank, exp, null);
     }
 
+    public IRaceData getOverlay() {
+        return overlay;
+    }
+
     @Override
     protected void saveSpecificData(ObjectNode node) {
         ObjectNode overlayNode = node.withObjectProperty("overlay");

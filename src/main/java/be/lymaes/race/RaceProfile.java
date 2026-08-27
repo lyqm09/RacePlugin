@@ -85,7 +85,7 @@ public class RaceProfile {
         IRace irace = Race.getInstance().getRaceManager().getRaceModel(raceData.getRace());
         if(!(irace instanceof IRankable rankable)) return;
 
-        irace.applyRacePerks(this);
+        irace.applyRacePerks(getPlayer(), raceData);
 
         String rankName = rankable.getRankName(raceData.getRank());
         addVisualEffect(() -> {

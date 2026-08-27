@@ -1,9 +1,13 @@
 package be.lymaes.race.model;
 
+import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.*;
 import be.lymaes.race.ability.Damageable;
 import be.lymaes.race.data.IRaceData;
+import be.lymaes.race.data.OniData;
+import be.lymaes.race.data.TamashiData;
+import be.lymaes.race.manager.RaceManager;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -23,7 +27,7 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.EnumSet;
 import java.util.Set;
 
-public class Oni implements IRace, IRankable, Taskable, Damageable, Interactable, Targetable, Consumer, Killer {
+public class Oni implements IRace<OniData>, IRankable, Taskable, Damageable, Interactable, Targetable, Consumer, Killer {
 
     private static final NamespacedKey STRENGTH = NamespacedKey.fromString("oni:strength");
     private static final NamespacedKey SPEED = NamespacedKey.fromString("oni:speed");
@@ -147,9 +151,8 @@ public class Oni implements IRace, IRankable, Taskable, Damageable, Interactable
         e.setDamage(e.getFinalDamage() * (1.0 - factor));
     }
 
-    private void applyAttribute(RaceProfile profile) {
-        Rank rank = Rank.fromRank(profile.raceData.getRank());
-        Player player = profile.getPlayer();
+    private void applyAttribute(Player player, OniData data) {
+        Rank rank = Rank.fromRank(data.getRank());
 
         double multiplier = switch(rank) {
             case EVOLVED -> 0.05;
@@ -164,7 +167,7 @@ public class Oni implements IRace, IRankable, Taskable, Damageable, Interactable
         IRace.replaceAttribute(player, Attribute.ATTACK_DAMAGE, STRENGTH, multiplier, AttributeModifier.Operation.ADD_SCALAR);
         IRace.replaceAttribute(player, Attribute.MOVEMENT_SPEED, SPEED, multiplier, AttributeModifier.Operation.ADD_SCALAR);
 
-        if(profile.raceData.getRank() >= Rank.LORD.rank) {
+        if(data.getRank() >= Rank.LORD.rank) {
             AttributeInstance health = player.getAttribute(Attribute.MAX_HEALTH);
             if(health != null) {
                 boolean isAbsent = true;
@@ -184,10 +187,8 @@ public class Oni implements IRace, IRankable, Taskable, Damageable, Interactable
         }
     }
 
-    private void applyEffect(RaceProfile profile) {
-        Player player = profile.getPlayer();
-
-        if(profile.raceData.getRank() >= Rank.COMMANDER.rank) {
+    private void applyEffect(Player player, OniData data) {
+        if(data.getRank() >= Rank.COMMANDER.rank) {
             if(player.hasPotionEffect(PotionEffectType.REGENERATION)) {
                 player.removePotionEffect(PotionEffectType.REGENERATION);
             }
@@ -195,26 +196,34 @@ public class Oni implements IRace, IRankable, Taskable, Damageable, Interactable
         }
     }
 
-    @Override
-    public void applyRacePerks(RaceProfile profile) {
-        applyEffect(profile);
-        applyAttribute(profile);
+    private void applyOverlay(Player player, OniData data) {
+        RaceManager raceManager = Race.getInstance().getRaceManager();
+        IRaceData overlay = data.getOverlay();
+        IRace modelOverlay = raceManager.getRaceModel(overlay.getRace());
+
+        modelOverlay.applyRacePerks(player, overlay);
     }
 
     @Override
-    public void reapplyPerms(RaceProfile profile) {
+    public void applyRacePerks(Player player, OniData data) {
+        applyEffect(player, data);
+        applyAttribute(player, data);
+
+        applyOverlay(player, data);
+    }
+
+    @Override
+    public void reapplyPerms(Player player, OniData data) {
         // nothing
     }
 
     @Override
-    public void reapplyEffect(RaceProfile profile) {
-        applyEffect(profile);
+    public void reapplyEffect(Player player, OniData data) {
+        applyEffect(player, data);
     }
 
     @Override
-    public void cleanup(RaceProfile profile) {
-        Player player = profile.getPlayer();
-
+    public void cleanup(Player player) {
         IRace.removeAttribute(player, Attribute.ATTACK_DAMAGE, STRENGTH);
         IRace.removeAttribute(player, Attribute.MOVEMENT_SPEED, SPEED);
         IRace.removeAttribute(player, Attribute.MAX_HEALTH, HEALTH);

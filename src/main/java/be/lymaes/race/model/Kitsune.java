@@ -6,6 +6,7 @@ import be.lymaes.race.ability.RaidFinisher;
 import be.lymaes.race.ability.SneakyCharacter;
 import be.lymaes.race.ability.Taskable;
 import be.lymaes.race.data.IRaceData;
+import be.lymaes.race.data.KaryuData;
 import be.lymaes.race.data.KitsuneData;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.DisguiseType;
@@ -27,7 +28,7 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Kitsune implements IRace, IRankable, Taskable, Interactable, RaidFinisher, SneakyCharacter {
+public class Kitsune implements IRace<KitsuneData>, IRankable, Taskable, Interactable, RaidFinisher, SneakyCharacter {
 
     private static final double TOL = 0.02;
 
@@ -124,14 +125,13 @@ public class Kitsune implements IRace, IRankable, Taskable, Interactable, RaidFi
         e.setCancelled(true);
     }
 
-    private void applyAttribute(RaceProfile profile) {
-        Player player = profile.getPlayer();
+    private void applyAttribute(Player player, KitsuneData data) {
 
         double speedMultiplier = 0.0;
         double strengthMultiplier = 0.0;
         double JBLvl = 0;
 
-        switch(Rank.fromRank(profile.raceData.getRank())) {
+        switch(Rank.fromRank(data.getRank())) {
             case ONE -> speedMultiplier = 0.05;
             case TWO -> {
                 speedMultiplier = 0.10;
@@ -202,8 +202,7 @@ public class Kitsune implements IRace, IRankable, Taskable, Interactable, RaidFi
         }
     }
 
-    private void applyEffect(RaceProfile profile) {
-        Player player = profile.getPlayer();
+    private void applyEffect(Player player, KitsuneData data) {
 
         if(player.hasPotionEffect(PotionEffectType.NIGHT_VISION)) {
             player.removePotionEffect(PotionEffectType.NIGHT_VISION);
@@ -211,7 +210,7 @@ public class Kitsune implements IRace, IRankable, Taskable, Interactable, RaidFi
         player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, PotionEffect.INFINITE_DURATION, 0, true, false, true));
 
 
-        if(profile.raceData.getRank() >= Rank.SIX.rank) {
+        if(data.getRank() >= Rank.SIX.rank) {
             if(player.hasPotionEffect(PotionEffectType.LUCK)) {
                 player.removePotionEffect(PotionEffectType.LUCK);
             }
@@ -220,17 +219,16 @@ public class Kitsune implements IRace, IRankable, Taskable, Interactable, RaidFi
     }
 
     @Override
-    public void applyRacePerks(RaceProfile profile) {
-        applyEffect(profile);
-        applyAttribute(profile);
+    public void applyRacePerks(Player player, KitsuneData data) {
+        applyEffect(player, data);
+        applyAttribute(player, data);
 
-        reapplyPerms(profile);
+        reapplyPerms(player, data);
     }
 
     @Override
-    public void reapplyPerms(RaceProfile profile) {
-        Player player = profile.getPlayer();
-        if(profile.raceData.getRank() >= Rank.NINE.rank) {
+    public void reapplyPerms(Player player, KitsuneData data) {
+        if(data.getRank() >= Rank.NINE.rank) {
             player.setAllowFlight(true);
         } else if(player.getAllowFlight()) {
             player.setAllowFlight(false);
@@ -238,17 +236,16 @@ public class Kitsune implements IRace, IRankable, Taskable, Interactable, RaidFi
     }
 
     @Override
-    public void reapplyEffect(RaceProfile profile) {
-        applyEffect(profile);
+    public void reapplyEffect(Player player, KitsuneData data) {
+        applyEffect(player, data);
 
-        if(profile.raceData.getRank() >= Rank.NINE.rank) {
-            profile.getPlayer().setAllowFlight(true);
+        if(data.getRank() >= Rank.NINE.rank) {
+            player.setAllowFlight(true);
         }
     }
 
     @Override
-    public void cleanup(RaceProfile profile) {
-        Player player = profile.getPlayer();
+    public void cleanup(Player player) {
 
         IRace.removeAttribute(player, Attribute.ATTACK_DAMAGE, STRENGTH);
         IRace.removeAttribute(player, Attribute.MOVEMENT_SPEED, SPEED);

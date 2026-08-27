@@ -4,6 +4,7 @@ import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.*;
 import be.lymaes.race.data.IRaceData;
+import be.lymaes.race.data.OniData;
 import be.lymaes.race.data.TamashiData;
 import be.lymaes.race.gui.GUITypes;
 import be.lymaes.race.item.model.FlyCharge;
@@ -27,7 +28,7 @@ import org.bukkit.inventory.meta.components.consumable.ConsumableComponent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class Tamashi implements IRace, ISubRaceable, IRankable, Taskable, Damageable, Damager, Interactable, Helder {
+public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable, Taskable, Damageable, Damager, Interactable, Helder {
 
     public static final String PERM_HOME = "race.tamashi.home";
     public static final String PERM_FLY_CHARGE = "race.tamashi.air.fly_charge";
@@ -239,10 +240,8 @@ public class Tamashi implements IRace, ISubRaceable, IRankable, Taskable, Damage
         }
     }
 
-    private void applyWaterEffect(RaceProfile profile) {
-        Player player = profile.getPlayer();
-
-        int dolphinGraceLvl = switch(Rank.fromRank(profile.raceData.getRank())) {
+    private void applyWaterEffect(Player player, TamashiData data) {
+        int dolphinGraceLvl = switch(Rank.fromRank(data.getRank())) {
             case EMBRYO, CHILD -> 1;
             case ACCOMPLISHED, HALF_GOD -> 2;
             case KAMI, OKAMI -> 3;
@@ -260,12 +259,12 @@ public class Tamashi implements IRace, ISubRaceable, IRankable, Taskable, Damage
         player.addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, PotionEffect.INFINITE_DURATION, dolphinGraceLvl-1, true, false, true));
     }
 
-    private void applyWater(RaceProfile profile) {
-        applyWaterEffect(profile);
+    private void applyWater(Player player, TamashiData data) {
+        applyWaterEffect(player, data);
     }
 
-    private void applyFireAttribute(RaceProfile profile) {
-        double multiplier = switch(Rank.fromRank(profile.raceData.getRank())) {
+    private void applyFireAttribute(Player player, TamashiData data) {
+        double multiplier = switch(Rank.fromRank(data.getRank())) {
             case EMBRYO, CHILD -> 0.00;
             case ACCOMPLISHED -> 0.10;
             case HALF_GOD -> 0.20;
@@ -273,36 +272,32 @@ public class Tamashi implements IRace, ISubRaceable, IRankable, Taskable, Damage
         };
 
         if(multiplier > 0.0) {
-            IRace.replaceAttribute(profile.getPlayer(), Attribute.ATTACK_DAMAGE, STRENGTH, multiplier, AttributeModifier.Operation.ADD_SCALAR);
+            IRace.replaceAttribute(player, Attribute.ATTACK_DAMAGE, STRENGTH, multiplier, AttributeModifier.Operation.ADD_SCALAR);
         }
     }
 
-    private void applyFireEffect(RaceProfile profile) {
-        Player player = profile.getPlayer();
-
+    private void applyFireEffect(Player player, TamashiData data) {
         if(player.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE)) {
             player.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
         }
         player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, PotionEffect.INFINITE_DURATION, 0, true, false, true));
     }
 
-    private void applyFire(RaceProfile profile) {
-        applyFireEffect(profile);
-        applyFireAttribute(profile);
+    private void applyFire(Player player, TamashiData data) {
+        applyFireEffect(player, data);
+        applyFireAttribute(player, data);
     }
 
-    private void applyAirPermission(RaceProfile profile) {
-        Player player = profile.getPlayer();
-
-        if(profile.raceData.getRank() >= Rank.OKAMI.rank) {
+    private void applyAirPermission(Player player, TamashiData data) {
+        if(data.getRank() >= Rank.OKAMI.rank) {
             if(!player.hasPermission(PERM_FLY_CHARGE)) {
                 IRace.addPermission(player, PERM_FLY_CHARGE);
             }
         }
     }
 
-    private void applyAirAttribute(RaceProfile profile) {
-        double multiplier = switch(Rank.fromRank(profile.raceData.getRank())) {
+    private void applyAirAttribute(Player player, TamashiData data) {
+        double multiplier = switch(Rank.fromRank(data.getRank())) {
             case EMBRYO -> 0.05;
             case CHILD -> 0.10;
             case ACCOMPLISHED -> 0.20;
@@ -311,11 +306,10 @@ public class Tamashi implements IRace, ISubRaceable, IRankable, Taskable, Damage
             case OKAMI -> 1.00;
         };
 
-        IRace.replaceAttribute(profile.getPlayer(), Attribute.MOVEMENT_SPEED, SPEED, multiplier, AttributeModifier.Operation.ADD_SCALAR);
+        IRace.replaceAttribute(player, Attribute.MOVEMENT_SPEED, SPEED, multiplier, AttributeModifier.Operation.ADD_SCALAR);
     }
 
-    private void giveAirItem(RaceProfile profile) {
-        Player player = profile.getPlayer();
+    private void giveAirItem(Player player, TamashiData data) {
         ItemManager itemManager = Race.getInstance().getItemManager();
 
         ItemStack item = player.getInventory().getContents()[8];
@@ -329,48 +323,45 @@ public class Tamashi implements IRace, ISubRaceable, IRankable, Taskable, Damage
         }
     }
 
-    private void applyAir(RaceProfile profile) {
-        applyAirPermission(profile);
-        applyAirAttribute(profile);
-        giveAirItem(profile);
+    private void applyAir(Player player, TamashiData data) {
+        applyAirPermission(player, data);
+        applyAirAttribute(player, data);
+        giveAirItem(player, data);
     }
 
     @Override
-    public void applyRacePerks(RaceProfile profile) {
-        reapplyPerms(profile);
+    public void applyRacePerks(Player player, TamashiData data) {
+        reapplyPerms(player, data);
 
-        switch(SubRace.fromId(profile.raceData.getSubrace())) {
-            case WATER -> applyWater(profile);
-            case FIRE -> applyFire(profile);
-            case AIR -> applyAir(profile);
+        switch(SubRace.fromId(data.getSubrace())) {
+            case WATER -> applyWater(player, data);
+            case FIRE -> applyFire(player, data);
+            case AIR -> applyAir(player, data);
         }
     }
 
     @Override
-    public void reapplyPerms(RaceProfile profile) {
-        Player player = profile.getPlayer();
+    public void reapplyPerms(Player player, TamashiData data) {
         if(!player.hasPermission(PERM_HOME)) {
             IRace.addPermission(player, PERM_HOME);
         }
 
-        if(profile.raceData.getSubrace() == SubRace.AIR.id) {
-            applyAirPermission(profile);
+        if(data.getSubrace() == SubRace.AIR.id) {
+            applyAirPermission(player, data);
         }
     }
 
     @Override
-    public void reapplyEffect(RaceProfile profile) {
-        switch(SubRace.fromId(profile.raceData.getSubrace())) {
-            case WATER -> applyWaterEffect(profile);
-            case FIRE -> applyFireEffect(profile);
-            case AIR -> giveAirItem(profile);
+    public void reapplyEffect(Player player, TamashiData data) {
+        switch(SubRace.fromId(data.getSubrace())) {
+            case WATER -> applyWaterEffect(player, data);
+            case FIRE -> applyFireEffect(player, data);
+            case AIR -> giveAirItem(player, data);
         }
     }
 
     @Override
-    public void cleanup(RaceProfile profile) {
-        Player player = profile.getPlayer();
-
+    public void cleanup(Player player) {
         IRace.removePermission(player, PERM_HOME);
 
         // water

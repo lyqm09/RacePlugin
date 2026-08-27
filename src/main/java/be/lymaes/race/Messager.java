@@ -62,7 +62,7 @@ public class Messager {
                 .append(Component.text("[OUI]")
                 .color(NamedTextColor.GREEN)
                 .clickEvent(ClickEvent.callback(aud -> {
-                    // TODO
+                    raceManager.changeRace(player, new OniData(0, 0, data));
                 })))
                 .append(Component.text("[NON]")
                 .color(NamedTextColor.RED));

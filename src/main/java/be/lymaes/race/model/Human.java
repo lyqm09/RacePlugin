@@ -1,26 +1,28 @@
 package be.lymaes.race.model;
 
 import be.lymaes.race.RaceProfile;
+import be.lymaes.race.data.HumanData;
+import org.bukkit.entity.Player;
 
-public class Human implements IRace {
+public class Human implements IRace<HumanData> {
 
     @Override
-    public void applyRacePerks(RaceProfile profile) {
+    public void applyRacePerks(Player player, HumanData data) {
 
     }
 
     @Override
-    public void reapplyPerms(RaceProfile profile) {
+    public void reapplyPerms(Player player, HumanData data) {
 
     }
 
     @Override
-    public void reapplyEffect(RaceProfile profile) {
+    public void reapplyEffect(Player player, HumanData data) {
 
     }
 
     @Override
-    public void cleanup(RaceProfile profile) {
+    public void cleanup(Player player) {
 
     }
 

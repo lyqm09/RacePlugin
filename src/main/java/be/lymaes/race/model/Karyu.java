@@ -7,6 +7,8 @@ import be.lymaes.race.ability.Interactable;
 import be.lymaes.race.ability.Killer;
 import be.lymaes.race.ability.Merchant;
 import be.lymaes.race.data.IRaceData;
+import be.lymaes.race.data.KaryuData;
+import be.lymaes.race.data.KitsuneData;
 import be.lymaes.race.gui.GUITypes;
 import be.lymaes.race.item.IStaticItem;
 import be.lymaes.race.item.model.MilicienEgg;
@@ -34,7 +36,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Karyu implements IRace, ISubRaceable, IRankable, Damageable, Interactable, Killer, Merchant {
+public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable, Damageable, Interactable, Killer, Merchant {
 
     private static final NamespacedKey STRENGTH = NamespacedKey.fromString("karyu:strength");
     private static final NamespacedKey SPEED = NamespacedKey.fromString("karyu:speed");
@@ -165,32 +167,28 @@ public class Karyu implements IRace, ISubRaceable, IRankable, Damageable, Intera
         }
     }
 
-    private void applyMerchantPermission(RaceProfile profile) {
-        Player player = profile.getPlayer();
-
-        if(profile.raceData.getRank() >= Rank.BEGINNER.rank) {
+    private void applyMerchantPermission(Player player, KaryuData data) {
+        if(data.getRank() >= Rank.BEGINNER.rank) {
             if(!player.hasPermission(PERM_FORTUNE)) {
                 IRace.addPermission(player, PERM_FORTUNE);
             }
         }
 
-        if(profile.raceData.getRank() >= Rank.NOVICE.rank) {
+        if(data.getRank() >= Rank.NOVICE.rank) {
             if(!player.hasPermission(PERM_VILLAGER)) {
                 IRace.addPermission(player, PERM_VILLAGER);
             }
         }
 
-        if(profile.raceData.getRank() >= Rank.BIG.rank) {
+        if(data.getRank() >= Rank.BIG.rank) {
             if(!player.hasPermission(PERM_MILICIEN)) {
                 IRace.addPermission(player, PERM_MILICIEN);
             }
         }
     }
 
-    private void applyMerchantEffect(RaceProfile profile) {
-        Player player = profile.getPlayer();
-
-        if(profile.raceData.getRank() >= Rank.INTERMEDIATE.rank) {
+    private void applyMerchantEffect(Player player, KaryuData data) {
+        if(data.getRank() >= Rank.INTERMEDIATE.rank) {
             if(player.hasPotionEffect(PotionEffectType.HERO_OF_THE_VILLAGE)) {
                 player.removePotionEffect(PotionEffectType.HERO_OF_THE_VILLAGE);
             }
@@ -198,10 +196,8 @@ public class Karyu implements IRace, ISubRaceable, IRankable, Damageable, Intera
         }
     }
 
-    private void giveMerchantItem(RaceProfile profile) {
-        Player player = profile.getPlayer();
-
-        if(profile.raceData.getRank() >= Rank.BIG.rank) {
+    private void giveMerchantItem(Player player, KaryuData data) {
+        if(data.getRank() >= Rank.BIG.rank) {
             ItemManager itemManager = Race.getInstance().getItemManager();
 
             ItemStack item = player.getInventory().getContents()[8];
@@ -216,36 +212,32 @@ public class Karyu implements IRace, ISubRaceable, IRankable, Damageable, Intera
         }
     }
 
-    public void applyMerchant(RaceProfile profile) {
-        applyMerchantPermission(profile);
-        applyMerchantEffect(profile);
-        giveMerchantItem(profile);
+    public void applyMerchant(Player player, KaryuData data) {
+        applyMerchantPermission(player, data);
+        applyMerchantEffect(player, data);
+        giveMerchantItem(player, data);
 
-        if(profile.raceData.getRank() >= Rank.DRAGON.rank && profile.raceData.getSubrace() == SubRace.MERCHANT.id) {
-            applyAdorer(profile);
+        if(data.getRank() >= Rank.DRAGON.rank && data.getSubrace() == SubRace.MERCHANT.id) {
+            applyAdorer(player, data);
         }
     }
 
-    private void applyAdorerPermission(RaceProfile profile) {
-        Player player = profile.getPlayer();
-
-        if(profile.raceData.getRank() >= Rank.ADVANCE.rank) {
+    private void applyAdorerPermission(Player player, KaryuData data) {
+        if(data.getRank() >= Rank.ADVANCE.rank) {
             if(!player.hasPermission(PERM_SHARPNESS)) {
                 IRace.addPermission(player, PERM_SHARPNESS);
             }
         }
 
-        if(profile.raceData.getRank() >= Rank.BIG.rank) {
+        if(data.getRank() >= Rank.BIG.rank) {
             if(!player.hasPermission(PERM_BLESS)) {
                 IRace.addPermission(player, PERM_BLESS);
             }
         }
     }
 
-    private void applyAdorerAttribute(RaceProfile profile) {
-        Player player = profile.getPlayer();
-
-        double multiplier = switch(Rank.fromRank(profile.raceData.getRank())) {
+    private void applyAdorerAttribute(Player player, KaryuData data) {
+        double multiplier = switch(Rank.fromRank(data.getRank())) {
             case BEGINNER -> 0.05;
             case NOVICE -> 0.10;
             case INTERMEDIATE -> 0.20;
@@ -258,43 +250,41 @@ public class Karyu implements IRace, ISubRaceable, IRankable, Damageable, Intera
 
     }
 
-    public void applyAdorer(RaceProfile profile) {
-        applyAdorerPermission(profile);
-        applyAdorerAttribute(profile);
+    public void applyAdorer(Player player, KaryuData data) {
+        applyAdorerPermission(player, data);
+        applyAdorerAttribute(player, data);
 
-        if(profile.raceData.getRank() >= Rank.DRAGON.rank && profile.raceData.getSubrace() == SubRace.ADORER.id) {
-            applyMerchant(profile);
+        if(data.getRank() >= Rank.DRAGON.rank && data.getSubrace() == SubRace.ADORER.id) {
+            applyMerchant(player, data);
         }
     }
 
     @Override
-    public void applyRacePerks(RaceProfile profile) {
-        switch(SubRace.fromId(profile.raceData.getSubrace())) {
-            case MERCHANT -> applyMerchant(profile);
-            case ADORER -> applyAdorer(profile);
+    public void applyRacePerks(Player player, KaryuData data) {
+        switch(SubRace.fromId(data.getSubrace())) {
+            case MERCHANT -> applyMerchant(player, data);
+            case ADORER -> applyAdorer(player, data);
         }
     }
 
     @Override
-    public void reapplyPerms(RaceProfile profile) {
-        switch(SubRace.fromId(profile.raceData.getSubrace())) {
-            case MERCHANT -> applyMerchantPermission(profile);
-            case ADORER -> applyAdorerPermission(profile);
+    public void reapplyPerms(Player player, KaryuData data) {
+        switch(SubRace.fromId(data.getSubrace())) {
+            case MERCHANT -> applyMerchantPermission(player, data);
+            case ADORER -> applyAdorerPermission(player, data);
         }
     }
 
     @Override
-    public void reapplyEffect(RaceProfile profile) {
-        if (Objects.requireNonNull(SubRace.fromId(profile.raceData.getSubrace())) == SubRace.MERCHANT) {
-            applyMerchantEffect(profile);
-            giveMerchantItem(profile);
+    public void reapplyEffect(Player player, KaryuData data) {
+        if (Objects.requireNonNull(SubRace.fromId(data.getSubrace())) == SubRace.MERCHANT) {
+            applyMerchantEffect(player, data);
+            giveMerchantItem(player, data);
         }
     }
 
     @Override
-    public void cleanup(RaceProfile profile) {
-        Player player = profile.getPlayer();
-
+    public void cleanup(Player player) {
         // Adorer
         IRace.removeAttribute(player, Attribute.ATTACK_DAMAGE, STRENGTH);
         IRace.removeAttribute(player, Attribute.MOVEMENT_SPEED, SPEED);

@@ -2,6 +2,7 @@ package be.lymaes.race.command;
 
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
+import be.lymaes.race.data.KitsuneData;
 import be.lymaes.race.manager.RaceManager;
 import be.lymaes.race.model.Kitsune;
 import be.lymaes.race.model.RaceType;
@@ -61,7 +62,7 @@ public class MtailCMD implements CommandExecutor {
         Kitsune.Rank rank = Kitsune.Rank.fromRank(newRank);
         profile.raceData.setRank(rank.rank);
 
-        kitsune.applyRacePerks(profile);
+        kitsune.applyRacePerks(player, (KitsuneData) profile.raceData);
         profile.updateTabInfo();
 
         sender.sendMessage(player.getDisplayName() + " devient un Kitsune à " + rank.name + ".");

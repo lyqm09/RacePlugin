@@ -2,22 +2,23 @@ package be.lymaes.race.model;
 
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
+import be.lymaes.race.data.IRaceData;
+import be.lymaes.race.data.OniData;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
-public interface IRace {
+public interface IRace<T extends IRaceData> {
 
-    void applyRacePerks(RaceProfile profile);
-    void reapplyPerms(RaceProfile profile);
-    void reapplyEffect(RaceProfile profile);
-    void cleanup(RaceProfile profile);
+    void applyRacePerks(Player player, T data);
+    void reapplyPerms(Player player, T data);
+    void reapplyEffect(Player player, T data);
+    void cleanup(Player player);
 
     static void removeAttribute(Player player, Attribute attribute, NamespacedKey key) {
         AttributeInstance attributeInstance = player.getAttribute(attribute);

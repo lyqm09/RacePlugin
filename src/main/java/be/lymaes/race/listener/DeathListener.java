@@ -49,11 +49,12 @@ public class DeathListener implements Listener {
 
     @EventHandler
     public void onRespawn(PlayerRespawnEvent e) {
-        RaceProfile profile = raceManager.getProfile(e.getPlayer());
+        Player player = e.getPlayer();
+        RaceProfile profile = raceManager.getProfile(player);
         if(profile == null) return;
 
         Bukkit.getScheduler().runTaskLater(Race.getInstance(), () -> {
-            raceManager.getRaceModel(profile.raceData.getRace()).reapplyEffect(profile);
+            raceManager.getRaceModel(profile.raceData.getRace()).reapplyEffect(player, profile.raceData);
         }, 1L);
     }
 
