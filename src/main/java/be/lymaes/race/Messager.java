@@ -3,7 +3,6 @@ package be.lymaes.race;
 import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.data.OniData;
 import be.lymaes.race.manager.RaceManager;
-import be.lymaes.race.model.RaceType;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
@@ -58,14 +57,26 @@ public class Messager {
     public void sendOniChoice(Player player, IRaceData data) {
         Audience audience = adventure.player(player);
 
+        UUID playerUuid = player.getUniqueId();
+        UUID token = UUID.randomUUID();
+        raceManager.putPendingOffer(token, (target) -> {
+            if(playerUuid != target.getUniqueId()) {
+                target.sendMessage("Cette offre ne t'est pas destinée.");
+                return false;
+            }
+
+            raceManager.changeRace(player, new OniData(0, 0, data));
+            target.sendMessage("Félicitation ! Tu deviens Oni tout en gardant tes anciens avantages.");
+            return true;
+        }, 20 * 60);
+
         Component message = Component.text("Veux tu devenir Oni ? ")
                 .append(Component.text("[OUI]")
                 .color(NamedTextColor.GREEN)
-                .clickEvent(ClickEvent.callback(aud -> {
-                    raceManager.changeRace(player, new OniData(0, 0, data));
-                })))
+                .clickEvent(ClickEvent.runCommand("/mutsuhara accepte " + token)))
                 .append(Component.text("[NON]")
-                .color(NamedTextColor.RED));
+                .color(NamedTextColor.RED)
+                .clickEvent(ClickEvent.runCommand("/mutsuhara refuse " + token)));
 
         audience.sendMessage(message);
     }

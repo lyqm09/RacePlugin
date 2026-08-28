@@ -1,14 +1,17 @@
 package be.lymaes.race.manager;
 
+import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
 import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.model.*;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 import org.jspecify.annotations.NonNull;
 
 import java.util.*;
+import java.util.function.Function;
 
 public class RaceManager {
 
@@ -18,6 +21,8 @@ public class RaceManager {
 
     private Map<RaceType, IRace> register = new EnumMap<>(RaceType.class);
     private Map<Player, RaceProfile> profiles = new HashMap<>();
+
+    private Map<UUID, Function<Player, Boolean>> pendingOffer = new HashMap<>();
 
     public RaceManager() {
         for(RaceType race : RaceType.values()) {
@@ -163,6 +168,21 @@ public class RaceManager {
         if(!profiles.containsKey(player))
             return new RaceProfile(player.getUniqueId(), RaceType.HUMAN.loadData.apply(null, null));
         return profiles.get(player);
+    }
+
+    public void putPendingOffer(UUID token, Function<Player, Boolean> function, long cooldown) {
+        pendingOffer.put(token, function);
+
+        if(cooldown < 0) return;
+        Bukkit.getScheduler().runTaskLater(Race.getInstance(), () -> pendingOffer.remove(token), cooldown);
+    }
+
+    public Function<Player, Boolean> getPendingOffer(UUID token) {
+        return pendingOffer.get(token);
+    }
+
+    public void removePendingOffer(UUID token) {
+        pendingOffer.remove(token);
     }
 
 }

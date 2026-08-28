@@ -6,7 +6,6 @@ import be.lymaes.race.ability.*;
 import be.lymaes.race.ability.Damageable;
 import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.data.OniData;
-import be.lymaes.race.data.TamashiData;
 import be.lymaes.race.manager.RaceManager;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -201,7 +200,7 @@ public class Oni implements IRace<OniData>, IRankable, Taskable, Damageable, Int
         IRaceData overlay = data.getOverlay();
         IRace modelOverlay = raceManager.getRaceModel(overlay.getRace());
 
-        modelOverlay.applyRacePerks(player, overlay); // TODO add instanceof Oni and overlay
+        modelOverlay.applyRacePerks(player, overlay);
     }
 
     @Override
