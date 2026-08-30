@@ -7,7 +7,7 @@ import be.lymaes.race.item.RaceItem;
 import be.lymaes.race.model.Tamashi;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
-public class FlyCharge extends ARaceItem implements IStaticItem, Heldable {
+public class FlyChargeBall extends ARaceItem implements IStaticItem, Heldable {
 
     @Override
     public RaceItem getType() {

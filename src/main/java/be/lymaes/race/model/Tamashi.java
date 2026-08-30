@@ -4,10 +4,9 @@ import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.*;
 import be.lymaes.race.data.IRaceData;
-import be.lymaes.race.data.OniData;
 import be.lymaes.race.data.TamashiData;
 import be.lymaes.race.gui.GUITypes;
-import be.lymaes.race.item.model.FlyCharge;
+import be.lymaes.race.item.model.FlyChargeBall;
 import be.lymaes.race.item.IStaticItem;
 import be.lymaes.race.item.RaceItem;
 import be.lymaes.race.manager.ItemManager;
@@ -33,7 +32,7 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable, Tas
     public static final String PERM_HOME = "race.tamashi.home";
     public static final String PERM_FLY_CHARGE = "race.tamashi.air.fly_charge";
 
-    private static final double DISTANCE = 200;
+    private static final double DISTANCE_SQUARED = 200 * 200;
 
     private static final NamespacedKey STRENGTH = NamespacedKey.fromString("tamashi:strength");
     private static final NamespacedKey SPEED = NamespacedKey.fromString("tamashi:speed");
@@ -51,17 +50,17 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable, Tas
             if (other.equals(player))
                 continue;
 
-            if (other.getLocation().distance(playerLoc) <= DISTANCE) {
+            if (other.getLocation().distanceSquared(playerLoc) <= DISTANCE_SQUARED) {
                 isAlone = false;
                 exp++;
             }
 
-            if (other.getLocation().distance(home) <= DISTANCE) {
+            if (other.getLocation().distanceSquared(home) <= DISTANCE_SQUARED) {
                 exp++;
             }
         }
 
-        if(playerLoc.distance(home) > DISTANCE) {
+        if(playerLoc.distanceSquared(home) > DISTANCE_SQUARED) {
             if(isAlone) {
                 if (!player.hasPotionEffect(PotionEffectType.HUNGER)) {
                     player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 3 * 20, 0, true, false, true));
@@ -152,7 +151,7 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable, Tas
     }
 
     private void useFlyCharge(PlayerInteractEvent e, Player player, ItemStack item, IRaceData raceData) {
-        if(!(Race.getInstance().getItemManager().getItem(item) instanceof FlyCharge))
+        if(!(Race.getInstance().getItemManager().getItem(item) instanceof FlyChargeBall))
             return;
 
         e.setCancelled(true);
@@ -313,8 +312,8 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable, Tas
         ItemManager itemManager = Race.getInstance().getItemManager();
 
         ItemStack item = player.getInventory().getContents()[8];
-        if(!(itemManager.getItem(item) instanceof FlyCharge)) {
-            FlyCharge flyCharge = (FlyCharge) itemManager.getItem(RaceItem.FLY_CHARGE.id);
+        if(!(itemManager.getItem(item) instanceof FlyChargeBall)) {
+            FlyChargeBall flyCharge = (FlyChargeBall) itemManager.getItem(RaceItem.FLY_CHARGE.id);
             player.getInventory().setItem(8, flyCharge.getItem());
 
             if(item != null && !player.getInventory().addItem(item).isEmpty()) {
