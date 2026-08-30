@@ -13,6 +13,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.Title.Times;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.time.Duration;
@@ -65,7 +66,7 @@ public class Messager {
                 return false;
             }
 
-            raceManager.changeRace(player, new OniData(0, 0, data));
+            raceManager.changeRace(target, new OniData(0, 0, data));
             target.sendMessage("Félicitation ! Tu deviens Oni tout en gardant tes anciens avantages.");
             return true;
         }, 20 * 60);
