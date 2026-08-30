@@ -20,7 +20,7 @@ public class RaceManager {
     private static final NamespacedKey RANK_KEY = NamespacedKey.fromString("race:rank");
 
     private Map<RaceType, IRace> register = new EnumMap<>(RaceType.class);
-    private Map<Player, RaceProfile> profiles = new HashMap<>();
+    private Map<UUID, RaceProfile> profiles = new HashMap<>();
 
     private Map<UUID, Function<Player, Boolean>> pendingOffer = new HashMap<>();
 
@@ -35,6 +35,7 @@ public class RaceManager {
             profile.saveSynchronously();
         }
 
+        pendingOffer.clear();
         profiles.clear();
         register.clear();
     }
@@ -73,7 +74,7 @@ public class RaceManager {
     }
 
     private void addAndApply(Player player, RaceType race, RaceProfile newProfile) {
-        profiles.put(player, newProfile);
+        profiles.put(player.getUniqueId(), newProfile);
 
         getRaceModel(race).applyRacePerks(player, newProfile.raceData);
         player.getPersistentDataContainer().set(RACE_KEY, PersistentDataType.STRING, newProfile.raceData.getRace().name());
@@ -132,7 +133,7 @@ public class RaceManager {
 
     public void load(Player player) {
         RaceProfile.loadProfile(player).thenAccept(profile -> {
-            profiles.put(player, profile);
+            profiles.put(player.getUniqueId(), profile);
 
             verifyAndLoadRace(profile);
 
@@ -149,15 +150,11 @@ public class RaceManager {
 
         profile.clearVisualQueue();
 
-        profiles.remove(player);
+        profiles.remove(player.getUniqueId());
     }
 
     public void save(RaceProfile profile) {
         profile.save();
-    }
-
-    public Collection<IRace> getRegisterValues() {
-        return register.values();
     }
 
     public IRace getRaceModel(RaceType race) {
@@ -165,9 +162,9 @@ public class RaceManager {
     }
 
     public RaceProfile getProfile(Player player) {
-        if(!profiles.containsKey(player))
+        if(!profiles.containsKey(player.getUniqueId()))
             return new RaceProfile(player.getUniqueId(), RaceType.HUMAN.loadData.apply(null, null));
-        return profiles.get(player);
+        return profiles.get(player.getUniqueId());
     }
 
     public void putPendingOffer(UUID token, Function<Player, Boolean> function, long cooldown) {
