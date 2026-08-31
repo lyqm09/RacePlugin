@@ -48,7 +48,10 @@ public class Oni implements IRace<OniData>, IRankable, Taskable, Damageable, Int
     private static final EnumSet<Material> IGNORED_CONSUMABLES = EnumSet.of(
             Material.POTION,
             Material.MILK_BUCKET,
-            Material.HONEY_BOTTLE
+            Material.HONEY_BOTTLE,
+
+            Material.CHARCOAL,
+            Material.GLOWSTONE_DUST
     );
 
     private static final Set<Biome> NOT_RAINING_BIOMES = Set.of(
