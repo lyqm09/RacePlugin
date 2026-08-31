@@ -71,6 +71,7 @@ permissions:
     children:
       race.mexp: true
       race.mtail: true
+      race.craft: true
       race.tamashi: true
       race.karyu: true
 
@@ -80,6 +81,15 @@ permissions:
 
   race.tail:
     description: Donne accès à la commande /mtail
+    default: op
+
+  race.craft:
+    description: Donne accès à tout les craft du plugin.
+    children:
+      race.craft.primordial_oni_blood: true
+
+  race.craft.primordial_oni_blood:
+    description: Permet le craft du Sang d'Oni Primordial.
     default: op
 
   race.tamashi:

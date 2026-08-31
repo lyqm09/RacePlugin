@@ -21,6 +21,8 @@ import java.util.List;
 
 public class PrimordialOniBlood extends ARaceItem implements Splashable, Craftable {
 
+    public static final String PERM_CRAFT = "race.craft.primordial_oni_blood";
+
     @Override
     public RaceItem getType() {
         return RaceItem.PRIMORDIAL_ONI_BLOOD;

@@ -6,6 +6,7 @@ import be.lymaes.race.ability.*;
 import be.lymaes.race.ability.Damageable;
 import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.data.OniData;
+import be.lymaes.race.item.model.PrimordialOniBlood;
 import be.lymaes.race.manager.RaceManager;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -150,6 +151,12 @@ public class Oni implements IRace<OniData>, IRankable, Taskable, Damageable, Int
         e.setDamage(e.getFinalDamage() * (1.0 - factor));
     }
 
+    private void applyPerms(Player player, OniData data) {
+        if(data.getRank() >= Rank.GENERAL.rank) {
+            IRace.addPermission(player, PrimordialOniBlood.PERM_CRAFT);
+        }
+    }
+
     private void applyAttribute(Player player, OniData data) {
         Rank rank = Rank.fromRank(data.getRank());
 
@@ -205,6 +212,7 @@ public class Oni implements IRace<OniData>, IRankable, Taskable, Damageable, Int
 
     @Override
     public void applyRacePerks(Player player, OniData data) {
+        applyPerms(player, data);
         applyEffect(player, data);
         applyAttribute(player, data);
 
@@ -221,6 +229,8 @@ public class Oni implements IRace<OniData>, IRankable, Taskable, Damageable, Int
 
     @Override
     public void reapplyPerms(Player player, OniData data) {
+        applyPerms(player, data);
+
         reapplyOverlayPerms(player, data);
     }
 
@@ -258,6 +268,8 @@ public class Oni implements IRace<OniData>, IRankable, Taskable, Damageable, Int
         if(regeneration != null && regeneration.isInfinite()) {
             player.removePotionEffect(PotionEffectType.REGENERATION);
         }
+
+        IRace.removePermission(player, PrimordialOniBlood.PERM_CRAFT);
 
         cleanupOverlayEffect(player);
     }
