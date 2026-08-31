@@ -2,8 +2,6 @@ package be.lymaes.race.model;
 
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
-import be.lymaes.race.ability.*;
-import be.lymaes.race.ability.Damageable;
 import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.data.OniData;
 import be.lymaes.race.item.model.PrimordialOniBlood;
@@ -27,7 +25,7 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.EnumSet;
 import java.util.Set;
 
-public class Oni implements IRace<OniData>, IRankable, Taskable, Damageable, Interactable, Targetable, Consumer, Killer {
+public class Oni implements IRace<OniData>, IRankable {
 
     private static final NamespacedKey STRENGTH = NamespacedKey.fromString("oni:strength");
     private static final NamespacedKey SPEED = NamespacedKey.fromString("oni:speed");

@@ -2,7 +2,6 @@ package be.lymaes.race.listener;
 
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
-import be.lymaes.race.ability.RaidFinisher;
 import be.lymaes.race.manager.RaceManager;
 import be.lymaes.race.model.IRace;
 import org.bukkit.entity.Player;

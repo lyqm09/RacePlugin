@@ -2,7 +2,6 @@ package be.lymaes.race.listener;
 
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
-import be.lymaes.race.ability.Helder;
 import be.lymaes.race.item.Heldable;
 import be.lymaes.race.item.IRaceItem;
 import be.lymaes.race.item.IStaticItem;

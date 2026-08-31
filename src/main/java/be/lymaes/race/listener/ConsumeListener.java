@@ -2,9 +2,6 @@ package be.lymaes.race.listener;
 
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
-import be.lymaes.race.ability.Consumer;
-import be.lymaes.race.ability.Interactable;
-import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.item.Consumable;
 import be.lymaes.race.item.IRaceItem;
 import be.lymaes.race.manager.ItemManager;

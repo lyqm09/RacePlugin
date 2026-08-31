@@ -2,7 +2,6 @@ package be.lymaes.race.listener;
 
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
-import be.lymaes.race.ability.Merchant;
 import be.lymaes.race.gui.IRaceGUI;
 import be.lymaes.race.gui.RaceInventoryHolder;
 import be.lymaes.race.item.IStaticItem;

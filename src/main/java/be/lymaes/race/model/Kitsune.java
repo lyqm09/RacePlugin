@@ -1,12 +1,7 @@
 package be.lymaes.race.model;
 
 import be.lymaes.race.RaceProfile;
-import be.lymaes.race.ability.Interactable;
-import be.lymaes.race.ability.RaidFinisher;
-import be.lymaes.race.ability.SneakyCharacter;
-import be.lymaes.race.ability.Taskable;
 import be.lymaes.race.data.IRaceData;
-import be.lymaes.race.data.KaryuData;
 import be.lymaes.race.data.KitsuneData;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.DisguiseType;

@@ -24,11 +24,13 @@ public class RaceProfile {
 
     public final UUID uuid;
     public final IRaceData raceData;
+    private transient Set<String> abilities;
     private transient Queue<Runnable> visualQueue;
 
     public RaceProfile(UUID uuid, IRaceData raceData) {
         this.uuid = uuid;
         this.raceData = raceData;
+        this.abilities = new HashSet<>();
         this.visualQueue = new LinkedList<>();
     }
 

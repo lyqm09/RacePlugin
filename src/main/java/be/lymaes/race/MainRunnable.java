@@ -1,6 +1,5 @@
 package be.lymaes.race;
 
-import be.lymaes.race.ability.Taskable;
 import be.lymaes.race.manager.RaceManager;
 import be.lymaes.race.model.*;
 import org.bukkit.Bukkit;
