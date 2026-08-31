@@ -21,7 +21,13 @@ public class ItemManager {
 
     public ItemManager() {
         for(RaceItem item : RaceItem.values()) {
-            register.put(item.id, item.factory.get());
+            IRaceItem model = item.factory.get();
+
+            if(model instanceof Craftable craftable) {
+                craftable.craft(this);
+            }
+
+            register.put(item.id, model);
         }
     }
 
@@ -32,6 +38,7 @@ public class ItemManager {
     public static boolean isRaceItem(ItemStack item) {
         if(item == null)
             return false;
+
         ItemMeta meta = item.getItemMeta();
         if(meta == null)
             return false;
