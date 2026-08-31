@@ -25,7 +25,7 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.EnumSet;
 import java.util.Set;
 
-public class Oni implements IRace<OniData>, IRankable {
+public class Oni implements IRace<OniData>, IRankable, Taskable, Damageable, Interactable, Targetable, Consumer, Killer {
 
     private static final NamespacedKey STRENGTH = NamespacedKey.fromString("oni:strength");
     private static final NamespacedKey SPEED = NamespacedKey.fromString("oni:speed");
