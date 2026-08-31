@@ -113,9 +113,9 @@ public class Oni implements IRace<OniData>, IRankable, Taskable, Damageable, Int
             return;
 
         if(raceData.getRank() >= Rank.CAPTAIN.rank) {
-//            if(e.getReason() == EntityTargetEvent.TargetReason.TARGET_ATTACKED_OWNER) {
-            e.setCancelled(true);
-//            }
+            if(e.getReason() != EntityTargetEvent.TargetReason.TARGET_ATTACKED_ENTITY) {
+                e.setCancelled(true);
+            }
         }
     }
 
