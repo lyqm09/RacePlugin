@@ -10,5 +10,8 @@ target/
 *.ipr
 out/
 
+# MacOS
+.DS_Store
+
 # other
 dependency-reduced-pom.xml

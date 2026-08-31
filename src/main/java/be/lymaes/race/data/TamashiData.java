@@ -8,6 +8,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
+import java.util.Iterator;
+import java.util.Map;
+
 public class TamashiData extends RaceData {
 
     private record SimpleLocation(String world, double x, double y, double z) {}
@@ -55,17 +58,23 @@ public class TamashiData extends RaceData {
         if (rootNode != null && rootNode.has(RACE_TYPE.name())) {
             JsonNode raceNode = rootNode.get(RACE_TYPE.name());
 
+
             RaceType.PrimaryData data = loadProfileData(raceNode, RACE_TYPE, primaryData.subrace());
 
             Location home = null;
-            String stringLocation = raceNode.path("home").asText();
 
-            if(stringLocation != null && !stringLocation.isEmpty()) {
-                try {
-                    SimpleLocation simpleLocation = Race.MAPPER.readValue(stringLocation, SimpleLocation.class);
-                    home = new Location(Bukkit.getWorld(simpleLocation.world()), simpleLocation.x(), simpleLocation.y(), simpleLocation.z());
-                } catch (JsonProcessingException e) {
-                    throw new RuntimeException(e);
+            String sub = String.valueOf(data.subrace());
+            if(raceNode.has(sub)) {
+                raceNode = raceNode.get(sub);
+                String stringLocation = raceNode.path("home").asText();
+
+                if (stringLocation != null && !stringLocation.isEmpty()) {
+                    try {
+                        SimpleLocation simpleLocation = Race.MAPPER.readValue(stringLocation, SimpleLocation.class);
+                        home = new Location(Bukkit.getWorld(simpleLocation.world()), simpleLocation.x(), simpleLocation.y(), simpleLocation.z());
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
 

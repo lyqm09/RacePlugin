@@ -62,12 +62,8 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable, Tas
 
         if(playerLoc.distanceSquared(home) > DISTANCE_SQUARED) {
             if(isAlone) {
-                if (!player.hasPotionEffect(PotionEffectType.HUNGER)) {
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 3 * 20, 0, true, false, true));
-                }
-                if (!player.hasPotionEffect(PotionEffectType.WEAKNESS)) {
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 3 * 20, 0, true, false, true));
-                }
+                player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 2 * 20, 0, true, false, true));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 2 * 20, 0, true, false, true));
             }
         }
         else {
@@ -204,12 +200,12 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable, Tas
                 return;
 
             double factor = switch(rank) {
-                case EMBRYO -> 0.05;
-                case CHILD -> 0.10;
-                case ACCOMPLISHED -> 0.20;
-                case HALF_GOD -> 0.30;
-                case KAMI -> 0.40;
-                case OKAMI -> 0.50;
+                case EMBRYO -> 0.10;
+                case CHILD -> 0.20;
+                case ACCOMPLISHED -> 0.30;
+                case HALF_GOD -> 0.40;
+                case KAMI -> 0.50;
+                case OKAMI -> 1.00;
             };
 
             e.setDamage(e.getFinalDamage() * (1.0 + factor));
@@ -221,8 +217,8 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable, Tas
         if(raceData.getSubrace() == SubRace.EARTH.id) {
 
             double factor = switch (Rank.fromRank(raceData.getRank())) {
-                case EMBRYO -> 0.10;
-                case CHILD -> 0.20;
+                case EMBRYO -> 0.20;
+                case CHILD -> 0.30;
                 case ACCOMPLISHED -> 0.40;
                 case HALF_GOD -> 0.60;
                 case KAMI -> 0.80;
@@ -265,9 +261,10 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable, Tas
     private void applyFireAttribute(Player player, TamashiData data) {
         double multiplier = switch(Rank.fromRank(data.getRank())) {
             case EMBRYO, CHILD -> 0.00;
-            case ACCOMPLISHED -> 0.10;
-            case HALF_GOD -> 0.20;
-            case KAMI, OKAMI -> 0.30;
+            case ACCOMPLISHED -> 0.20;
+            case HALF_GOD -> 0.30;
+            case KAMI -> 0.40;
+            case OKAMI -> 0.50;
         };
 
         if(multiplier > 0.0) {
@@ -297,12 +294,12 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable, Tas
 
     private void applyAirAttribute(Player player, TamashiData data) {
         double multiplier = switch(Rank.fromRank(data.getRank())) {
-            case EMBRYO -> 0.05;
-            case CHILD -> 0.10;
-            case ACCOMPLISHED -> 0.20;
-            case HALF_GOD -> 0.30;
-            case KAMI -> 0.50;
-            case OKAMI -> 1.00;
+            case EMBRYO -> 0.10;
+            case CHILD -> 0.20;
+            case ACCOMPLISHED -> 0.30;
+            case HALF_GOD -> 0.40;
+            case KAMI -> 0.80;
+            case OKAMI -> 1.20;
         };
 
         IRace.replaceAttribute(player, Attribute.MOVEMENT_SPEED, SPEED, multiplier, AttributeModifier.Operation.ADD_SCALAR);

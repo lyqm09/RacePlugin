@@ -15,6 +15,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -46,7 +47,10 @@ public class Oni implements IRace<OniData>, IRankable, Taskable, Damageable, Int
     private static final EnumSet<Material> IGNORED_CONSUMABLES = EnumSet.of(
             Material.POTION,
             Material.MILK_BUCKET,
-            Material.HONEY_BOTTLE
+            Material.HONEY_BOTTLE,
+
+            Material.CHARCOAL,
+            Material.GLOWSTONE_DUST
     );
 
     private static final Set<Biome> NOT_RAINING_BIOMES = Set.of(
@@ -75,8 +79,9 @@ public class Oni implements IRace<OniData>, IRankable, Taskable, Damageable, Int
     @Override
     public void onTask(Player player, RaceProfile profile, long currentTime) {
         if(player.isInWater() || isUnderRain(player)) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 3 * 20, 1, true, false, true));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 3 * 20, 1, true, false, true));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 2 * 20, 1, true, false, true));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 2 * 20, 1, true, false, true));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 2 * 20, 1, true, false, true));
         }
     }
 
@@ -106,7 +111,9 @@ public class Oni implements IRace<OniData>, IRankable, Taskable, Damageable, Int
             return;
 
         if(raceData.getRank() >= Rank.CAPTAIN.rank) {
-            e.setCancelled(true);
+            if(e.getReason() != EntityTargetEvent.TargetReason.TARGET_ATTACKED_ENTITY) {
+                e.setCancelled(true);
+            }
         }
     }
 
@@ -200,13 +207,13 @@ public class Oni implements IRace<OniData>, IRankable, Taskable, Damageable, Int
         }
     }
 
-    private void applyOverlayPerks(Player player, OniData data) {
-        RaceManager raceManager = Race.getInstance().getRaceManager();
-        IRaceData overlay = data.getOverlay();
-        IRace modelOverlay = raceManager.getRaceModel(overlay.getRace());
-
-        modelOverlay.applyRacePerks(player, overlay);
-    }
+//    private void applyOverlayPerks(Player player, OniData data) {
+//        RaceManager raceManager = Race.getInstance().getRaceManager();
+//        IRaceData overlay = data.getOverlay();
+//        IRace modelOverlay = raceManager.getRaceModel(overlay.getRace());
+//
+//        modelOverlay.applyRacePerks(player, overlay);
+//    }
 
     @Override
     public void applyRacePerks(Player player, OniData data) {
@@ -214,47 +221,47 @@ public class Oni implements IRace<OniData>, IRankable, Taskable, Damageable, Int
         applyEffect(player, data);
         applyAttribute(player, data);
 
-        applyOverlayPerks(player, data);
+//        applyOverlayPerks(player, data);
     }
 
-    private void reapplyOverlayPerms(Player player, OniData data) {
-        RaceManager raceManager = Race.getInstance().getRaceManager();
-        IRaceData overlay = data.getOverlay();
-        IRace modelOverlay = raceManager.getRaceModel(overlay.getRace());
-
-        modelOverlay.reapplyPerms(player, overlay);
-    }
+//    private void reapplyOverlayPerms(Player player, OniData data) {
+//        RaceManager raceManager = Race.getInstance().getRaceManager();
+//        IRaceData overlay = data.getOverlay();
+//        IRace modelOverlay = raceManager.getRaceModel(overlay.getRace());
+//
+//        modelOverlay.reapplyPerms(player, overlay);
+//    }
 
     @Override
     public void reapplyPerms(Player player, OniData data) {
         applyPerms(player, data);
 
-        reapplyOverlayPerms(player, data);
+//        reapplyOverlayPerms(player, data);
     }
 
-    private void reapplyOverlayEffect(Player player, OniData data) {
-        RaceManager raceManager = Race.getInstance().getRaceManager();
-        IRaceData overlay = data.getOverlay();
-        IRace modelOverlay = raceManager.getRaceModel(overlay.getRace());
-
-        modelOverlay.reapplyEffect(player, overlay);
-    }
+//    private void reapplyOverlayEffect(Player player, OniData data) {
+//        RaceManager raceManager = Race.getInstance().getRaceManager();
+//        IRaceData overlay = data.getOverlay();
+//        IRace modelOverlay = raceManager.getRaceModel(overlay.getRace());
+//
+//        modelOverlay.reapplyEffect(player, overlay);
+//    }
 
     @Override
     public void reapplyEffect(Player player, OniData data) {
         applyEffect(player, data);
 
-        reapplyOverlayEffect(player, data);
+//        reapplyOverlayEffect(player, data);
     }
 
-    private void cleanupOverlayEffect(Player player) {
-        RaceManager raceManager = Race.getInstance().getRaceManager();
-        OniData data = (OniData) raceManager.getProfile(player).raceData;
-        IRaceData overlay = data.getOverlay();
-        IRace modelOverlay = raceManager.getRaceModel(overlay.getRace());
-
-        modelOverlay.cleanup(player);
-    }
+//    private void cleanupOverlayEffect(Player player) {
+//        RaceManager raceManager = Race.getInstance().getRaceManager();
+//        OniData data = (OniData) raceManager.getProfile(player).raceData;
+//        IRaceData overlay = data.getOverlay();
+//        IRace modelOverlay = raceManager.getRaceModel(overlay.getRace());
+//
+//        modelOverlay.cleanup(player);
+//    }
 
     @Override
     public void cleanup(Player player) {
@@ -269,7 +276,7 @@ public class Oni implements IRace<OniData>, IRankable, Taskable, Damageable, Int
 
         IRace.removePermission(player, PrimordialOniBlood.PERM_CRAFT);
 
-        cleanupOverlayEffect(player);
+//        cleanupOverlayEffect(player);
     }
 
     @Override
