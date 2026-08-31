@@ -1,5 +1,6 @@
 package be.lymaes.race.listener;
 
+import be.lymaes.race.Race;
 import be.lymaes.race.item.RaceItem;
 import be.lymaes.race.item.model.PrimordialOniBlood;
 import org.bukkit.Keyed;
@@ -11,6 +12,10 @@ import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.Recipe;
 
 public class CraftListener implements Listener {
+
+    public CraftListener(Race plugin) {
+
+    }
 
     @EventHandler
     public void onCraft(PrepareItemCraftEvent e) {

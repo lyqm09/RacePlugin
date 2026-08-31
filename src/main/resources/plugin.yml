@@ -84,16 +84,16 @@ permissions:
     default: op
 
   race.craft:
-    description: Donne accès à tout les craft du plugin.
+    description: Craft du plugin.
     children:
       race.craft.primordial_oni_blood: true
 
   race.craft.primordial_oni_blood:
     description: Permet le craft du Sang d'Oni Primordial.
-    default: op
+    default: false
 
   race.tamashi:
-    description: Donne certaines permissions de Tamashi.
+    description: Permissions de Tamashi.
     children:
       race.tamashi.home: false
       race.tamashi.air: true
@@ -103,38 +103,35 @@ permissions:
     default: false
 
   race.tamashi.air:
-    description: Donne les permissions des Tamashi d'Air.
+    description: Permissions des Tamashi d'Air.
     race.tamashi.air.fly_charge: true
 
   race.tamashi.air.fly_charge:
     description: Permet l'utilisation de la Charge de Vol.
-    default: op
+    default: false
 
   race.karyu:
-    description: Donne toutes les permissions de la race Karyu.
-    default: op
+    description: Permissions de la race Karyu.
     children:
       race.karyu.merchant: true
       race.karyu.adorer: true
 
   race.karyu.merchant:
-    description: Donne toutes les permissions de la sous-race Marchant de Karyu.
-    default: op
+    description: Permissions de la sous-race Marchant de Karyu.
     children:
       race.karyu.merchant.fortune: true
       race.karyu.merchant.villager: true
       race.karyu.merchant.milicien: true
 
   race.karyu.adorer:
-    description: Donne toutes les permissions de la sous-race Adorateur de Karyu.
-    default: op
+    description: Permissions de la sous-race Adorateur de Karyu.
     children:
       race.karyu.adorer.sharpness: true
       race.karyu.adorer.bless: true
 
   race.karyu.merchant.fortune:
     description: Permet d'utiliser la commande /fortune.
-    default: op
+    default: false
 
   race.karyu.merchant.villager:
     description: Permet d'utiliser la commande /villager.
@@ -142,11 +139,11 @@ permissions:
 
   race.karyu.merchant.milicien:
     description: Permet l'invocation des miliciens.
-    default: op
+    default: false
 
   race.karyu.adorer.sharpness:
     description: Permet d'utiliser la commande /sharpness.
-    default: op
+    default: false
 
   race.karyu.adorer.bless:
     description: Permet d'utiliser la commande /bless.
