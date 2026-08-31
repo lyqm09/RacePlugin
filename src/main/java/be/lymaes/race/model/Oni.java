@@ -17,6 +17,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -80,8 +81,9 @@ public class Oni implements IRace<OniData>, IRankable, Taskable, Damageable, Int
     @Override
     public void onTask(Player player, RaceProfile profile, long currentTime) {
         if(player.isInWater() || isUnderRain(player)) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 3 * 20, 1, true, false, true));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 3 * 20, 1, true, false, true));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 2 * 20, 1, true, false, true));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 2 * 20, 1, true, false, true));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 2 * 20, 1, true, false, true));
         }
     }
 
@@ -111,7 +113,9 @@ public class Oni implements IRace<OniData>, IRankable, Taskable, Damageable, Int
             return;
 
         if(raceData.getRank() >= Rank.CAPTAIN.rank) {
+//            if(e.getReason() == EntityTargetEvent.TargetReason.TARGET_ATTACKED_OWNER) {
             e.setCancelled(true);
+//            }
         }
     }
 

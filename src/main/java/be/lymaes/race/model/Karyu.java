@@ -110,7 +110,7 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable, Damagea
             return;
 
         if(profile.raceData.getSubrace() == SubRace.ADORER.id) {
-            profile.addExp(1);
+            profile.addExp(2);
         }
     }
 
