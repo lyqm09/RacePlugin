@@ -62,12 +62,8 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable, Tas
 
         if(playerLoc.distanceSquared(home) > DISTANCE_SQUARED) {
             if(isAlone) {
-                if (!player.hasPotionEffect(PotionEffectType.HUNGER)) {
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 3 * 20, 0, true, false, true));
-                }
-                if (!player.hasPotionEffect(PotionEffectType.WEAKNESS)) {
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 3 * 20, 0, true, false, true));
-                }
+                player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 2 * 20, 0, true, false, true));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 2 * 20, 0, true, false, true));
             }
         }
         else {
