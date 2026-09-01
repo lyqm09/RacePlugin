@@ -1,123 +1,64 @@
 package be.lymaes.race.model;
 
 import be.lymaes.race.RaceProfile;
-import be.lymaes.race.data.IRaceData;
+import be.lymaes.race.ability.*;
+import be.lymaes.race.ability.model.Disguise;
+import be.lymaes.race.ability.model.Invisibility;
+import be.lymaes.race.ability.model.KitsuneRaidExp;
+import be.lymaes.race.ability.model.KitsuneZoneExp;
 import be.lymaes.race.data.KitsuneData;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.DisguiseType;
-import me.libraryaddict.disguise.disguisetypes.MobDisguise;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.Map;
 
-public class Kitsune implements IRace<KitsuneData>, IRankable, Taskable, Interactable, RaidFinisher, SneakyCharacter {
+public class Kitsune implements IRace<KitsuneData>, IRankable {
 
-    private static final double TOL = 0.02;
+    public static final double TOLERENCE = 0.02;
 
     private static final NamespacedKey STRENGTH = NamespacedKey.fromString("kitsune:strength");
     private static final NamespacedKey SPEED = NamespacedKey.fromString("kitsune:speed");
     private static final NamespacedKey JUMP = NamespacedKey.fromString("kitsune:jump");
     private static final NamespacedKey FALL = NamespacedKey.fromString("kitsune:fall");
 
-    private static final Set<Biome> AVAILABLE_BIOMES = Set.of(
-            Biome.JUNGLE,
-            Biome.SPARSE_JUNGLE,
-            Biome.BAMBOO_JUNGLE,
-            Biome.BIRCH_FOREST,
-            Biome.OLD_GROWTH_BIRCH_FOREST,
-            Biome.DARK_FOREST,
-            Biome.FOREST,
-            Biome.FLOWER_FOREST,
-            Biome.CHERRY_GROVE
-    );
+    public Map<String, Ability> getAbilities() {
+        return Map.of(
+                AbilityKey.KITSUNE.RAID_EXP, new KitsuneRaidExp(),
+                AbilityKey.KITSUNE.ZONE_EXP, new KitsuneZoneExp(),
 
-    @Override
-    public void onTask(Player player, RaceProfile profile, long currentTime) {
-        KitsuneData data = ((KitsuneData)profile.raceData);
-        long time = data.getTimeInForest();
-
-        Biome currentBiome = player.getWorld().getBiome(player.getLocation());
-        if(AVAILABLE_BIOMES.contains(currentBiome)) {
-            if (time > 0 && currentTime - time >= 1000 * 60 * 60) {
-                if (ThreadLocalRandom.current().nextDouble() <= TOL) {
-                    if(getExpRequired(profile.raceData.getRank()+1) != -1) {
-                        profile.rankUp();
-                    }
-                }
-                data.setTimeInForest(currentTime);
-            }
-            else if(time <= 0) {
-                data.setTimeInForest(currentTime);
-            }
-        }
-        else {
-            if(time > 0) {
-                data.setTimeInForest(0L);
-            }
-        }
+                AbilityKey.FOX_DISGUISE, new Disguise(DisguiseType.FOX),
+                AbilityKey.INVISIBILITY, new Invisibility()
+        );
     }
 
     @Override
-    public void onRaidFinish(RaceProfile profile) {
-        if(getExpRequired(profile.raceData.getRank()+1) != -1) {
-            profile.rankUp();
-        }
+    public void addExpAbilities(RaceProfile profile) {
+        profile.addAbility(AbilityKey.KITSUNE.RAID_EXP);
+        profile.addAbility(AbilityKey.KITSUNE.ZONE_EXP);
     }
 
-    @Override
-    public void onToggleSneak(PlayerToggleSneakEvent e, Player player, IRaceData raceData) {
-        if(raceData.getRank() < Rank.FIVE.rank)
-            return;
-
-        if(e.isSneaking()) {
-            if(!player.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, PotionEffect.INFINITE_DURATION, 0, true, false, true));
-            }
-        }
-        else {
-            PotionEffect effect = player.getPotionEffect(PotionEffectType.INVISIBILITY);
-            if(effect != null && effect.isInfinite()) {
-                player.removePotionEffect(PotionEffectType.INVISIBILITY);
-            }
-        }
+    public void removeExpAbilities(RaceProfile profile) {
+        profile.removeAbility(AbilityKey.KITSUNE.RAID_EXP);
+        profile.removeAbility(AbilityKey.KITSUNE.ZONE_EXP);
     }
 
-    @Override
-    public void onInteract(PlayerInteractEvent e, Player player, IRaceData raceData) {
-        if(raceData.getRank() < Rank.FOUR.rank)
-            return;
+    private void applyAbilities(RaceProfile profile) {
+        int rank = profile.raceData.getRank();
 
-        if(!player.isSneaking())
-            return;
-
-        if(e.getItem() != null || e.getMaterial() != Material.AIR)
-            return;
-
-        if(e.getAction() != Action.LEFT_CLICK_AIR && e.getAction() != Action.LEFT_CLICK_BLOCK) // AIR doesn't work !
-            return;
-
-        if (DisguiseAPI.isDisguised(player) && DisguiseAPI.getDisguise(player).getType() == DisguiseType.FOX) {
-            DisguiseAPI.undisguiseToAll(player);
+        if(rank >= Rank.FOUR.rank) {
+            profile.addAbility(AbilityKey.FOX_DISGUISE);
         }
-        else {
-            MobDisguise foxDisguise = new MobDisguise(DisguiseType.FOX);
-            DisguiseAPI.disguiseToAll(player, foxDisguise);
+        if(rank >= Rank.FIVE.rank) {
+            profile.addAbility(AbilityKey.INVISIBILITY);
         }
-
-        e.setCancelled(true);
     }
 
     private void applyAttribute(Player player, KitsuneData data) {
@@ -214,7 +155,16 @@ public class Kitsune implements IRace<KitsuneData>, IRankable, Taskable, Interac
     }
 
     @Override
-    public void applyRacePerks(Player player, KitsuneData data) {
+    public void applyRacePerks(Player player, RaceProfile profile, KitsuneData data) {
+        if(profile.raceData == data) {
+            if(getExpRequired(data.getRank() + 1) != -1) {
+                addExpAbilities(profile);
+            } else {
+                removeExpAbilities(profile);
+            }
+        }
+
+        applyAbilities(profile);
         applyEffect(player, data);
         applyAttribute(player, data);
 
@@ -240,7 +190,7 @@ public class Kitsune implements IRace<KitsuneData>, IRankable, Taskable, Interac
     }
 
     @Override
-    public void cleanup(Player player) {
+    public void cleanup(Player player, RaceProfile profile) {
 
         IRace.removeAttribute(player, Attribute.ATTACK_DAMAGE, STRENGTH);
         IRace.removeAttribute(player, Attribute.MOVEMENT_SPEED, SPEED);
@@ -264,6 +214,10 @@ public class Kitsune implements IRace<KitsuneData>, IRankable, Taskable, Interac
 
         if (DisguiseAPI.isDisguised(player) && DisguiseAPI.getDisguise(player).getType() == DisguiseType.FOX) {
             DisguiseAPI.undisguiseToAll(player);
+        }
+
+        for(String key : getAbilities().keySet()) {
+            profile.removeAbility(key);
         }
     }
 

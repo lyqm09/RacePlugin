@@ -19,7 +19,7 @@ public class RaceManager {
     private static final NamespacedKey SUBRACE_KEY = NamespacedKey.fromString("race:subrace_id");
     private static final NamespacedKey RANK_KEY = NamespacedKey.fromString("race:rank");
 
-    private Map<RaceType, IRace> register = new EnumMap<>(RaceType.class);
+    private Map<RaceType, IRace<?>> register = new EnumMap<>(RaceType.class);
     private Map<UUID, RaceProfile> profiles = new HashMap<>();
 
     private Map<UUID, Function<Player, Boolean>> pendingOffer = new HashMap<>();
@@ -58,7 +58,7 @@ public class RaceManager {
         save(profile);
 
         profile.clearVisualQueue();
-        getRaceModel(profile.raceData.getRace()).cleanup(player);
+        getRaceModel(profile.raceData.getRace()).cleanup(player, profile);
 
         RaceProfile.loadProfile(player, race, subrace).thenAccept(newProfile -> addAndApply(player, race, newProfile));
     }
@@ -67,7 +67,7 @@ public class RaceManager {
         RaceProfile profile = getProfile(player);
         save(profile);
         profile.clearVisualQueue();
-        getRaceModel(profile.raceData.getRace()).cleanup(player);
+        getRaceModel(profile.raceData.getRace()).cleanup(player, profile);
 
         RaceProfile newProfile = new RaceProfile(player.getUniqueId(), data);
         addAndApply(player, data.getRace(), newProfile);
@@ -76,7 +76,7 @@ public class RaceManager {
     private void addAndApply(Player player, RaceType race, RaceProfile newProfile) {
         profiles.put(player.getUniqueId(), newProfile);
 
-        getRaceModel(race).applyRacePerks(player, newProfile.raceData);
+        getRaceModel(race).applyRacePerks(player, newProfile, newProfile.raceData);
         player.getPersistentDataContainer().set(RACE_KEY, PersistentDataType.STRING, newProfile.raceData.getRace().name());
         player.getPersistentDataContainer().set(SUBRACE_KEY, PersistentDataType.INTEGER, newProfile.raceData.getSubrace());
 
@@ -95,16 +95,16 @@ public class RaceManager {
 
         boolean wasRefreshed = false;
         if (raceName == null) {
-            getRaceModel(profile.raceData.getRace()).applyRacePerks(player, profile.raceData);
+            getRaceModel(profile.raceData.getRace()).applyRacePerks(player, profile, profile.raceData);
             player.getPersistentDataContainer().set(RACE_KEY, PersistentDataType.STRING, profile.raceData.getRace().name());
             player.getPersistentDataContainer().set(SUBRACE_KEY, PersistentDataType.INTEGER, profile.raceData.getSubrace());
             wasRefreshed = true;
         }
 
         else if (!raceName.equalsIgnoreCase(profile.raceData.getRace().name())) {
-            oldRace.cleanup(player);
+            oldRace.cleanup(player, profile);
 
-            getRaceModel(profile.raceData.getRace()).applyRacePerks(player, profile.raceData);
+            getRaceModel(profile.raceData.getRace()).applyRacePerks(player, profile, profile.raceData);
             player.getPersistentDataContainer().set(RACE_KEY, PersistentDataType.STRING, profile.raceData.getRace().name());
             player.getPersistentDataContainer().set(SUBRACE_KEY, PersistentDataType.INTEGER, profile.raceData.getSubrace());
             wasRefreshed = true;
@@ -112,16 +112,16 @@ public class RaceManager {
 
         else if (oldRace instanceof ISubRaceable) {
             if(subRaceId != profile.raceData.getSubrace()) {
-                oldRace.cleanup(player);
+                oldRace.cleanup(player, profile);
 
-                getRaceModel(profile.raceData.getRace()).applyRacePerks(player, profile.raceData);
+                getRaceModel(profile.raceData.getRace()).applyRacePerks(player, profile, profile.raceData);
                 player.getPersistentDataContainer().set(SUBRACE_KEY, PersistentDataType.INTEGER, profile.raceData.getSubrace());
                 wasRefreshed = true;
             }
         }
 
         if(rank != profile.raceData.getRank()) {
-            getRaceModel(profile.raceData.getRace()).applyRacePerks(player, profile.raceData);
+            getRaceModel(profile.raceData.getRace()).applyRacePerks(player, profile, profile.raceData);
             player.getPersistentDataContainer().set(RANK_KEY, PersistentDataType.INTEGER, profile.raceData.getRank());
             wasRefreshed = true;
         }
@@ -155,6 +155,10 @@ public class RaceManager {
 
     public void save(RaceProfile profile) {
         profile.save();
+    }
+
+    public Collection<IRace<?>> getModels() {
+        return register.values();
     }
 
     public IRace getRaceModel(RaceType race) {

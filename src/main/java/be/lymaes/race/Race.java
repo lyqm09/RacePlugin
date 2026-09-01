@@ -2,6 +2,7 @@ package be.lymaes.race;
 
 import be.lymaes.race.command.*;
 import be.lymaes.race.listener.*;
+import be.lymaes.race.manager.AbilityManager;
 import be.lymaes.race.manager.GUIManager;
 import be.lymaes.race.manager.ItemManager;
 import be.lymaes.race.manager.RaceManager;
@@ -19,6 +20,7 @@ public final class Race extends JavaPlugin {
     private RaceManager raceManager;
     private GUIManager guiManager;
     private ItemManager itemManager;
+    private AbilityManager abilityManager;
 
     private MainRunnable mainRunnable;
 
@@ -34,6 +36,7 @@ public final class Race extends JavaPlugin {
         this.raceManager = new RaceManager();
         this.guiManager = new GUIManager();
         this.itemManager = new ItemManager();
+        this.abilityManager = new AbilityManager(raceManager.getModels());
 
         // listeners
         getServer().getPluginManager().registerEvents(new ConnectionListener(this), this);
@@ -109,5 +112,8 @@ public final class Race extends JavaPlugin {
     }
     public ItemManager getItemManager() {
         return itemManager;
+    }
+    public AbilityManager getAbilityManager() {
+        return abilityManager;
     }
 }

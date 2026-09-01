@@ -26,6 +26,9 @@ public class CraftListener implements Listener {
         NamespacedKey key = keyedRecipe.getKey();
 
         if(!key.getNamespace().equals("race")) return;
+
+        // TODO
+
         if(key.getKey().equals(RaceItem.PRIMORDIAL_ONI_BLOOD.id)) {
             HumanEntity viewer = e.getView().getPlayer();
 

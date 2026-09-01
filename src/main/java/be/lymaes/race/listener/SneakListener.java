@@ -2,12 +2,15 @@ package be.lymaes.race.listener;
 
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
+import be.lymaes.race.ability.AbilityType;
+import be.lymaes.race.ability.Sneaker;
 import be.lymaes.race.manager.RaceManager;
-import be.lymaes.race.model.IRace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
+
+import java.util.Set;
 
 public class SneakListener implements Listener {
 
@@ -24,10 +27,10 @@ public class SneakListener implements Listener {
         RaceProfile profile = raceManager.getProfile(player);
         if(profile == null) return;
 
-        IRace model = raceManager.getRaceModel(profile.raceData.getRace());
-        if(!(model instanceof SneakyCharacter sneakyCharacter)) return;
-
-        sneakyCharacter.onToggleSneak(e, player, profile.raceData);
+        Set<Sneaker> abilities = profile.getAbilities(AbilityType.SNEAKER);
+        for(Sneaker sneaker : abilities) {
+            sneaker.onToggleSneak(e);
+        }
     }
 
 }

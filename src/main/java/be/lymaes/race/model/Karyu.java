@@ -2,7 +2,11 @@ package be.lymaes.race.model;
 
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
-import be.lymaes.race.data.IRaceData;
+import be.lymaes.race.ability.*;
+import be.lymaes.race.ability.model.Absorption;
+import be.lymaes.race.ability.model.KaryuAdorerExp;
+import be.lymaes.race.ability.model.KaryuMerchantExp;
+import be.lymaes.race.ability.model.LootTransformer;
 import be.lymaes.race.data.KaryuData;
 import be.lymaes.race.gui.GUITypes;
 import be.lymaes.race.item.IStaticItem;
@@ -14,24 +18,15 @@ import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.*;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.MerchantInventory;
-import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ThreadLocalRandom;
 
-public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable, Damageable, Interactable, Killer, Merchant {
+public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable {
 
     private static final NamespacedKey STRENGTH = NamespacedKey.fromString("karyu:strength");
     private static final NamespacedKey SPEED = NamespacedKey.fromString("karyu:speed");
@@ -42,124 +37,61 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable, Damagea
     public static final String PERM_SHARPNESS = "race.karyu.adorer.sharpness";
     public static final String PERM_BLESS = "race.karyu.adorer.bless";
 
-    private static final List<Material> minerals = List.of(
-            Material.AMETHYST_SHARD,
-            Material.RESIN_BRICK,
+    public Map<String, Ability> getAbilities() {
+        double[] adorerAbsorptionFactor = new double[] {0.05, 0.10, 0.20, 0.30, 0.50, 0.50};
+        Material[] minerals = new Material[] {
+                Material.AMETHYST_SHARD,
+                Material.RESIN_BRICK,
 
-            Material.COPPER_INGOT,
-            Material.DIAMOND,
-            Material.GOLD_INGOT,
-            Material.IRON_INGOT,
-            Material.LAPIS_LAZULI,
-            Material.CHARCOAL,
+                Material.COPPER_INGOT,
+                Material.DIAMOND,
+                Material.GOLD_INGOT,
+                Material.IRON_INGOT,
+                Material.LAPIS_LAZULI,
+                Material.CHARCOAL,
 
-            Material.GLOWSTONE,
-            Material.NETHERITE_INGOT,
-            Material.QUARTZ,
-            Material.PRISMARINE_CRYSTALS,
-            Material.PRISMARINE_SHARD,
-            Material.REDSTONE
+                Material.GLOWSTONE,
+                Material.NETHERITE_INGOT,
+                Material.QUARTZ,
+                Material.PRISMARINE_CRYSTALS,
+                Material.PRISMARINE_SHARD,
+                Material.REDSTONE};
 
-    );
-
-    @Override
-    public void onTrade(InventoryClickEvent e, MerchantInventory inventory, RaceProfile profile) {
-        if(profile.raceData.getSubrace() == SubRace.MERCHANT.id) {
-            if(e.getSlotType() != InventoryType.SlotType.RESULT)
-                return;
-
-            ItemStack item = e.getCurrentItem();
-            if(item == null || item.getType() == Material.AIR)
-                return;
-
-            MerchantRecipe recipe = inventory.getSelectedRecipe();
-            if(recipe == null)
-                return;
-
-            int tradeCount = e.isShiftClick() ? calculateRealTradeCount(inventory, recipe) : 1;
-
-            profile.addExp(10 * tradeCount);
-        }
-    }
-
-    private int calculateRealTradeCount(MerchantInventory inv, MerchantRecipe recipe) {
-        ItemStack firstSlot = inv.getItem(0);
-        ItemStack firstIngredient = recipe.getAdjustedIngredient1();
-        int firstMaxTrades = (firstSlot != null && firstIngredient != null) ? firstSlot.getAmount() / firstIngredient.getAmount() : 0;
-
-        int secondMaxTrades = Integer.MAX_VALUE;
-        if (recipe.getIngredients().size() > 1) {
-            ItemStack secondSlot = inv.getItem(1);
-            ItemStack secondIngredient = recipe.getIngredients().get(1);
-            secondMaxTrades = (secondSlot != null) ? secondSlot.getAmount() / secondIngredient.getAmount() : 0;
-        }
-
-        int remainingUses = recipe.getMaxUses() - recipe.getUses();
-
-        return Math.min(Math.min(firstMaxTrades, secondMaxTrades), remainingUses);
+        return Map.of(
+                AbilityKey.KARYU.MERCHANT_EXP, new KaryuMerchantExp(),
+                AbilityKey.KARYU.ADORER_EXP, new KaryuAdorerExp(),
+                AbilityKey.KARYU.ADORER_ABSORPTION, new Absorption(adorerAbsorptionFactor),
+                AbilityKey.EMERALD_TRANSFORMER, new LootTransformer(minerals)
+        );
     }
 
     @Override
-    public void onKill(EntityDeathEvent e, RaceProfile profile) {
-        if(!(e.getEntity() instanceof Monster))
-            return;
+    public void addExpAbilities(RaceProfile profile) {
+        int sub = profile.raceData.getSubrace();
 
-        if(profile.raceData.getSubrace() == SubRace.ADORER.id) {
-            profile.addExp(2);
+        if(sub == SubRace.MERCHANT.id) {
+            profile.addAbility(AbilityKey.KARYU.MERCHANT_EXP);
+        }
+        else if(sub == SubRace.ADORER.id) {
+            profile.addAbility(AbilityKey.KARYU.ADORER_EXP);
         }
     }
 
-    @Override
-    public void onInteract(PlayerInteractEvent e, Player player, IRaceData raceData) {
-        ItemStack item = e.getItem();
+    public void removeExpAbilities(RaceProfile profile) {
+        profile.removeAbility(AbilityKey.KARYU.MERCHANT_EXP);
+        profile.removeAbility(AbilityKey.KARYU.ADORER_EXP);
+    }
 
-        if (raceData.getSubrace() == SubRace.MERCHANT.id
-        || (raceData.getSubrace() == SubRace.ADORER.id && raceData.getRank() >= Rank.DRAGON.rank)) {
+    private void applyMerchantAbilities(RaceProfile profile, KaryuData data) {
+        int rank = data.getRank();
 
-            if(raceData.getRank() >= Rank.ADVANCE.rank) {
-                emeraldExchange(e, player, item);
-            }
-
+        if (rank >= Rank.ADVANCE.rank) {
+            profile.addAbility(AbilityKey.EMERALD_TRANSFORMER);
         }
     }
 
-    public void emeraldExchange(PlayerInteractEvent e, Player player, ItemStack item) {
-        if (item == null || item.getType() != Material.EMERALD) return;
-
-        if (e.getAction() != Action.RIGHT_CLICK_AIR) return;
-
-        Material mineral = minerals.get(ThreadLocalRandom.current().nextInt(minerals.size()));
-
-        int amount = item.getAmount();
-        if (amount > 1) {
-            item.setAmount(amount - 1);
-        } else {
-            player.getInventory().setItemInMainHand(null);
-        }
-
-        if(!player.getInventory().addItem(new ItemStack(mineral)).isEmpty()) {
-            item.setAmount(amount);
-            player.sendMessage(Color.RED + "Erreur : Il n'y a pas de place dans ton inventaire.");
-        }
-
-        e.setCancelled(true);
-    }
-
-    @Override
-    public void onDefend(EntityDamageEvent e, Player player, IRaceData raceData) {
-        if (raceData.getSubrace() == SubRace.ADORER.id
-        || (raceData.getSubrace() == SubRace.MERCHANT.id && raceData.getRank() >= Rank.DRAGON.rank)) {
-
-            double factor = switch (Rank.fromRank(raceData.getRank())) {
-                case BEGINNER -> 0.05;
-                case NOVICE -> 0.10;
-                case INTERMEDIATE -> 0.20;
-                case ADVANCE -> 0.30;
-                case BIG, DRAGON -> 0.50;
-            };
-
-            e.setDamage(e.getFinalDamage() * (1.0 - factor));
-        }
+    private void applyAdorerAbilities(RaceProfile profile, KaryuData data) {
+        profile.addAbility(AbilityKey.KARYU.ADORER_ABSORPTION);
     }
 
     private void applyMerchantPermission(Player player, KaryuData data) {
@@ -207,13 +139,14 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable, Damagea
         }
     }
 
-    public void applyMerchant(Player player, KaryuData data) {
+    public void applyMerchant(Player player, RaceProfile profile, KaryuData data) {
+        applyMerchantAbilities(profile, data);
         applyMerchantPermission(player, data);
         applyMerchantEffect(player, data);
         giveMerchantItem(player, data);
 
         if(data.getRank() >= Rank.DRAGON.rank && data.getSubrace() == SubRace.MERCHANT.id) {
-            applyAdorer(player, data);
+            applyAdorer(player, profile, data);
         }
     }
 
@@ -245,20 +178,29 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable, Damagea
 
     }
 
-    public void applyAdorer(Player player, KaryuData data) {
+    public void applyAdorer(Player player, RaceProfile profile, KaryuData data) {
+        applyAdorerAbilities(profile, data);
         applyAdorerPermission(player, data);
         applyAdorerAttribute(player, data);
 
         if(data.getRank() >= Rank.DRAGON.rank && data.getSubrace() == SubRace.ADORER.id) {
-            applyMerchant(player, data);
+            applyMerchant(player, profile, data);
         }
     }
 
     @Override
-    public void applyRacePerks(Player player, KaryuData data) {
+    public void applyRacePerks(Player player, RaceProfile profile, KaryuData data) {
+        if(profile.raceData == data) {
+            if(getExpRequired(data.getRank() + 1) != -1) {
+                addExpAbilities(profile);
+            } else {
+                removeExpAbilities(profile);
+            }
+        }
+
         switch(SubRace.fromId(data.getSubrace())) {
-            case MERCHANT -> applyMerchant(player, data);
-            case ADORER -> applyAdorer(player, data);
+            case MERCHANT -> applyMerchant(player, profile, data);
+            case ADORER -> applyAdorer(player, profile, data);
         }
     }
 
@@ -279,7 +221,7 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable, Damagea
     }
 
     @Override
-    public void cleanup(Player player) {
+    public void cleanup(Player player, RaceProfile profile) {
         // Adorer
         IRace.removeAttribute(player, Attribute.ATTACK_DAMAGE, STRENGTH);
         IRace.removeAttribute(player, Attribute.MOVEMENT_SPEED, SPEED);
@@ -298,6 +240,10 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable, Damagea
 
         if(Race.getInstance().getItemManager().getItem(player.getInventory().getContents()[8]) instanceof IStaticItem) {
             player.getInventory().setItem(8, null);
+        }
+
+        for(String key : getAbilities().keySet()) {
+            profile.removeAbility(key);
         }
     }
 

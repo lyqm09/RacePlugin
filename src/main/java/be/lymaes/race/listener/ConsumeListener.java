@@ -2,6 +2,9 @@ package be.lymaes.race.listener;
 
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
+import be.lymaes.race.ability.AbilityType;
+import be.lymaes.race.ability.Consumer;
+import be.lymaes.race.ability.Taskable;
 import be.lymaes.race.item.Consumable;
 import be.lymaes.race.item.IRaceItem;
 import be.lymaes.race.manager.ItemManager;
@@ -11,6 +14,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
+
+import java.util.Set;
 
 public class ConsumeListener implements Listener {
 
@@ -29,13 +34,14 @@ public class ConsumeListener implements Listener {
         RaceProfile profile = raceManager.getProfile(player);
         if(profile == null) return;
 
-        IRace model = raceManager.getRaceModel(profile.raceData.getRace());
-        if(model instanceof Consumer consumer) {
-            consumer.onConsume(e, player, profile.raceData);
+        Set<Consumer> abilities = profile.getAbilities(AbilityType.CONSUMER);
+        for(Consumer consumer : abilities) {
+            consumer.onConsume(e);
         }
 
         IRaceItem item = itemManager.getItem(e.getItem());
         if(item instanceof Consumable consumable) {
+            IRace model = raceManager.getRaceModel(profile.raceData.getRace());
             consumable.onConsume(player, profile, model);
         }
     }

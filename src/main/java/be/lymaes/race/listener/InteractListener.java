@@ -2,18 +2,22 @@ package be.lymaes.race.listener;
 
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
+import be.lymaes.race.ability.AbilityType;
+import be.lymaes.race.ability.Helder;
+import be.lymaes.race.ability.Interact;
 import be.lymaes.race.item.Heldable;
 import be.lymaes.race.item.IRaceItem;
 import be.lymaes.race.item.IStaticItem;
 import be.lymaes.race.manager.ItemManager;
 import be.lymaes.race.manager.RaceManager;
-import be.lymaes.race.model.IRace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Set;
 
 public class InteractListener implements Listener {
 
@@ -37,9 +41,9 @@ public class InteractListener implements Listener {
         RaceProfile profile = raceManager.getProfile(player);
         if(profile == null) return;
 
-        IRace model = raceManager.getRaceModel(profile.raceData.getRace());
-        if(model instanceof be.lymaes.race.ability.Interactable interactable) {
-            interactable.onInteract(e, player, profile.raceData);
+        Set<Interact> abilities = profile.getAbilities(AbilityType.INTERACT);
+        for(Interact interact : abilities) {
+            interact.onInteract(e, player, profile.raceData.getRank());
         }
     }
 
@@ -66,10 +70,10 @@ public class InteractListener implements Listener {
         RaceProfile profile = raceManager.getProfile(player);
         if(profile == null) return;
 
-        IRace model = raceManager.getRaceModel(profile.raceData.getRace());
-        if(model instanceof Helder helder) {
-            helder.onSwitchOff(profile.raceData, prev);
-            helder.onSwitchOn(profile.raceData, current);
+        Set<Helder> abilities = profile.getAbilities(AbilityType.HELDER);
+        for(Helder helder : abilities) {
+            helder.onSwapOff(prev);
+            helder.onSwapOn(current);
         }
     }
 
@@ -93,6 +97,14 @@ public class InteractListener implements Listener {
 
     @EventHandler
     public void onDrop(PlayerDropItemEvent e) {
+        RaceProfile profile = raceManager.getProfile(e.getPlayer());
+        if(profile == null) return;
+
+        Set<Helder> abilities = profile.getAbilities(AbilityType.HELDER);
+        for(Helder helder : abilities) {
+            helder.onSwapOff(e.getItemDrop().getItemStack());
+        }
+
         if(itemManager.getItem(e.getItemDrop().getItemStack()) instanceof IStaticItem) {
             e.setCancelled(true);
         }
@@ -105,9 +117,9 @@ public class InteractListener implements Listener {
         RaceProfile profile = raceManager.getProfile(player);
         if(profile == null) return;
 
-        IRace model = raceManager.getRaceModel(profile.raceData.getRace());
-        if(model instanceof Helder helder) {
-            helder.onSwitchOn(profile.raceData, e.getItem().getItemStack());
+        Set<Helder> abilities = profile.getAbilities(AbilityType.HELDER);
+        for(Helder helder : abilities) {
+            helder.onPickup(player.getInventory().getItemInMainHand(), e.getItem().getItemStack());
         }
     }
 

@@ -1,6 +1,9 @@
 package be.lymaes.race;
 
+import be.lymaes.race.ability.*;
+import be.lymaes.race.ability.model.Targetable;
 import be.lymaes.race.data.IRaceData;
+import be.lymaes.race.manager.RaceManager;
 import be.lymaes.race.model.IRace;
 import be.lymaes.race.model.IRankable;
 import be.lymaes.race.model.ISubRaceable;
@@ -24,18 +27,117 @@ public class RaceProfile {
 
     public final UUID uuid;
     public final IRaceData raceData;
-    private transient Set<String> abilities;
+    private transient Map<AbilityType, Set<Ability>> abilities;
     private transient Queue<Runnable> visualQueue;
 
     public RaceProfile(UUID uuid, IRaceData raceData) {
         this.uuid = uuid;
         this.raceData = raceData;
-        this.abilities = new HashSet<>();
+        this.abilities = new EnumMap<>(AbilityType.class);
         this.visualQueue = new LinkedList<>();
     }
 
     public Player getPlayer() {
         return Bukkit.getPlayer(uuid);
+    }
+
+    public void addAbility(String key) {
+        Ability ability = Race.getInstance().getAbilityManager().getAbility(key);
+
+        if(ability instanceof Taskable) {
+            abilities.computeIfAbsent(AbilityType.TASKABLE, k -> new HashSet<>()).add(ability);
+        }
+        if(ability instanceof Consumer) {
+            abilities.computeIfAbsent(AbilityType.CONSUMER, k -> new HashSet<>()).add(ability);
+        }
+        if(ability instanceof CommandSender) {
+            abilities.computeIfAbsent(AbilityType.COMMAND_SENDER, k -> new HashSet<>()).add(ability);
+        }
+        if(ability instanceof Crafter) {
+            abilities.computeIfAbsent(AbilityType.CRAFTER, k -> new HashSet<>()).add(ability);
+        }
+        if(ability instanceof Damager) {
+            abilities.computeIfAbsent(AbilityType.DAMAGER, k -> new HashSet<>()).add(ability);
+        }
+        if(ability instanceof Defender) {
+            abilities.computeIfAbsent(AbilityType.DEFENDER, k -> new HashSet<>()).add(ability);
+        }
+        if(ability instanceof Killer) {
+            abilities.computeIfAbsent(AbilityType.KILLER, k -> new HashSet<>()).add(ability);
+        }
+        if(ability instanceof Interact) {
+            abilities.computeIfAbsent(AbilityType.INTERACT, k -> new HashSet<>()).add(ability);
+        }
+        if(ability instanceof Helder) {
+            abilities.computeIfAbsent(AbilityType.HELDER, k -> new HashSet<>()).add(ability);
+        }
+        if(ability instanceof Merchant) {
+            abilities.computeIfAbsent(AbilityType.MERCHANT, k -> new HashSet<>()).add(ability);
+        }
+        if(ability instanceof RaidWinner) {
+            abilities.computeIfAbsent(AbilityType.RAID_WINNER, k -> new HashSet<>()).add(ability);
+        }
+        if(ability instanceof Sneaker) {
+            abilities.computeIfAbsent(AbilityType.SNEAKER, k -> new HashSet<>()).add(ability);
+        }
+        if(ability instanceof Targetable) {
+            abilities.computeIfAbsent(AbilityType.TARGETABLE, k -> new HashSet<>()).add(ability);
+        }
+    }
+
+    public void removeAbility(String key) {
+        Ability ability = Race.getInstance().getAbilityManager().getAbility(key);
+
+        if(ability instanceof Taskable) {
+            removeAbility(AbilityType.TASKABLE, ability);
+        }
+        if(ability instanceof Consumer) {
+            removeAbility(AbilityType.CONSUMER, ability);
+        }
+        if(ability instanceof CommandSender) {
+            removeAbility(AbilityType.COMMAND_SENDER, ability);
+        }
+        if(ability instanceof Crafter) {
+            removeAbility(AbilityType.CRAFTER, ability);
+        }
+        if(ability instanceof Damager) {
+            removeAbility(AbilityType.DAMAGER, ability);
+        }
+        if(ability instanceof Defender) {
+            removeAbility(AbilityType.DEFENDER, ability);
+        }
+        if(ability instanceof Killer) {
+            removeAbility(AbilityType.KILLER, ability);
+        }
+        if(ability instanceof Interact) {
+            removeAbility(AbilityType.INTERACT, ability);
+        }
+        if(ability instanceof Helder) {
+            removeAbility(AbilityType.HELDER, ability);
+        }
+        if(ability instanceof Merchant) {
+            removeAbility(AbilityType.MERCHANT, ability);
+        }
+        if(ability instanceof RaidWinner) {
+            removeAbility(AbilityType.RAID_WINNER, ability);
+        }
+        if(ability instanceof Sneaker) {
+            removeAbility(AbilityType.SNEAKER, ability);
+        }
+        if(ability instanceof Targetable) {
+            removeAbility(AbilityType.TARGETABLE, ability);
+        }
+    }
+
+    private void removeAbility(AbilityType type, Ability ability) {
+        Set<Ability> list = abilities.get(type);
+        if(list != null) {
+            list.remove(ability);
+        }
+    }
+
+    public <T extends Ability> Set<T> getAbilities(AbilityType type) {
+        return (Set<T>) abilities.getOrDefault(type, Collections.emptySet());
     }
 
     public void addVisualEffect(Runnable effect) {
@@ -87,7 +189,7 @@ public class RaceProfile {
         IRace irace = Race.getInstance().getRaceManager().getRaceModel(raceData.getRace());
         if(!(irace instanceof IRankable rankable)) return;
 
-        irace.applyRacePerks(getPlayer(), raceData);
+        irace.applyRacePerks(getPlayer(), this, raceData);
 
         String rankName = rankable.getRankName(raceData.getRank());
         addVisualEffect(() -> {
@@ -177,8 +279,9 @@ public class RaceProfile {
         CompletableFuture<RaceProfile> future = new CompletableFuture<>();
 
         Bukkit.getScheduler().runTaskAsynchronously(Race.getInstance(), () -> {
-            Path file = Paths.get(Race.getInstance().getDataFolder().toPath() + "Race/profiles/" + player.getUniqueId() + ".json");
+            RaceManager raceManager = Race.getInstance().getRaceManager();
 
+            Path file = Paths.get(Race.getInstance().getDataFolder().toPath() + "Race/profiles/" + player.getUniqueId() + ".json");
             if (Files.exists(file)) {
 
                 JsonNode rootNode;
@@ -199,11 +302,17 @@ public class RaceProfile {
 
                 IRaceData data = raceType.loadData.apply(rootNode, new RaceType.PrimaryData(subrace, 0, 0));
                 RaceProfile profile = new RaceProfile(player.getUniqueId(), data);
+                if(raceManager.getRaceModel(profile.raceData.getRace()) instanceof IRankable rankable) {
+                    rankable.addExpAbilities(profile);
+                }
                 Bukkit.getScheduler().runTask(Race.getInstance(), () -> future.complete(profile));
                 return;
             }
 
             RaceProfile defaultProfile = new RaceProfile(player.getUniqueId(), race != null ? race.loadData.apply(null, new RaceType.PrimaryData(-1, 0, 0)) : RaceType.HUMAN.loadData.apply(null, null));
+            if(raceManager.getRaceModel(defaultProfile.raceData.getRace()) instanceof IRankable rankable) {
+                rankable.addExpAbilities(defaultProfile);
+            }
             Bukkit.getScheduler().runTask(Race.getInstance(), () -> future.complete(defaultProfile));
         });
 

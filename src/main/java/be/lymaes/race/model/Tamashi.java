@@ -3,7 +3,7 @@ package be.lymaes.race.model;
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.*;
-import be.lymaes.race.data.IRaceData;
+import be.lymaes.race.ability.model.*;
 import be.lymaes.race.data.TamashiData;
 import be.lymaes.race.gui.GUITypes;
 import be.lymaes.race.item.model.FlyChargeBall;
@@ -14,225 +14,76 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.components.FoodComponent;
-import org.bukkit.inventory.meta.components.consumable.ConsumableComponent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable, Taskable, Damageable, Damager, Interactable, Helder {
+import java.util.Map;
+
+public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable {
 
     public static final String PERM_HOME = "race.tamashi.home";
     public static final String PERM_FLY_CHARGE = "race.tamashi.air.fly_charge";
 
-    private static final double DISTANCE_SQUARED = 200 * 200;
+    public static final double DISTANCE_SQUARED = 200 * 200;
 
     private static final NamespacedKey STRENGTH = NamespacedKey.fromString("tamashi:strength");
     private static final NamespacedKey SPEED = NamespacedKey.fromString("tamashi:speed");
 
-    @Override
-    public void onTask(Player player, RaceProfile profile, long currentTime) {
-        Location playerLoc = player.getLocation();
-        TamashiData data = ((TamashiData)profile.raceData);
-        Location home = data.getHome();
+    public Map<String, Ability> getAbilities() {
+        double[] waterStrengthFactor = new double[] {0.10, 0.20, 0.30, 0.40, 0.50, 1.00};
+        double[] earthAbsorptionFactor = new double[] {0.20, 0.30, 0.40, 0.60, 0.80, 0.90};
+        int[] fireTimes = new int[] {1, 2, 5, 10, 20, 30};
+        int[] flyTimes = new int[] {5, 10, 20, 30, 5*60};
+        return Map.of(
+                AbilityKey.TAMASHI.EXP, new TamashiExp(DISTANCE_SQUARED),
+                AbilityKey.MONOPHOBIA, new Monophobia(DISTANCE_SQUARED),
 
-        int exp = 0;
-        boolean isAlone = true;
+                AbilityKey.AQUATIC_STRENGTH, new AquaticStrength(waterStrengthFactor),
 
-        for (Player other : Bukkit.getOnlinePlayers()) {
-            if (other.equals(player))
-                continue;
+                AbilityKey.TAMASHI.EARTH_ABSORPTION, new Absorption(earthAbsorptionFactor),
+                AbilityKey.DIRT_EATER, new DirtEater(),
 
-            if (other.getLocation().distanceSquared(playerLoc) <= DISTANCE_SQUARED) {
-                isAlone = false;
-                exp++;
-            }
+                AbilityKey.FIREBALL, new Fireball(),
+                AbilityKey.FIRE_ASPECT, new FireAspect(fireTimes),
 
-            if (other.getLocation().distanceSquared(home) <= DISTANCE_SQUARED) {
-                exp++;
-            }
-        }
-
-        if(playerLoc.distanceSquared(home) > DISTANCE_SQUARED) {
-            if(isAlone) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 2 * 20, 0, true, false, true));
-                player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 2 * 20, 0, true, false, true));
-            }
-        }
-        else {
-            exp++;
-        }
-
-        if((currentTime / 1000) % 60 == 0 && exp > 0) {
-            profile.addExp(exp);
-        }
-
+                AbilityKey.FLY_CHARGE, new FlyCharge(flyTimes),
+                AbilityKey.FEATHER_FALL, new FeatherFall()
+        );
     }
 
     @Override
-    public void onSwitchOff(IRaceData raceData, ItemStack item) {
-        if(raceData.getSubrace() == SubRace.EARTH.id) {
-            if(item == null || item.getType() != Material.DIRT) return;
-
-            ItemMeta meta = item.getItemMeta();
-            if(meta == null) return;
-
-            meta.setConsumable(null);
-            meta.setFood(null);
-
-            item.setItemMeta(meta);
-        }
+    public void addExpAbilities(RaceProfile profile) {
+        profile.addAbility(AbilityKey.TAMASHI.EXP);
     }
 
-    @Override
-    public void onSwitchOn(IRaceData raceData, ItemStack item) {
-        if(raceData.getSubrace() == SubRace.EARTH.id) {
-            if(item == null || item.getType() != Material.DIRT) return;
-
-            ItemMeta meta = item.getItemMeta();
-            if(meta == null) return;
-
-            ConsumableComponent consumable = meta.getConsumable();
-            consumable.setAnimation(ConsumableComponent.Animation.EAT);
-            consumable.setConsumeSeconds(1.6f);
-            consumable.setSound(Sound.ENTITY_GENERIC_EAT);
-            meta.setConsumable(consumable);
-
-            FoodComponent food = meta.getFood();
-            food.setNutrition(1);
-            food.setSaturation(0.5f);
-            food.setCanAlwaysEat(true);
-            meta.setFood(food);
-
-            item.setItemMeta(meta);
-        }
+    public void removeExpAbilities(RaceProfile profile) {
+        profile.removeAbility(AbilityKey.TAMASHI.EXP);
     }
 
-    @Override
-    public void onInteract(PlayerInteractEvent e, Player player, IRaceData raceData) {
-        ItemStack item = e.getItem();
-
-        if(raceData.getSubrace() == SubRace.FIRE.id) {
-            launchFireball(e, player, item);
-        }
-        else if(raceData.getSubrace() == SubRace.AIR.id) {
-            useFlyCharge(e, player, item, raceData);
-        }
+    private void applyWaterAbilities(RaceProfile profile) {
+        profile.addAbility(AbilityKey.AQUATIC_STRENGTH);
     }
 
-    private void launchFireball(PlayerInteractEvent e, Player player, ItemStack item) {
-        if(item == null || item.getType() != Material.BLAZE_POWDER)
-            return;
-
-        if (e.getAction() != Action.RIGHT_CLICK_AIR)
-            return;
-
-        int amount = item.getAmount();
-        if (amount > 1) {
-            item.setAmount(amount - 1);
-        } else {
-            player.getInventory().setItemInMainHand(null);
-        }
-
-        player.launchProjectile(Fireball.class);
-
-        e.setCancelled(true);
+    private void applyEarthAbilities(RaceProfile profile) {
+        profile.addAbility(AbilityKey.TAMASHI.EARTH_ABSORPTION);
+        profile.addAbility(AbilityKey.DIRT_EATER);
     }
 
-    private void useFlyCharge(PlayerInteractEvent e, Player player, ItemStack item, IRaceData raceData) {
-        if(!(Race.getInstance().getItemManager().getItem(item) instanceof FlyChargeBall))
-            return;
-
-        e.setCancelled(true);
-
-        if(raceData.getRank() >= Rank.OKAMI.rank)
-            return;
-
-        if(e.getAction() != Action.RIGHT_CLICK_AIR)
-            return;
-
-        Rank rank = Rank.fromRank(raceData.getRank());
-        int time = switch(rank) {
-            case CHILD -> 10;
-            case ACCOMPLISHED -> 20;
-            case HALF_GOD -> 30;
-            case KAMI -> 5 * 60;
-            default -> 5;
-        };
-
-        if(!player.hasCooldown(item)) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, time * 20, 0, true, false, true));
-            player.setCooldown(item, (time + 10) * 20);
-        }
-        else if(player.hasPotionEffect(PotionEffectType.LEVITATION)) {
-            player.removePotionEffect(PotionEffectType.LEVITATION);
-            player.setCooldown(item, 10 * 20);
-        }
+    private void applyFireAbilities(RaceProfile profile) {
+        profile.addAbility(AbilityKey.FIREBALL);
+        profile.addAbility(AbilityKey.FIRE_ASPECT);
     }
 
-    @Override
-    public void onAttack(EntityDamageByEntityEvent e, Player player, IRaceData raceData) {
-        Rank rank = Rank.fromRank(raceData.getRank());
-
-        if(raceData.getSubrace() == SubRace.FIRE.id) {
-
-            int time = switch(rank) {
-                case EMBRYO -> 1;
-                case CHILD -> 2;
-                case ACCOMPLISHED -> 5;
-                case HALF_GOD -> 10;
-                case KAMI -> 20;
-                case OKAMI -> 30;
-            };
-
-            e.getEntity().setFireTicks(time * 20);
-        }
-        else if(raceData.getSubrace() == SubRace.WATER.id) {
-
-            if(!player.isInWater())
-                return;
-
-            double factor = switch(rank) {
-                case EMBRYO -> 0.10;
-                case CHILD -> 0.20;
-                case ACCOMPLISHED -> 0.30;
-                case HALF_GOD -> 0.40;
-                case KAMI -> 0.50;
-                case OKAMI -> 1.00;
-            };
-
-            e.setDamage(e.getFinalDamage() * (1.0 + factor));
-        }
+    private void applyAirAbilities(RaceProfile profile) {
+        profile.addAbility(AbilityKey.FLY_CHARGE);
+        profile.addAbility(AbilityKey.FEATHER_FALL);
     }
 
-    @Override
-    public void onDefend(EntityDamageEvent e, Player player, IRaceData raceData) {
-        if(raceData.getSubrace() == SubRace.EARTH.id) {
-
-            double factor = switch (Rank.fromRank(raceData.getRank())) {
-                case EMBRYO -> 0.20;
-                case CHILD -> 0.30;
-                case ACCOMPLISHED -> 0.40;
-                case HALF_GOD -> 0.60;
-                case KAMI -> 0.80;
-                case OKAMI -> 0.90;
-            };
-
-            e.setDamage(e.getFinalDamage() * (1.0 - factor));
-        }
-        else if(raceData.getSubrace() == SubRace.AIR.id) {
-            if(e.getCause() != EntityDamageEvent.DamageCause.FALL)
-                return;
-
-            e.setCancelled(true);
-        }
+    public void applySharedAbilities(RaceProfile profile) {
+        profile.addAbility(AbilityKey.MONOPHOBIA);
     }
 
     private void applyWaterEffect(Player player, TamashiData data) {
@@ -254,8 +105,13 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable, Tas
         player.addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, PotionEffect.INFINITE_DURATION, dolphinGraceLvl-1, true, false, true));
     }
 
-    private void applyWater(Player player, TamashiData data) {
+    private void applyWater(Player player, RaceProfile profile, TamashiData data) {
+        applyWaterAbilities(profile);
         applyWaterEffect(player, data);
+    }
+
+    private void applyEarth(Player player, RaceProfile profile, TamashiData data) {
+        applyEarthAbilities(profile);
     }
 
     private void applyFireAttribute(Player player, TamashiData data) {
@@ -279,7 +135,8 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable, Tas
         player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, PotionEffect.INFINITE_DURATION, 0, true, false, true));
     }
 
-    private void applyFire(Player player, TamashiData data) {
+    private void applyFire(Player player, RaceProfile profile, TamashiData data) {
+        applyFireAbilities(profile);
         applyFireEffect(player, data);
         applyFireAttribute(player, data);
     }
@@ -319,20 +176,31 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable, Tas
         }
     }
 
-    private void applyAir(Player player, TamashiData data) {
+    private void applyAir(Player player, RaceProfile profile, TamashiData data) {
+        applyAirAbilities(profile);
         applyAirPermission(player, data);
         applyAirAttribute(player, data);
         giveAirItem(player, data);
     }
 
     @Override
-    public void applyRacePerks(Player player, TamashiData data) {
+    public void applyRacePerks(Player player, RaceProfile profile, TamashiData data) {
+        if(profile.raceData == data) {
+            if(getExpRequired(data.getRank() + 1) != -1) {
+                addExpAbilities(profile);
+            } else {
+                removeExpAbilities(profile);
+            }
+        }
+
+        applySharedAbilities(profile);
         reapplyPerms(player, data);
 
         switch(SubRace.fromId(data.getSubrace())) {
-            case WATER -> applyWater(player, data);
-            case FIRE -> applyFire(player, data);
-            case AIR -> applyAir(player, data);
+            case WATER -> applyWater(player, profile, data);
+            case EARTH -> applyEarth(player, profile, data);
+            case FIRE -> applyFire(player, profile, data);
+            case AIR -> applyAir(player, profile, data);
         }
     }
 
@@ -357,7 +225,7 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable, Tas
     }
 
     @Override
-    public void cleanup(Player player) {
+    public void cleanup(Player player, RaceProfile profile) {
         IRace.removePermission(player, PERM_HOME);
 
         // water
@@ -388,6 +256,10 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable, Tas
 
         IRace.removePermission(player, PERM_FLY_CHARGE);
         player.setAllowFlight(false);
+
+        for(String key : getAbilities().keySet()) {
+            profile.removeAbility(key);
+        }
     }
 
     @Override

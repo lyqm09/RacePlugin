@@ -2,12 +2,15 @@ package be.lymaes.race.listener;
 
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
+import be.lymaes.race.ability.AbilityType;
+import be.lymaes.race.ability.model.Targetable;
 import be.lymaes.race.manager.RaceManager;
-import be.lymaes.race.model.IRace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
+
+import java.util.Set;
 
 public class TargetListener implements Listener {
 
@@ -25,10 +28,10 @@ public class TargetListener implements Listener {
         RaceProfile profile = raceManager.getProfile(player);
         if(profile == null) return;
 
-        IRace model = raceManager.getRaceModel(profile.raceData.getRace());
-        if(!(model instanceof Targetable targetable)) return;
-
-        targetable.onTarget(e, player, profile.raceData);
+        Set<Targetable> abilities = profile.getAbilities(AbilityType.TARGETABLE);
+        for(Targetable targetable : abilities) {
+            targetable.onTarget(e);
+        }
     }
 
 }

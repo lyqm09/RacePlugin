@@ -1,10 +1,14 @@
 package be.lymaes.race;
 
+import be.lymaes.race.ability.AbilityType;
+import be.lymaes.race.ability.Taskable;
 import be.lymaes.race.manager.RaceManager;
 import be.lymaes.race.model.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.Set;
 
 public class MainRunnable extends BukkitRunnable {
 
@@ -29,10 +33,10 @@ public class MainRunnable extends BukkitRunnable {
             RaceProfile profile = raceManager.getProfile(player);
             if(profile == null) continue;
 
-            IRace model = raceManager.getRaceModel(profile.raceData.getRace());
-            if(!(model instanceof Taskable taskable)) continue;
-
-            taskable.onTask(player, profile, currentTime);
+            Set<Taskable> abilities = profile.getAbilities(AbilityType.TASKABLE);
+            for(Taskable taskable : abilities) {
+                taskable.run(player, profile, profile.raceData, currentTime);
+            }
         }
 
     }

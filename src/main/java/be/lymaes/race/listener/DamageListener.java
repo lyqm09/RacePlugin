@@ -2,6 +2,9 @@ package be.lymaes.race.listener;
 
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
+import be.lymaes.race.ability.AbilityType;
+import be.lymaes.race.ability.Damager;
+import be.lymaes.race.ability.Defender;
 import be.lymaes.race.manager.RaceManager;
 import be.lymaes.race.model.IRace;
 import org.bukkit.entity.Player;
@@ -9,6 +12,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+
+import java.util.Set;
 
 public class DamageListener implements Listener {
 
@@ -31,10 +36,10 @@ public class DamageListener implements Listener {
         RaceProfile profile = raceManager.getProfile(player);
         if(profile == null) return;
 
-        IRace model = raceManager.getRaceModel(profile.raceData.getRace());
-        if(!(model instanceof Damager damager)) return;
-
-        damager.onAttack(attackEvent, player, profile.raceData);
+        Set<Damager> abilities = profile.getAbilities(AbilityType.DAMAGER);
+        for(Damager damager : abilities) {
+            damager.onDamage(attackEvent, player, profile.raceData.getRank());
+        }
     }
 
     private void handleDefend(EntityDamageEvent e) {
@@ -43,10 +48,10 @@ public class DamageListener implements Listener {
         RaceProfile profile = raceManager.getProfile(player);
         if(profile == null) return;
 
-        IRace model = raceManager.getRaceModel(profile.raceData.getRace());
-        if(!(model instanceof Damageable defender)) return;
-
-        defender.onDefend(e, player, profile.raceData);
+        Set<Defender> abilities = profile.getAbilities(AbilityType.DEFENDER);
+        for(Defender defender : abilities) {
+            defender.onDefend(e, profile.raceData.getRank());
+        }
     }
 
 }

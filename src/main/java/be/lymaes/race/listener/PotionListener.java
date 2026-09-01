@@ -1,7 +1,6 @@
 package be.lymaes.race.listener;
 
 import be.lymaes.race.Race;
-import be.lymaes.race.RaceProfile;
 import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.item.IRaceItem;
 import be.lymaes.race.item.Splashable;

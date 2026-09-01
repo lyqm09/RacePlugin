@@ -1,159 +1,62 @@
 package be.lymaes.race.model;
 
-import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
-import be.lymaes.race.data.IRaceData;
+import be.lymaes.race.ability.*;
+import be.lymaes.race.ability.model.*;
+import be.lymaes.race.ability.model.Fireball;
 import be.lymaes.race.data.OniData;
 import be.lymaes.race.item.model.PrimordialOniBlood;
-import be.lymaes.race.manager.RaceManager;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.block.Biome;
 import org.bukkit.entity.*;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityTargetEvent;
-import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.EnumSet;
-import java.util.Set;
+import java.util.Map;
 
-public class Oni implements IRace<OniData>, IRankable, Taskable, Damageable, Interactable, Targetable, Consumer, Killer {
+public class Oni implements IRace<OniData>, IRankable {
 
     private static final NamespacedKey STRENGTH = NamespacedKey.fromString("oni:strength");
     private static final NamespacedKey SPEED = NamespacedKey.fromString("oni:speed");
     private static final NamespacedKey HEALTH = NamespacedKey.fromString("oni:health");
 
-    private static final EnumSet<Material> MEATS = EnumSet.of(
-            Material.BEEF, Material.COOKED_BEEF,
-            Material.PORKCHOP, Material.COOKED_PORKCHOP,
-            Material.CHICKEN, Material.COOKED_CHICKEN,
-            Material.MUTTON, Material.COOKED_MUTTON,
-            Material.RABBIT, Material.COOKED_RABBIT,
-            Material.COD, Material.COOKED_COD,
-            Material.SALMON, Material.COOKED_SALMON,
-            Material.TROPICAL_FISH, Material.PUFFERFISH,
-            Material.ROTTEN_FLESH
-    );
-
-    private static final EnumSet<Material> IGNORED_CONSUMABLES = EnumSet.of(
-            Material.POTION,
-            Material.MILK_BUCKET,
-            Material.HONEY_BOTTLE,
-
-            Material.CHARCOAL,
-            Material.GLOWSTONE_DUST
-    );
-
-    private static final Set<Biome> NOT_RAINING_BIOMES = Set.of(
-            Biome.DESERT,
-            Biome.SAVANNA,
-            Biome.SAVANNA_PLATEAU,
-            Biome.WINDSWEPT_SAVANNA,
-            Biome.BASALT_DELTAS,
-            Biome.BADLANDS,
-            Biome.ERODED_BADLANDS,
-            Biome.WOODED_BADLANDS
-    );
-
-    private boolean isUnderRain(Player player) {
-        World world = player.getWorld();
-        if(!world.hasStorm()) return false;
-
-        Location location = player.getLocation();
-        Biome biome = world.getBiome(location);
-        if(NOT_RAINING_BIOMES.contains(biome)) return false;
-
-        int highestBlockY = world.getHighestBlockYAt(location);
-        return highestBlockY < location.getBlockY();
+    public Map<String, Ability> getAbilities() {
+        double[] defendFactor = new double[] {0.00, 0.05, 0.10, 0.15, 0.20, 0.25, 0.50};
+        return Map.of(
+                AbilityKey.ONI.EXP, new OniExp(),
+                AbilityKey.HYDROPHOBIA, new Hydrophobia(),
+                AbilityKey.MEAT_EATER, new MeatEater(),
+                AbilityKey.FIREBALL, new Fireball(),
+                AbilityKey.SILENT_ENTITY, new SilentEntity(),
+                AbilityKey.ONI.ABSORPTION, new Absorption(defendFactor)
+        );
     }
 
     @Override
-    public void onTask(Player player, RaceProfile profile, long currentTime) {
-        if(player.isInWater() || isUnderRain(player)) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 2 * 20, 1, true, false, true));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 2 * 20, 1, true, false, true));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 2 * 20, 1, true, false, true));
-        }
+    public void addExpAbilities(RaceProfile profile) {
+        profile.addAbility(AbilityKey.ONI.EXP);
     }
 
-    @Override
-    public void onKill(EntityDeathEvent e, RaceProfile profile) {
-        if(!(e.getEntity() instanceof Mob))
-            return;
-
-        profile.addExp(1);
+    public void removeExpAbilities(RaceProfile profile) {
+        profile.removeAbility(AbilityKey.ONI.EXP);
     }
 
-    @Override
-    public void onConsume(PlayerItemConsumeEvent e, Player player, IRaceData raceData) {
-        ItemStack item = e.getItem();
-        Material consumedItem = item.getType();
+    private void applyAbilities(RaceProfile profile) {
+        int rank = profile.raceData.getRank();
 
-        if (IGNORED_CONSUMABLES.contains(consumedItem)) return;
-        if (MEATS.contains(consumedItem)) return;
+        profile.addAbility(AbilityKey.HYDROPHOBIA);
+        profile.addAbility(AbilityKey.MEAT_EATER);
+        profile.addAbility(AbilityKey.ONI.ABSORPTION);
 
-        player.sendMessage("Beurk !");
-        e.setCancelled(true);
-    }
-
-    @Override
-    public void onTarget(EntityTargetLivingEntityEvent e, Player player, IRaceData raceData) {
-        if(!(e.getEntity() instanceof Monster))
-            return;
-
-        if(raceData.getRank() >= Rank.CAPTAIN.rank) {
-            if(e.getReason() != EntityTargetEvent.TargetReason.TARGET_ATTACKED_ENTITY) {
-                e.setCancelled(true);
-            }
-        }
-    }
-
-    @Override
-    public void onInteract(PlayerInteractEvent e, Player player, IRaceData raceData) {
-        if(raceData.getRank() < Rank.GENERAL.rank)
-            return;
-
-        ItemStack item = e.getItem();
-        if(item == null || item.getType() != Material.BLAZE_POWDER)
-            return;
-
-        if (e.getAction() != Action.RIGHT_CLICK_AIR)
-            return;
-
-        int amount = item.getAmount();
-        if (amount > 1) {
-            item.setAmount(amount - 1);
-        } else {
-            player.getInventory().setItemInMainHand(null);
+        if(rank >= Rank.LIEUTENANT.rank) {
+            profile.addAbility(AbilityKey.FIREBALL);
         }
 
-        player.launchProjectile(Fireball.class);
-
-        e.setCancelled(true);
-    }
-
-    @Override
-    public void onDefend(EntityDamageEvent e, Player player, IRaceData raceData) {
-        double factor = switch(Rank.fromRank(raceData.getRank())) {
-            case EVOLVED -> 0.05;
-            case LIEUTENANT -> 0.10;
-            case CAPTAIN -> 0.15;
-            case COMMANDER -> 0.20;
-            case LORD -> 0.25;
-            case GENERAL -> 0.50;
-            default -> 0.0;
-        };
-
-        e.setDamage(e.getFinalDamage() * (1.0 - factor));
+        if(rank >= Rank.CAPTAIN.rank) {
+            profile.addAbility(AbilityKey.SILENT_ENTITY);
+        }
     }
 
     private void applyPerms(Player player, OniData data) {
@@ -216,7 +119,16 @@ public class Oni implements IRace<OniData>, IRankable, Taskable, Damageable, Int
 //    }
 
     @Override
-    public void applyRacePerks(Player player, OniData data) {
+    public void applyRacePerks(Player player, RaceProfile profile, OniData data) {
+        if(profile.raceData == data) {
+            if(getExpRequired(data.getRank() + 1) != -1) {
+                addExpAbilities(profile);
+            } else {
+                removeExpAbilities(profile);
+            }
+        }
+
+        applyAbilities(profile);
         applyPerms(player, data);
         applyEffect(player, data);
         applyAttribute(player, data);
@@ -264,7 +176,7 @@ public class Oni implements IRace<OniData>, IRankable, Taskable, Damageable, Int
 //    }
 
     @Override
-    public void cleanup(Player player) {
+    public void cleanup(Player player, RaceProfile profile) {
         IRace.removeAttribute(player, Attribute.ATTACK_DAMAGE, STRENGTH);
         IRace.removeAttribute(player, Attribute.MOVEMENT_SPEED, SPEED);
         IRace.removeAttribute(player, Attribute.MAX_HEALTH, HEALTH);
@@ -275,6 +187,10 @@ public class Oni implements IRace<OniData>, IRankable, Taskable, Damageable, Int
         }
 
         IRace.removePermission(player, PrimordialOniBlood.PERM_CRAFT);
+
+        for(String key : getAbilities().keySet()) {
+            profile.removeAbility(key);
+        }
 
 //        cleanupOverlayEffect(player);
     }

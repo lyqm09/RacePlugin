@@ -2,12 +2,15 @@ package be.lymaes.race.listener;
 
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
+import be.lymaes.race.ability.AbilityType;
+import be.lymaes.race.ability.RaidWinner;
 import be.lymaes.race.manager.RaceManager;
-import be.lymaes.race.model.IRace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.raid.RaidFinishEvent;
+
+import java.util.Set;
 
 public class RaidListener implements Listener {
 
@@ -24,10 +27,10 @@ public class RaidListener implements Listener {
             RaceProfile profile = raceManager.getProfile(player);
             if(profile == null) continue;
 
-            IRace model = raceManager.getRaceModel(profile.raceData.getRace());
-            if(!(model instanceof RaidFinisher raidFinisher)) continue;
-
-            raidFinisher.onRaidFinish(profile);
+            Set<RaidWinner> abilities = profile.getAbilities(AbilityType.RAID_WINNER);
+            for(RaidWinner winner : abilities) {
+                winner.onRaidFinish(profile);
+            }
         }
     }
 
