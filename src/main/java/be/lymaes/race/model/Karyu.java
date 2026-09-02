@@ -3,10 +3,7 @@ package be.lymaes.race.model;
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.*;
-import be.lymaes.race.ability.model.Absorption;
-import be.lymaes.race.ability.model.KaryuAdorerExp;
-import be.lymaes.race.ability.model.KaryuMerchantExp;
-import be.lymaes.race.ability.model.LootTransformer;
+import be.lymaes.race.ability.model.*;
 import be.lymaes.race.data.KaryuData;
 import be.lymaes.race.gui.GUITypes;
 import be.lymaes.race.item.IStaticItem;
@@ -33,7 +30,6 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable {
 
     public static final String PERM_FORTUNE = "race.karyu.merchant.fortune";
     public static final String PERM_VILLAGER = "race.karyu.merchant.villager";
-    public static final String PERM_MILICIEN = "race.karyu.merchant.milicien";
     public static final String PERM_SHARPNESS = "race.karyu.adorer.sharpness";
     public static final String PERM_BLESS = "race.karyu.adorer.bless";
 
@@ -61,7 +57,12 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable {
                 AbilityKey.KARYU_MERCHANT_EXP, new KaryuMerchantExp(),
                 AbilityKey.KARYU_ADORER_EXP, new KaryuAdorerExp(),
                 AbilityKey.KARYU_ADORER_ABSORPTION, new Absorption(adorerAbsorptionFactor),
-                AbilityKey.EMERALD_TRANSFORMER, new LootTransformer(minerals)
+                AbilityKey.EMERALD_TRANSFORMER, new LootTransformer(minerals),
+                AbilityKey.PERM_FORTUNE, new PermAbility(PERM_FORTUNE),
+                AbilityKey.PERM_VILLAGER, new PermAbility(PERM_VILLAGER),
+                AbilityKey.MILICIEN_SUMMONER, EmptyAbility.INSTANCE,
+                AbilityKey.PERM_SHARPNESS, new PermAbility(PERM_SHARPNESS),
+                AbilityKey.PERM_BLESS, new PermAbility(PERM_BLESS)
         );
     }
 
@@ -85,32 +86,32 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable {
     private void applyMerchantAbilities(RaceProfile profile, KaryuData data) {
         int rank = data.getRank();
 
+        if(data.getRank() >= Rank.BEGINNER.rank) {
+            profile.addAbility(AbilityKey.PERM_FORTUNE);
+        }
+
+        if(data.getRank() >= Rank.NOVICE.rank) {
+            profile.addAbility(AbilityKey.PERM_VILLAGER);
+        }
+
         if (rank >= Rank.ADVANCE.rank) {
             profile.addAbility(AbilityKey.EMERALD_TRANSFORMER);
+        }
+
+        if(data.getRank() >= Rank.BIG.rank) {
+            profile.addAbility(AbilityKey.MILICIEN_SUMMONER);
         }
     }
 
     private void applyAdorerAbilities(RaceProfile profile, KaryuData data) {
         profile.addAbility(AbilityKey.KARYU_ADORER_ABSORPTION);
-    }
 
-    private void applyMerchantPermission(Player player, KaryuData data) {
-        if(data.getRank() >= Rank.BEGINNER.rank) {
-            if(!player.hasPermission(PERM_FORTUNE)) {
-                IRace.addPermission(player, PERM_FORTUNE);
-            }
-        }
-
-        if(data.getRank() >= Rank.NOVICE.rank) {
-            if(!player.hasPermission(PERM_VILLAGER)) {
-                IRace.addPermission(player, PERM_VILLAGER);
-            }
+        if(data.getRank() >= Rank.ADVANCE.rank) {
+            profile.addAbility(AbilityKey.PERM_SHARPNESS);
         }
 
         if(data.getRank() >= Rank.BIG.rank) {
-            if(!player.hasPermission(PERM_MILICIEN)) {
-                IRace.addPermission(player, PERM_MILICIEN);
-            }
+            profile.addAbility(AbilityKey.PERM_BLESS);
         }
     }
 
@@ -141,26 +142,11 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable {
 
     public void applyMerchant(Player player, RaceProfile profile, KaryuData data) {
         applyMerchantAbilities(profile, data);
-        applyMerchantPermission(player, data);
         applyMerchantEffect(player, data);
         giveMerchantItem(player, data);
 
         if(data.getRank() >= Rank.DRAGON.rank && data.getSubrace() == SubRace.MERCHANT.id) {
             applyAdorer(player, profile, data);
-        }
-    }
-
-    private void applyAdorerPermission(Player player, KaryuData data) {
-        if(data.getRank() >= Rank.ADVANCE.rank) {
-            if(!player.hasPermission(PERM_SHARPNESS)) {
-                IRace.addPermission(player, PERM_SHARPNESS);
-            }
-        }
-
-        if(data.getRank() >= Rank.BIG.rank) {
-            if(!player.hasPermission(PERM_BLESS)) {
-                IRace.addPermission(player, PERM_BLESS);
-            }
         }
     }
 
@@ -180,7 +166,6 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable {
 
     public void applyAdorer(Player player, RaceProfile profile, KaryuData data) {
         applyAdorerAbilities(profile, data);
-        applyAdorerPermission(player, data);
         applyAdorerAttribute(player, data);
 
         if(data.getRank() >= Rank.DRAGON.rank && data.getSubrace() == SubRace.ADORER.id) {
@@ -205,14 +190,6 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable {
     }
 
     @Override
-    public void reapplyPerms(Player player, KaryuData data) {
-        switch(SubRace.fromId(data.getSubrace())) {
-            case MERCHANT -> applyMerchantPermission(player, data);
-            case ADORER -> applyAdorerPermission(player, data);
-        }
-    }
-
-    @Override
     public void reapplyEffect(Player player, KaryuData data) {
         if (Objects.requireNonNull(SubRace.fromId(data.getSubrace())) == SubRace.MERCHANT) {
             applyMerchantEffect(player, data);
@@ -225,14 +202,8 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable {
         // Adorer
         IRace.removeAttribute(player, Attribute.ATTACK_DAMAGE, STRENGTH);
         IRace.removeAttribute(player, Attribute.MOVEMENT_SPEED, SPEED);
-        IRace.removePermission(player, PERM_SHARPNESS);
-        IRace.removePermission(player, PERM_BLESS);
 
         // Merchant
-        IRace.removePermission(player, PERM_FORTUNE);
-        IRace.removePermission(player, PERM_VILLAGER);
-        IRace.removePermission(player, PERM_MILICIEN);
-
         PotionEffect hotv = player.getPotionEffect(PotionEffectType.HERO_OF_THE_VILLAGE);
         if(hotv != null && hotv.isInfinite()) {
             player.removePotionEffect(PotionEffectType.HERO_OF_THE_VILLAGE);

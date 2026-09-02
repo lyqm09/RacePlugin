@@ -5,7 +5,6 @@ import be.lymaes.race.ability.*;
 import be.lymaes.race.ability.model.*;
 import be.lymaes.race.ability.model.Fireball;
 import be.lymaes.race.data.OniData;
-import be.lymaes.race.item.model.PrimordialOniBlood;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -176,8 +175,6 @@ public class Oni implements IRace<OniData>, IRankable {
         if(regeneration != null && regeneration.isInfinite()) {
             player.removePotionEffect(PotionEffectType.REGENERATION);
         }
-
-        IRace.removePermission(player, PrimordialOniBlood.PERM_CRAFT);
 
         for(AbilityKey key : getAbilities().keySet()) {
             profile.removeAbility(key);

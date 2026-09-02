@@ -56,6 +56,9 @@ public class RaceProfile {
         if(ability instanceof Consumer) {
             eventAbilities.computeIfAbsent(AbilityType.CONSUMER, k -> new HashSet<>()).add(ability);
         }
+        if(ability instanceof CommandSender commandSender) {
+            commandSender.addPermission(getPlayer());
+        }
         if(ability instanceof Damager) {
             eventAbilities.computeIfAbsent(AbilityType.DAMAGER, k -> new HashSet<>()).add(ability);
         }
@@ -96,6 +99,9 @@ public class RaceProfile {
         }
         if(ability instanceof Consumer) {
             removeEventAbility(AbilityType.CONSUMER, ability);
+        }
+        if(ability instanceof CommandSender commandSender) {
+            commandSender.removePermission(getPlayer());
         }
         if(ability instanceof Damager) {
             removeEventAbility(AbilityType.DAMAGER, ability);

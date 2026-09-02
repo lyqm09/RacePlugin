@@ -49,32 +49,4 @@ public interface IRace<T extends IRaceData> {
         }
     }
 
-    static PermissionAttachment getPermission(Player player) {
-        for (PermissionAttachmentInfo info : player.getEffectivePermissions()) {
-            PermissionAttachment attachment = info.getAttachment();
-
-            if (attachment != null && attachment.getPlugin().equals(Race.getInstance())) {
-                return attachment;
-            }
-        }
-        return null;
-    }
-
-    static void addPermission(Player player, String perm) {
-        PermissionAttachment attachment = getPermission(player);
-        if(attachment == null)
-            attachment = player.addAttachment(Race.getInstance());
-
-        attachment.setPermission(perm, true);
-        player.updateCommands();
-    }
-
-    static void removePermission(Player player, String perm) {
-        PermissionAttachment attachment = getPermission(player);
-        if(attachment == null)
-            return;
-
-        attachment.setPermission(perm, false);
-        player.updateCommands();
-    }
 }

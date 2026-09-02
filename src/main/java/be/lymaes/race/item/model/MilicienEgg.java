@@ -1,9 +1,13 @@
 package be.lymaes.race.item.model;
 
+import be.lymaes.race.Race;
+import be.lymaes.race.RaceProfile;
+import be.lymaes.race.ability.AbilityKey;
 import be.lymaes.race.item.ARaceItem;
 import be.lymaes.race.item.IStaticItem;
 import be.lymaes.race.item.Interactable;
 import be.lymaes.race.item.RaceItem;
+import be.lymaes.race.manager.RaceManager;
 import be.lymaes.race.model.Karyu;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -24,18 +28,15 @@ public class MilicienEgg extends ARaceItem implements IStaticItem, Interactable 
     public void onInteract(PlayerInteractEvent e, Player player, ItemStack item) {
         e.setCancelled(true);
 
-        if(e.getAction() != Action.RIGHT_CLICK_BLOCK) {
-            return;
-        }
+        if(e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 
         Block clickedBlock = e.getClickedBlock();
-        if (clickedBlock == null) {
-            return;
-        }
+        if (clickedBlock == null) return;
 
-        if(!player.hasPermission(Karyu.PERM_MILICIEN)) {
-            return;
-        }
+        RaceManager raceManager = Race.getInstance().getRaceManager();
+        RaceProfile profile = raceManager.getProfile(player);
+        if(profile == null) return;
+        if(!profile.hasAbility(AbilityKey.SUMMON_MILICIEN)) return;
 
         Location spawnLoc = clickedBlock.getRelative(e.getBlockFace())
                 .getLocation()
