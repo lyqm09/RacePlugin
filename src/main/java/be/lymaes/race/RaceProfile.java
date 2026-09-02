@@ -137,6 +137,7 @@ public class RaceProfile {
         return abilities.contains(key);
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends Ability> Set<T> getEventAbilities(AbilityType type) {
         return (Set<T>) eventAbilities.getOrDefault(type, Collections.emptySet());
     }
