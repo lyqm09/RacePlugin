@@ -8,7 +8,6 @@ import be.lymaes.race.item.IStaticItem;
 import be.lymaes.race.item.Interactable;
 import be.lymaes.race.item.RaceItem;
 import be.lymaes.race.manager.RaceManager;
-import be.lymaes.race.model.Karyu;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.IronGolem;
