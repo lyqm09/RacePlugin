@@ -50,7 +50,7 @@ public class HumanData implements IRaceData {
 
     @Override
     public void saveProfileData(ObjectNode rootNode) {
-
+        rootNode.put("current", RACE_TYPE.name());
     }
 
     public static HumanData loadProfileData(JsonNode rootNode, RaceType.PrimaryData primaryData) {
