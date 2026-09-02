@@ -142,12 +142,6 @@ public class Oni implements IRace<OniData>, IRankable {
 //        modelOverlay.reapplyPerms(player, overlay);
 //    }
 
-    @Override
-    public void reapplyPerms(Player player, OniData data) {
-
-//        reapplyOverlayPerms(player, data);
-    }
-
 //    private void reapplyOverlayEffect(Player player, OniData data) {
 //        RaceManager raceManager = Race.getInstance().getRaceManager();
 //        IRaceData overlay = data.getOverlay();

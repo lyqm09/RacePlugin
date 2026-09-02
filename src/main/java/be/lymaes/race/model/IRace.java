@@ -21,7 +21,6 @@ public interface IRace<T extends IRaceData> {
     Map<AbilityKey, Ability> getAbilities();
 
     void applyRacePerks(Player player, RaceProfile profile, T data);
-    void reapplyPerms(Player player, T data);
     void reapplyEffect(Player player, T data);
     void cleanup(Player player, RaceProfile profile);
 

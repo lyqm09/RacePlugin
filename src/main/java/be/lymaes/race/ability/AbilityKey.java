@@ -23,6 +23,7 @@ public enum AbilityKey {
     KITSUNE_ZONE_EXP,
     FOX_DISGUISE,
     INVISIBILITY,
+    PERM_ALLOW_FLY,
 
     KARYU_MERCHANT_EXP,
     KARYU_ADORER_EXP,

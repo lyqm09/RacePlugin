@@ -2,13 +2,11 @@ package be.lymaes.race.model;
 
 import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.*;
-import be.lymaes.race.ability.model.Disguise;
-import be.lymaes.race.ability.model.Invisibility;
-import be.lymaes.race.ability.model.KitsuneRaidExp;
-import be.lymaes.race.ability.model.KitsuneZoneExp;
+import be.lymaes.race.ability.model.*;
 import be.lymaes.race.data.KitsuneData;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.DisguiseType;
+import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -35,7 +33,8 @@ public class Kitsune implements IRace<KitsuneData>, IRankable {
                 AbilityKey.KITSUNE_ZONE_EXP, new KitsuneZoneExp(),
 
                 AbilityKey.FOX_DISGUISE, new Disguise(DisguiseType.FOX),
-                AbilityKey.INVISIBILITY, new Invisibility()
+                AbilityKey.INVISIBILITY, new Invisibility(),
+                AbilityKey.PERM_ALLOW_FLY, EmptyAbility.INSTANCE
         );
     }
 
@@ -56,8 +55,13 @@ public class Kitsune implements IRace<KitsuneData>, IRankable {
         if(rank >= Rank.FOUR.rank) {
             profile.addAbility(AbilityKey.FOX_DISGUISE);
         }
+
         if(rank >= Rank.FIVE.rank) {
             profile.addAbility(AbilityKey.INVISIBILITY);
+        }
+
+        if(rank >= Rank.NINE.rank) {
+            profile.addAbility(AbilityKey.PERM_ALLOW_FLY);
         }
     }
 
@@ -167,17 +171,6 @@ public class Kitsune implements IRace<KitsuneData>, IRankable {
         applyAbilities(profile);
         applyEffect(player, data);
         applyAttribute(player, data);
-
-        reapplyPerms(player, data);
-    }
-
-    @Override
-    public void reapplyPerms(Player player, KitsuneData data) {
-        if(data.getRank() >= Rank.NINE.rank) {
-            player.setAllowFlight(true);
-        } else if(player.getAllowFlight()) {
-            player.setAllowFlight(false);
-        }
     }
 
     @Override
@@ -214,6 +207,10 @@ public class Kitsune implements IRace<KitsuneData>, IRankable {
 
         if (DisguiseAPI.isDisguised(player) && DisguiseAPI.getDisguise(player).getType() == DisguiseType.FOX) {
             DisguiseAPI.undisguiseToAll(player);
+        }
+
+        if((player.getGameMode() != GameMode.CREATIVE && player.getGameMode() != GameMode.SPECTATOR) && player.getAllowFlight()) {
+            player.setAllowFlight(false);
         }
 
         for(AbilityKey key : getAbilities().keySet()) {
