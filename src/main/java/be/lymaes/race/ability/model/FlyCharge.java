@@ -1,7 +1,6 @@
 package be.lymaes.race.ability.model;
 
 import be.lymaes.race.Race;
-import be.lymaes.race.ability.Ability;
 import be.lymaes.race.ability.Interact;
 import be.lymaes.race.item.model.FlyChargeBall;
 import be.lymaes.race.manager.ItemManager;

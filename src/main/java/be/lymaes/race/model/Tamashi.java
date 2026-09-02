@@ -7,7 +7,6 @@ import be.lymaes.race.ability.model.*;
 import be.lymaes.race.data.TamashiData;
 import be.lymaes.race.gui.GUITypes;
 import be.lymaes.race.item.model.FlyChargeBall;
-import be.lymaes.race.item.IStaticItem;
 import be.lymaes.race.item.RaceItem;
 import be.lymaes.race.manager.ItemManager;
 import net.md_5.bungee.api.ChatColor;
@@ -25,7 +24,6 @@ import java.util.Map;
 public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable {
 
     public static final String PERM_HOME = "race.tamashi.home";
-    public static final String PERM_FLY_CHARGE = "race.tamashi.air.fly_charge";
 
     public static final double DISTANCE_SQUARED = 200 * 200;
 
@@ -39,6 +37,7 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable {
         int[] flyTimes = new int[] {5, 10, 20, 30, 5*60};
         return Map.of(
                 AbilityKey.TAMASHI_EXP, new TamashiExp(DISTANCE_SQUARED),
+                AbilityKey.PERM_HOME, new PermAbility(PERM_HOME),
                 AbilityKey.MONOPHOBIA, new Monophobia(DISTANCE_SQUARED),
 
                 AbilityKey.AQUATIC_STRENGTH, new AquaticStrength(waterStrengthFactor),
@@ -63,26 +62,32 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable {
         profile.removeAbility(AbilityKey.TAMASHI_EXP);
     }
 
-    private void applyWaterAbilities(RaceProfile profile) {
+    private void applyWaterAbilities(RaceProfile profile, TamashiData data) {
         profile.addAbility(AbilityKey.AQUATIC_STRENGTH);
     }
 
-    private void applyEarthAbilities(RaceProfile profile) {
+    private void applyEarthAbilities(RaceProfile profile, TamashiData data) {
         profile.addAbility(AbilityKey.TAMASHI_EARTH_ABSORPTION);
         profile.addAbility(AbilityKey.DIRT_EATER);
     }
 
-    private void applyFireAbilities(RaceProfile profile) {
+    private void applyFireAbilities(RaceProfile profile, TamashiData data) {
         profile.addAbility(AbilityKey.FIREBALL);
         profile.addAbility(AbilityKey.FIRE_ASPECT);
     }
 
-    private void applyAirAbilities(RaceProfile profile) {
-        profile.addAbility(AbilityKey.FLY_CHARGE);
+    private void applyAirAbilities(RaceProfile profile, TamashiData data) {
         profile.addAbility(AbilityKey.FEATHER_FALL);
+
+        if(data.getRank() < Rank.OKAMI.rank) {
+            profile.addAbility(AbilityKey.FLY_CHARGE);
+        } else {
+            profile.removeAbility(AbilityKey.FLY_CHARGE);
+        }
     }
 
     public void applySharedAbilities(RaceProfile profile) {
+        profile.addAbility(AbilityKey.PERM_HOME);
         profile.addAbility(AbilityKey.MONOPHOBIA);
     }
 
@@ -106,12 +111,12 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable {
     }
 
     private void applyWater(Player player, RaceProfile profile, TamashiData data) {
-        applyWaterAbilities(profile);
+        applyWaterAbilities(profile, data);
         applyWaterEffect(player, data);
     }
 
     private void applyEarth(Player player, RaceProfile profile, TamashiData data) {
-        applyEarthAbilities(profile);
+        applyEarthAbilities(profile, data);
     }
 
     private void applyFireAttribute(Player player, TamashiData data) {
@@ -136,17 +141,9 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable {
     }
 
     private void applyFire(Player player, RaceProfile profile, TamashiData data) {
-        applyFireAbilities(profile);
+        applyFireAbilities(profile, data);
         applyFireEffect(player, data);
         applyFireAttribute(player, data);
-    }
-
-    private void applyAirPermission(Player player, TamashiData data) {
-        if(data.getRank() >= Rank.OKAMI.rank) {
-            if(!player.hasPermission(PERM_FLY_CHARGE)) {
-                IRace.addPermission(player, PERM_FLY_CHARGE);
-            }
-        }
     }
 
     private void applyAirAttribute(Player player, TamashiData data) {
@@ -176,11 +173,20 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable {
         }
     }
 
+    private void removeAirItem(Player player) {
+        if(Race.getInstance().getItemManager().getItem(player.getInventory().getContents()[8]) instanceof FlyChargeBall) {
+            player.getInventory().setItem(8, null);
+        }
+    }
+
     private void applyAir(Player player, RaceProfile profile, TamashiData data) {
-        applyAirAbilities(profile);
-        applyAirPermission(player, data);
+        applyAirAbilities(profile, data);
         applyAirAttribute(player, data);
-        giveAirItem(player, data);
+        if(data.getRank() < Rank.OKAMI.rank) {
+            giveAirItem(player, data);
+        } else {
+            removeAirItem(player);
+        }
     }
 
     @Override
@@ -194,24 +200,12 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable {
         }
 
         applySharedAbilities(profile);
-        reapplyPerms(player, data);
 
         switch(SubRace.fromId(data.getSubrace())) {
             case WATER -> applyWater(player, profile, data);
             case EARTH -> applyEarth(player, profile, data);
             case FIRE -> applyFire(player, profile, data);
             case AIR -> applyAir(player, profile, data);
-        }
-    }
-
-    @Override
-    public void reapplyPerms(Player player, TamashiData data) {
-        if(!player.hasPermission(PERM_HOME)) {
-            IRace.addPermission(player, PERM_HOME);
-        }
-
-        if(data.getSubrace() == SubRace.AIR.id) {
-            applyAirPermission(player, data);
         }
     }
 
@@ -226,8 +220,6 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable {
 
     @Override
     public void cleanup(Player player, RaceProfile profile) {
-        IRace.removePermission(player, PERM_HOME);
-
         // water
         PotionEffect conduit = player.getPotionEffect(PotionEffectType.CONDUIT_POWER);
         if(conduit != null && conduit.isInfinite()) {
@@ -248,14 +240,13 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable {
         IRace.removeAttribute(player, Attribute.ATTACK_DAMAGE, STRENGTH);
 
         // air
-        if(Race.getInstance().getItemManager().getItem(player.getInventory().getContents()[8]) instanceof IStaticItem) {
-            player.getInventory().setItem(8, null);
-        }
+        removeAirItem(player);
 
         IRace.removeAttribute(player, Attribute.MOVEMENT_SPEED, SPEED);
 
-        IRace.removePermission(player, PERM_FLY_CHARGE);
-        player.setAllowFlight(false);
+        if((player.getGameMode() != GameMode.CREATIVE && player.getGameMode() != GameMode.SPECTATOR) && player.getAllowFlight()) {
+            player.setAllowFlight(false);
+        }
 
         for(AbilityKey key : getAbilities().keySet()) {
             profile.removeAbility(key);

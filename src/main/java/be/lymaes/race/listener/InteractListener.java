@@ -5,7 +5,6 @@ import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.AbilityType;
 import be.lymaes.race.ability.Helder;
 import be.lymaes.race.ability.Interact;
-import be.lymaes.race.item.Heldable;
 import be.lymaes.race.item.IRaceItem;
 import be.lymaes.race.item.IStaticItem;
 import be.lymaes.race.manager.ItemManager;
@@ -63,7 +62,6 @@ public class InteractListener implements Listener {
         ItemStack current = player.getInventory().getItem(e.getNewSlot());
 
         heldModelItemSwitch(player, prev, current);
-        heldItemItemSwitch(player, prev, current);
     }
 
     private void heldModelItemSwitch(Player player, ItemStack prev, ItemStack current) {
@@ -74,17 +72,6 @@ public class InteractListener implements Listener {
         for(Helder helder : abilities) {
             helder.onSwapOff(prev);
             helder.onSwapOn(current);
-        }
-    }
-
-    private void heldItemItemSwitch(Player player, ItemStack prev, ItemStack current) {
-        IRaceItem prevItem = itemManager.getItem(prev);
-        if(prevItem instanceof Heldable prevHeld) {
-            prevHeld.onSwitchOff(player);
-        }
-        IRaceItem currentItem = itemManager.getItem(current);
-        if(currentItem instanceof Heldable currentHeld) {
-            currentHeld.onSwitchOn(player);
         }
     }
 
