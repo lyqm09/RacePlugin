@@ -29,14 +29,14 @@ public final class Race extends JavaPlugin {
         // singleton
         instance = this;
 
-        // Messager
-        this.messager = new Messager(this);
-
         // managers
         this.raceManager = new RaceManager();
         this.guiManager = new GUIManager();
         this.itemManager = new ItemManager();
         this.abilityManager = new AbilityManager(raceManager.getModels());
+
+        // Messager
+        this.messager = new Messager(this);
 
         // listeners
         getServer().getPluginManager().registerEvents(new ConnectionListener(this), this);

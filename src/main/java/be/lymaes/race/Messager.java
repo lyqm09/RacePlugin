@@ -13,7 +13,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.Title.Times;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.time.Duration;
@@ -75,6 +74,7 @@ public class Messager {
                 .append(Component.text("[OUI]")
                 .color(NamedTextColor.GREEN)
                 .clickEvent(ClickEvent.runCommand("/mutsuhara accepte " + token)))
+                .append(Component.text(" "))
                 .append(Component.text("[NON]")
                 .color(NamedTextColor.RED)
                 .clickEvent(ClickEvent.runCommand("/mutsuhara refuse " + token)));

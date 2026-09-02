@@ -64,12 +64,6 @@ public class Oni implements IRace<OniData>, IRankable {
         }
     }
 
-    private void applyPerms(Player player, OniData data) {
-        if(data.getRank() >= Rank.GENERAL.rank) {
-            IRace.addPermission(player, PrimordialOniBlood.PERM_CRAFT);
-        }
-    }
-
     private void applyAttribute(Player player, OniData data) {
         Rank rank = Rank.fromRank(data.getRank());
 
@@ -134,7 +128,6 @@ public class Oni implements IRace<OniData>, IRankable {
         }
 
         applyAbilities(profile);
-        applyPerms(player, data);
         applyEffect(player, data);
         applyAttribute(player, data);
 
@@ -151,7 +144,6 @@ public class Oni implements IRace<OniData>, IRankable {
 
     @Override
     public void reapplyPerms(Player player, OniData data) {
-        applyPerms(player, data);
 
 //        reapplyOverlayPerms(player, data);
     }
