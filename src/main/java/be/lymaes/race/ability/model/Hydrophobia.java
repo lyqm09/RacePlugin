@@ -41,8 +41,8 @@ public class Hydrophobia implements Taskable {
     public void run(Player player, RaceProfile profile, IRaceData data, long currentTime) {
         if(player.isInWater() || isUnderRain(player)) {
             player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 2 * 20, 1, true, false, true));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 2 * 20, 1, true, false, true));
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 2 * 20, 1, true, false, true));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 2 * 20, 0, true, false, true));
         }
     }
 

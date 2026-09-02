@@ -53,7 +53,7 @@ public class InventoryListener implements Listener {
             RaceProfile profile = raceManager.getProfile(player);
             if(profile == null) return;
 
-            Set<Merchant> abilities = profile.getAbilities(AbilityType.MERCHANT);
+            Set<Merchant> abilities = profile.getEventAbilities(AbilityType.MERCHANT);
             for(Merchant merchant : abilities) {
                 merchant.onTrade(e, merchantInventory, profile);
             }
@@ -81,7 +81,7 @@ public class InventoryListener implements Listener {
         RaceProfile profile = raceManager.getProfile(player);
         if(profile == null) return;
 
-        Set<Helder> abilities = profile.getAbilities(AbilityType.HELDER);
+        Set<Helder> abilities = profile.getEventAbilities(AbilityType.HELDER);
         for(Helder helder : abilities) {
             helder.onSwapOff(player.getInventory().getItemInMainHand());
             helder.onSwapOff(player.getInventory().getItemInOffHand());
@@ -95,7 +95,7 @@ public class InventoryListener implements Listener {
         RaceProfile profile = raceManager.getProfile(player);
         if(profile == null) return;
 
-        Set<Helder> abilities = profile.getAbilities(AbilityType.HELDER);
+        Set<Helder> abilities = profile.getEventAbilities(AbilityType.HELDER);
         for(Helder helder : abilities) {
             helder.onSwapOn(player.getInventory().getItemInMainHand());
             helder.onSwapOn(player.getInventory().getItemInOffHand());

@@ -3,7 +3,6 @@ package be.lymaes.race;
 import be.lymaes.race.ability.AbilityType;
 import be.lymaes.race.ability.Taskable;
 import be.lymaes.race.manager.RaceManager;
-import be.lymaes.race.model.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -33,7 +32,7 @@ public class MainRunnable extends BukkitRunnable {
             RaceProfile profile = raceManager.getProfile(player);
             if(profile == null) continue;
 
-            Set<Taskable> abilities = profile.getAbilities(AbilityType.TASKABLE);
+            Set<Taskable> abilities = profile.getEventAbilities(AbilityType.TASKABLE);
             for(Taskable taskable : abilities) {
                 taskable.run(player, profile, profile.raceData, currentTime);
             }

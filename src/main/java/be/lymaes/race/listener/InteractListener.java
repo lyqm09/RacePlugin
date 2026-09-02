@@ -41,7 +41,7 @@ public class InteractListener implements Listener {
         RaceProfile profile = raceManager.getProfile(player);
         if(profile == null) return;
 
-        Set<Interact> abilities = profile.getAbilities(AbilityType.INTERACT);
+        Set<Interact> abilities = profile.getEventAbilities(AbilityType.INTERACT);
         for(Interact interact : abilities) {
             interact.onInteract(e, player, profile.raceData.getRank());
         }
@@ -70,7 +70,7 @@ public class InteractListener implements Listener {
         RaceProfile profile = raceManager.getProfile(player);
         if(profile == null) return;
 
-        Set<Helder> abilities = profile.getAbilities(AbilityType.HELDER);
+        Set<Helder> abilities = profile.getEventAbilities(AbilityType.HELDER);
         for(Helder helder : abilities) {
             helder.onSwapOff(prev);
             helder.onSwapOn(current);
@@ -100,7 +100,7 @@ public class InteractListener implements Listener {
         RaceProfile profile = raceManager.getProfile(e.getPlayer());
         if(profile == null) return;
 
-        Set<Helder> abilities = profile.getAbilities(AbilityType.HELDER);
+        Set<Helder> abilities = profile.getEventAbilities(AbilityType.HELDER);
         for(Helder helder : abilities) {
             helder.onSwapOff(e.getItemDrop().getItemStack());
         }
@@ -117,7 +117,7 @@ public class InteractListener implements Listener {
         RaceProfile profile = raceManager.getProfile(player);
         if(profile == null) return;
 
-        Set<Helder> abilities = profile.getAbilities(AbilityType.HELDER);
+        Set<Helder> abilities = profile.getEventAbilities(AbilityType.HELDER);
         for(Helder helder : abilities) {
             helder.onPickup(player.getInventory().getItemInMainHand(), e.getItem().getItemStack());
         }

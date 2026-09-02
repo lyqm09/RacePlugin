@@ -2,6 +2,7 @@ package be.lymaes.race.model;
 
 import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.Ability;
+import be.lymaes.race.ability.AbilityKey;
 import be.lymaes.race.data.HumanData;
 import org.bukkit.entity.Player;
 
@@ -11,7 +12,7 @@ import java.util.Map;
 public class Human implements IRace<HumanData> {
 
     @Override
-    public Map<String, Ability> getAbilities() {
+    public Map<AbilityKey, Ability> getAbilities() {
         return Collections.emptyMap();
     }
 

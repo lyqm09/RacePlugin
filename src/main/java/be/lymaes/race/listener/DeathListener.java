@@ -9,7 +9,6 @@ import be.lymaes.race.item.Droppable;
 import be.lymaes.race.item.IRaceItem;
 import be.lymaes.race.manager.ItemManager;
 import be.lymaes.race.manager.RaceManager;
-import be.lymaes.race.model.IRace;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -37,7 +36,7 @@ public class DeathListener implements Listener {
             RaceProfile profile = raceManager.getProfile(player);
             if (profile == null) return;
 
-            Set<Killer> abilities = profile.getAbilities(AbilityType.KILLER);
+            Set<Killer> abilities = profile.getEventAbilities(AbilityType.KILLER);
             for(Killer killer : abilities) {
                 killer.onKill(e, profile);
             }
@@ -47,7 +46,7 @@ public class DeathListener implements Listener {
             RaceProfile profile = raceManager.getProfile(player);
             if(profile == null) return;
 
-            Set<Helder> abilities = profile.getAbilities(AbilityType.HELDER);
+            Set<Helder> abilities = profile.getEventAbilities(AbilityType.HELDER);
             for(Helder helder : abilities) {
                 helder.onDrops(e);
             }

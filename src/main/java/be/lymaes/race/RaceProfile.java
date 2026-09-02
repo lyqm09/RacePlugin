@@ -1,6 +1,7 @@
 package be.lymaes.race;
 
 import be.lymaes.race.ability.*;
+import be.lymaes.race.ability.model.EmptyAbility;
 import be.lymaes.race.ability.model.Targetable;
 import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.manager.RaceManager;
@@ -27,13 +28,15 @@ public class RaceProfile {
 
     public final UUID uuid;
     public final IRaceData raceData;
-    private transient Map<AbilityType, Set<Ability>> abilities;
+    private transient Set<AbilityKey> abilities;
+    private transient Map<AbilityType, Set<Ability>> eventAbilities;
     private transient Queue<Runnable> visualQueue;
 
     public RaceProfile(UUID uuid, IRaceData raceData) {
         this.uuid = uuid;
         this.raceData = raceData;
-        this.abilities = new EnumMap<>(AbilityType.class);
+        this.abilities = EnumSet.noneOf(AbilityKey.class);
+        this.eventAbilities = new EnumMap<>(AbilityType.class);
         this.visualQueue = new LinkedList<>();
     }
 
@@ -41,103 +44,101 @@ public class RaceProfile {
         return Bukkit.getPlayer(uuid);
     }
 
-    public void addAbility(String key) {
+    public void addAbility(AbilityKey key) {
+        abilities.add(key);
+
         Ability ability = Race.getInstance().getAbilityManager().getAbility(key);
+        if(ability instanceof EmptyAbility) return;
 
         if(ability instanceof Taskable) {
-            abilities.computeIfAbsent(AbilityType.TASKABLE, k -> new HashSet<>()).add(ability);
+            eventAbilities.computeIfAbsent(AbilityType.TASKABLE, k -> new HashSet<>()).add(ability);
         }
         if(ability instanceof Consumer) {
-            abilities.computeIfAbsent(AbilityType.CONSUMER, k -> new HashSet<>()).add(ability);
-        }
-        if(ability instanceof CommandSender) {
-            abilities.computeIfAbsent(AbilityType.COMMAND_SENDER, k -> new HashSet<>()).add(ability);
-        }
-        if(ability instanceof Crafter) {
-            abilities.computeIfAbsent(AbilityType.CRAFTER, k -> new HashSet<>()).add(ability);
+            eventAbilities.computeIfAbsent(AbilityType.CONSUMER, k -> new HashSet<>()).add(ability);
         }
         if(ability instanceof Damager) {
-            abilities.computeIfAbsent(AbilityType.DAMAGER, k -> new HashSet<>()).add(ability);
+            eventAbilities.computeIfAbsent(AbilityType.DAMAGER, k -> new HashSet<>()).add(ability);
         }
         if(ability instanceof Defender) {
-            abilities.computeIfAbsent(AbilityType.DEFENDER, k -> new HashSet<>()).add(ability);
+            eventAbilities.computeIfAbsent(AbilityType.DEFENDER, k -> new HashSet<>()).add(ability);
         }
         if(ability instanceof Killer) {
-            abilities.computeIfAbsent(AbilityType.KILLER, k -> new HashSet<>()).add(ability);
+            eventAbilities.computeIfAbsent(AbilityType.KILLER, k -> new HashSet<>()).add(ability);
         }
         if(ability instanceof Interact) {
-            abilities.computeIfAbsent(AbilityType.INTERACT, k -> new HashSet<>()).add(ability);
+            eventAbilities.computeIfAbsent(AbilityType.INTERACT, k -> new HashSet<>()).add(ability);
         }
         if(ability instanceof Helder) {
-            abilities.computeIfAbsent(AbilityType.HELDER, k -> new HashSet<>()).add(ability);
+            eventAbilities.computeIfAbsent(AbilityType.HELDER, k -> new HashSet<>()).add(ability);
         }
         if(ability instanceof Merchant) {
-            abilities.computeIfAbsent(AbilityType.MERCHANT, k -> new HashSet<>()).add(ability);
+            eventAbilities.computeIfAbsent(AbilityType.MERCHANT, k -> new HashSet<>()).add(ability);
         }
         if(ability instanceof RaidWinner) {
-            abilities.computeIfAbsent(AbilityType.RAID_WINNER, k -> new HashSet<>()).add(ability);
+            eventAbilities.computeIfAbsent(AbilityType.RAID_WINNER, k -> new HashSet<>()).add(ability);
         }
         if(ability instanceof Sneaker) {
-            abilities.computeIfAbsent(AbilityType.SNEAKER, k -> new HashSet<>()).add(ability);
+            eventAbilities.computeIfAbsent(AbilityType.SNEAKER, k -> new HashSet<>()).add(ability);
         }
         if(ability instanceof Targetable) {
-            abilities.computeIfAbsent(AbilityType.TARGETABLE, k -> new HashSet<>()).add(ability);
+            eventAbilities.computeIfAbsent(AbilityType.TARGETABLE, k -> new HashSet<>()).add(ability);
         }
     }
 
-    public void removeAbility(String key) {
+    public void removeAbility(AbilityKey key) {
+        abilities.remove(key);
+
         Ability ability = Race.getInstance().getAbilityManager().getAbility(key);
+        if(ability instanceof EmptyAbility) return;
 
         if(ability instanceof Taskable) {
-            removeAbility(AbilityType.TASKABLE, ability);
+            removeEventAbility(AbilityType.TASKABLE, ability);
         }
         if(ability instanceof Consumer) {
-            removeAbility(AbilityType.CONSUMER, ability);
-        }
-        if(ability instanceof CommandSender) {
-            removeAbility(AbilityType.COMMAND_SENDER, ability);
-        }
-        if(ability instanceof Crafter) {
-            removeAbility(AbilityType.CRAFTER, ability);
+            removeEventAbility(AbilityType.CONSUMER, ability);
         }
         if(ability instanceof Damager) {
-            removeAbility(AbilityType.DAMAGER, ability);
+            removeEventAbility(AbilityType.DAMAGER, ability);
         }
         if(ability instanceof Defender) {
-            removeAbility(AbilityType.DEFENDER, ability);
+            removeEventAbility(AbilityType.DEFENDER, ability);
         }
         if(ability instanceof Killer) {
-            removeAbility(AbilityType.KILLER, ability);
+            removeEventAbility(AbilityType.KILLER, ability);
         }
         if(ability instanceof Interact) {
-            removeAbility(AbilityType.INTERACT, ability);
+            removeEventAbility(AbilityType.INTERACT, ability);
         }
         if(ability instanceof Helder) {
-            removeAbility(AbilityType.HELDER, ability);
+            removeEventAbility(AbilityType.HELDER, ability);
         }
         if(ability instanceof Merchant) {
-            removeAbility(AbilityType.MERCHANT, ability);
+            removeEventAbility(AbilityType.MERCHANT, ability);
         }
         if(ability instanceof RaidWinner) {
-            removeAbility(AbilityType.RAID_WINNER, ability);
+            removeEventAbility(AbilityType.RAID_WINNER, ability);
         }
         if(ability instanceof Sneaker) {
-            removeAbility(AbilityType.SNEAKER, ability);
+            removeEventAbility(AbilityType.SNEAKER, ability);
         }
         if(ability instanceof Targetable) {
-            removeAbility(AbilityType.TARGETABLE, ability);
+            removeEventAbility(AbilityType.TARGETABLE, ability);
         }
     }
 
-    private void removeAbility(AbilityType type, Ability ability) {
-        Set<Ability> list = abilities.get(type);
+    private void removeEventAbility(AbilityType type, Ability ability) {
+        Set<Ability> list = eventAbilities.get(type);
         if(list != null) {
             list.remove(ability);
         }
     }
 
-    public <T extends Ability> Set<T> getAbilities(AbilityType type) {
-        return (Set<T>) abilities.getOrDefault(type, Collections.emptySet());
+    public boolean hasAbility(AbilityKey key) {
+        return abilities.contains(key);
+    }
+
+    public <T extends Ability> Set<T> getEventAbilities(AbilityType type) {
+        return (Set<T>) eventAbilities.getOrDefault(type, Collections.emptySet());
     }
 
     public void addVisualEffect(Runnable effect) {

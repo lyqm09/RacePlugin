@@ -37,7 +37,7 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable {
     public static final String PERM_SHARPNESS = "race.karyu.adorer.sharpness";
     public static final String PERM_BLESS = "race.karyu.adorer.bless";
 
-    public Map<String, Ability> getAbilities() {
+    public Map<AbilityKey, Ability> getAbilities() {
         double[] adorerAbsorptionFactor = new double[] {0.05, 0.10, 0.20, 0.30, 0.50, 0.50};
         Material[] minerals = new Material[] {
                 Material.AMETHYST_SHARD,
@@ -58,9 +58,9 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable {
                 Material.REDSTONE};
 
         return Map.of(
-                AbilityKey.KARYU.MERCHANT_EXP, new KaryuMerchantExp(),
-                AbilityKey.KARYU.ADORER_EXP, new KaryuAdorerExp(),
-                AbilityKey.KARYU.ADORER_ABSORPTION, new Absorption(adorerAbsorptionFactor),
+                AbilityKey.KARYU_MERCHANT_EXP, new KaryuMerchantExp(),
+                AbilityKey.KARYU_ADORER_EXP, new KaryuAdorerExp(),
+                AbilityKey.KARYU_ADORER_ABSORPTION, new Absorption(adorerAbsorptionFactor),
                 AbilityKey.EMERALD_TRANSFORMER, new LootTransformer(minerals)
         );
     }
@@ -70,16 +70,16 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable {
         int sub = profile.raceData.getSubrace();
 
         if(sub == SubRace.MERCHANT.id) {
-            profile.addAbility(AbilityKey.KARYU.MERCHANT_EXP);
+            profile.addAbility(AbilityKey.KARYU_MERCHANT_EXP);
         }
         else if(sub == SubRace.ADORER.id) {
-            profile.addAbility(AbilityKey.KARYU.ADORER_EXP);
+            profile.addAbility(AbilityKey.KARYU_ADORER_EXP);
         }
     }
 
     public void removeExpAbilities(RaceProfile profile) {
-        profile.removeAbility(AbilityKey.KARYU.MERCHANT_EXP);
-        profile.removeAbility(AbilityKey.KARYU.ADORER_EXP);
+        profile.removeAbility(AbilityKey.KARYU_MERCHANT_EXP);
+        profile.removeAbility(AbilityKey.KARYU_ADORER_EXP);
     }
 
     private void applyMerchantAbilities(RaceProfile profile, KaryuData data) {
@@ -91,7 +91,7 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable {
     }
 
     private void applyAdorerAbilities(RaceProfile profile, KaryuData data) {
-        profile.addAbility(AbilityKey.KARYU.ADORER_ABSORPTION);
+        profile.addAbility(AbilityKey.KARYU_ADORER_ABSORPTION);
     }
 
     private void applyMerchantPermission(Player player, KaryuData data) {
@@ -242,7 +242,7 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable {
             player.getInventory().setItem(8, null);
         }
 
-        for(String key : getAbilities().keySet()) {
+        for(AbilityKey key : getAbilities().keySet()) {
             profile.removeAbility(key);
         }
     }

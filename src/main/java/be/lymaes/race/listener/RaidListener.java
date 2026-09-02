@@ -27,7 +27,7 @@ public class RaidListener implements Listener {
             RaceProfile profile = raceManager.getProfile(player);
             if(profile == null) continue;
 
-            Set<RaidWinner> abilities = profile.getAbilities(AbilityType.RAID_WINNER);
+            Set<RaidWinner> abilities = profile.getEventAbilities(AbilityType.RAID_WINNER);
             for(RaidWinner winner : abilities) {
                 winner.onRaidFinish(profile);
             }

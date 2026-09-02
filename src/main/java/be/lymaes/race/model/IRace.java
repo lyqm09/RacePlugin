@@ -3,6 +3,7 @@ package be.lymaes.race.model;
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.Ability;
+import be.lymaes.race.ability.AbilityKey;
 import be.lymaes.race.data.IRaceData;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
@@ -17,7 +18,7 @@ import java.util.Map;
 
 public interface IRace<T extends IRaceData> {
 
-    Map<String, Ability> getAbilities();
+    Map<AbilityKey, Ability> getAbilities();
 
     void applyRacePerks(Player player, RaceProfile profile, T data);
     void reapplyPerms(Player player, T data);

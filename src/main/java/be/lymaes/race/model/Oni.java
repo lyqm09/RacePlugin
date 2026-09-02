@@ -22,25 +22,26 @@ public class Oni implements IRace<OniData>, IRankable {
     private static final NamespacedKey SPEED = NamespacedKey.fromString("oni:speed");
     private static final NamespacedKey HEALTH = NamespacedKey.fromString("oni:health");
 
-    public Map<String, Ability> getAbilities() {
+    public Map<AbilityKey, Ability> getAbilities() {
         double[] defendFactor = new double[] {0.00, 0.05, 0.10, 0.15, 0.20, 0.25, 0.50};
         return Map.of(
-                AbilityKey.ONI.EXP, new OniExp(),
+                AbilityKey.ONI_EXP, new OniExp(),
                 AbilityKey.HYDROPHOBIA, new Hydrophobia(),
                 AbilityKey.MEAT_EATER, new MeatEater(),
                 AbilityKey.FIREBALL, new Fireball(),
                 AbilityKey.SILENT_ENTITY, new SilentEntity(),
-                AbilityKey.ONI.ABSORPTION, new Absorption(defendFactor)
+                AbilityKey.ONI_ABSORPTION, new Absorption(defendFactor),
+                AbilityKey.CRAFT_PRIMORDIAL_ONI_BLOOD, EmptyAbility.INSTANCE
         );
     }
 
     @Override
     public void addExpAbilities(RaceProfile profile) {
-        profile.addAbility(AbilityKey.ONI.EXP);
+        profile.addAbility(AbilityKey.ONI_EXP);
     }
 
     public void removeExpAbilities(RaceProfile profile) {
-        profile.removeAbility(AbilityKey.ONI.EXP);
+        profile.removeAbility(AbilityKey.ONI_EXP);
     }
 
     private void applyAbilities(RaceProfile profile) {
@@ -48,7 +49,7 @@ public class Oni implements IRace<OniData>, IRankable {
 
         profile.addAbility(AbilityKey.HYDROPHOBIA);
         profile.addAbility(AbilityKey.MEAT_EATER);
-        profile.addAbility(AbilityKey.ONI.ABSORPTION);
+        profile.addAbility(AbilityKey.ONI_ABSORPTION);
 
         if(rank >= Rank.LIEUTENANT.rank) {
             profile.addAbility(AbilityKey.FIREBALL);
@@ -56,6 +57,10 @@ public class Oni implements IRace<OniData>, IRankable {
 
         if(rank >= Rank.CAPTAIN.rank) {
             profile.addAbility(AbilityKey.SILENT_ENTITY);
+        }
+
+        if(rank >= Rank.GENERAL.rank) {
+            profile.addAbility(AbilityKey.CRAFT_PRIMORDIAL_ONI_BLOOD);
         }
     }
 
@@ -188,7 +193,7 @@ public class Oni implements IRace<OniData>, IRankable {
 
         IRace.removePermission(player, PrimordialOniBlood.PERM_CRAFT);
 
-        for(String key : getAbilities().keySet()) {
+        for(AbilityKey key : getAbilities().keySet()) {
             profile.removeAbility(key);
         }
 
@@ -210,7 +215,7 @@ public class Oni implements IRace<OniData>, IRankable {
 
     @Override
     public boolean canRankUp(RaceProfile profile) {
-        return profile.raceData.getRank() < Rank.GENERAL.rank;
+        return profile.raceData.getRank() + 1 < Rank.GENERAL.rank;
     }
 
     public enum Rank {

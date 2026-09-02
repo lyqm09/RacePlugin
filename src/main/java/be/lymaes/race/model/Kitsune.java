@@ -29,10 +29,10 @@ public class Kitsune implements IRace<KitsuneData>, IRankable {
     private static final NamespacedKey JUMP = NamespacedKey.fromString("kitsune:jump");
     private static final NamespacedKey FALL = NamespacedKey.fromString("kitsune:fall");
 
-    public Map<String, Ability> getAbilities() {
+    public Map<AbilityKey, Ability> getAbilities() {
         return Map.of(
-                AbilityKey.KITSUNE.RAID_EXP, new KitsuneRaidExp(),
-                AbilityKey.KITSUNE.ZONE_EXP, new KitsuneZoneExp(),
+                AbilityKey.KITSUNE_RAID_EXP, new KitsuneRaidExp(),
+                AbilityKey.KITSUNE_ZONE_EXP, new KitsuneZoneExp(),
 
                 AbilityKey.FOX_DISGUISE, new Disguise(DisguiseType.FOX),
                 AbilityKey.INVISIBILITY, new Invisibility()
@@ -41,13 +41,13 @@ public class Kitsune implements IRace<KitsuneData>, IRankable {
 
     @Override
     public void addExpAbilities(RaceProfile profile) {
-        profile.addAbility(AbilityKey.KITSUNE.RAID_EXP);
-        profile.addAbility(AbilityKey.KITSUNE.ZONE_EXP);
+        profile.addAbility(AbilityKey.KITSUNE_RAID_EXP);
+        profile.addAbility(AbilityKey.KITSUNE_ZONE_EXP);
     }
 
     public void removeExpAbilities(RaceProfile profile) {
-        profile.removeAbility(AbilityKey.KITSUNE.RAID_EXP);
-        profile.removeAbility(AbilityKey.KITSUNE.ZONE_EXP);
+        profile.removeAbility(AbilityKey.KITSUNE_RAID_EXP);
+        profile.removeAbility(AbilityKey.KITSUNE_ZONE_EXP);
     }
 
     private void applyAbilities(RaceProfile profile) {
@@ -216,7 +216,7 @@ public class Kitsune implements IRace<KitsuneData>, IRankable {
             DisguiseAPI.undisguiseToAll(player);
         }
 
-        for(String key : getAbilities().keySet()) {
+        for(AbilityKey key : getAbilities().keySet()) {
             profile.removeAbility(key);
         }
     }

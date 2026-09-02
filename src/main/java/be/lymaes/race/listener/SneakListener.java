@@ -27,7 +27,7 @@ public class SneakListener implements Listener {
         RaceProfile profile = raceManager.getProfile(player);
         if(profile == null) return;
 
-        Set<Sneaker> abilities = profile.getAbilities(AbilityType.SNEAKER);
+        Set<Sneaker> abilities = profile.getEventAbilities(AbilityType.SNEAKER);
         for(Sneaker sneaker : abilities) {
             sneaker.onToggleSneak(e);
         }

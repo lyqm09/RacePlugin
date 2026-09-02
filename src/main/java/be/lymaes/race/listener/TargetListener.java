@@ -28,7 +28,7 @@ public class TargetListener implements Listener {
         RaceProfile profile = raceManager.getProfile(player);
         if(profile == null) return;
 
-        Set<Targetable> abilities = profile.getAbilities(AbilityType.TARGETABLE);
+        Set<Targetable> abilities = profile.getEventAbilities(AbilityType.TARGETABLE);
         for(Targetable targetable : abilities) {
             targetable.onTarget(e);
         }

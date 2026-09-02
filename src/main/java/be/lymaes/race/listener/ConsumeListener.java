@@ -4,7 +4,6 @@ import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.AbilityType;
 import be.lymaes.race.ability.Consumer;
-import be.lymaes.race.ability.Taskable;
 import be.lymaes.race.item.Consumable;
 import be.lymaes.race.item.IRaceItem;
 import be.lymaes.race.manager.ItemManager;
@@ -34,7 +33,7 @@ public class ConsumeListener implements Listener {
         RaceProfile profile = raceManager.getProfile(player);
         if(profile == null) return;
 
-        Set<Consumer> abilities = profile.getAbilities(AbilityType.CONSUMER);
+        Set<Consumer> abilities = profile.getEventAbilities(AbilityType.CONSUMER);
         for(Consumer consumer : abilities) {
             consumer.onConsume(e);
         }

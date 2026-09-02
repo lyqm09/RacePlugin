@@ -32,18 +32,18 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable {
     private static final NamespacedKey STRENGTH = NamespacedKey.fromString("tamashi:strength");
     private static final NamespacedKey SPEED = NamespacedKey.fromString("tamashi:speed");
 
-    public Map<String, Ability> getAbilities() {
+    public Map<AbilityKey, Ability> getAbilities() {
         double[] waterStrengthFactor = new double[] {0.10, 0.20, 0.30, 0.40, 0.50, 1.00};
         double[] earthAbsorptionFactor = new double[] {0.20, 0.30, 0.40, 0.60, 0.80, 0.90};
         int[] fireTimes = new int[] {1, 2, 5, 10, 20, 30};
         int[] flyTimes = new int[] {5, 10, 20, 30, 5*60};
         return Map.of(
-                AbilityKey.TAMASHI.EXP, new TamashiExp(DISTANCE_SQUARED),
+                AbilityKey.TAMASHI_EXP, new TamashiExp(DISTANCE_SQUARED),
                 AbilityKey.MONOPHOBIA, new Monophobia(DISTANCE_SQUARED),
 
                 AbilityKey.AQUATIC_STRENGTH, new AquaticStrength(waterStrengthFactor),
 
-                AbilityKey.TAMASHI.EARTH_ABSORPTION, new Absorption(earthAbsorptionFactor),
+                AbilityKey.TAMASHI_EARTH_ABSORPTION, new Absorption(earthAbsorptionFactor),
                 AbilityKey.DIRT_EATER, new DirtEater(),
 
                 AbilityKey.FIREBALL, new Fireball(),
@@ -56,11 +56,11 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable {
 
     @Override
     public void addExpAbilities(RaceProfile profile) {
-        profile.addAbility(AbilityKey.TAMASHI.EXP);
+        profile.addAbility(AbilityKey.TAMASHI_EXP);
     }
 
     public void removeExpAbilities(RaceProfile profile) {
-        profile.removeAbility(AbilityKey.TAMASHI.EXP);
+        profile.removeAbility(AbilityKey.TAMASHI_EXP);
     }
 
     private void applyWaterAbilities(RaceProfile profile) {
@@ -68,7 +68,7 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable {
     }
 
     private void applyEarthAbilities(RaceProfile profile) {
-        profile.addAbility(AbilityKey.TAMASHI.EARTH_ABSORPTION);
+        profile.addAbility(AbilityKey.TAMASHI_EARTH_ABSORPTION);
         profile.addAbility(AbilityKey.DIRT_EATER);
     }
 
@@ -257,7 +257,7 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable {
         IRace.removePermission(player, PERM_FLY_CHARGE);
         player.setAllowFlight(false);
 
-        for(String key : getAbilities().keySet()) {
+        for(AbilityKey key : getAbilities().keySet()) {
             profile.removeAbility(key);
         }
     }
