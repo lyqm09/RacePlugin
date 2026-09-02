@@ -43,8 +43,8 @@ public class Oni implements IRace<OniData>, IRankable {
         profile.removeAbility(AbilityKey.ONI_EXP);
     }
 
-    private void applyAbilities(RaceProfile profile) {
-        int rank = profile.raceData.getRank();
+    private void applyAbilities(RaceProfile profile, OniData data) {
+        int rank = data.getRank();
 
         profile.addAbility(AbilityKey.HYDROPHOBIA);
         profile.addAbility(AbilityKey.MEAT_EATER);
@@ -126,7 +126,7 @@ public class Oni implements IRace<OniData>, IRankable {
             }
         }
 
-        applyAbilities(profile);
+        applyAbilities(profile, data);
         applyEffect(player, data);
         applyAttribute(player, data);
 

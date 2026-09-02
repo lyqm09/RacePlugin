@@ -49,8 +49,8 @@ public class Kitsune implements IRace<KitsuneData>, IRankable {
         profile.removeAbility(AbilityKey.KITSUNE_ZONE_EXP);
     }
 
-    private void applyAbilities(RaceProfile profile) {
-        int rank = profile.raceData.getRank();
+    private void applyAbilities(RaceProfile profile, KitsuneData data) {
+        int rank = data.getRank();
 
         if(rank >= Rank.FOUR.rank) {
             profile.addAbility(AbilityKey.FOX_DISGUISE);
@@ -168,7 +168,7 @@ public class Kitsune implements IRace<KitsuneData>, IRankable {
             }
         }
 
-        applyAbilities(profile);
+        applyAbilities(profile, data);
         applyEffect(player, data);
         applyAttribute(player, data);
     }
