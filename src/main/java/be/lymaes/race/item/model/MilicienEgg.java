@@ -36,7 +36,7 @@ public class MilicienEgg extends ARaceItem implements IStaticItem, Interactable 
         RaceManager raceManager = Race.getInstance().getRaceManager();
         RaceProfile profile = raceManager.getProfile(player);
         if(profile == null) return;
-        if(!profile.hasAbility(AbilityKey.SUMMON_MILICIEN)) return;
+        if(!profile.hasAbility(AbilityKey.MILICIEN_SUMMONER)) return;
 
         Location spawnLoc = clickedBlock.getRelative(e.getBlockFace())
                 .getLocation()
