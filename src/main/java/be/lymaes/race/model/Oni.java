@@ -1,10 +1,13 @@
 package be.lymaes.race.model;
 
+import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.*;
 import be.lymaes.race.ability.model.*;
 import be.lymaes.race.ability.model.Fireball;
+import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.data.OniData;
+import be.lymaes.race.manager.RaceManager;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -108,13 +111,15 @@ public class Oni implements IRace<OniData>, IRankable {
         }
     }
 
-//    private void applyOverlayPerks(Player player, OniData data) {
-//        RaceManager raceManager = Race.getInstance().getRaceManager();
-//        IRaceData overlay = data.getOverlay();
-//        IRace modelOverlay = raceManager.getRaceModel(overlay.getRace());
-//
-//        modelOverlay.applyRacePerks(player, overlay);
-//    }
+    private void applyOverlayPerks(Player player, RaceProfile profile, OniData data) {
+        IRaceData overlay = data.getOverlay();
+        if(overlay == null) return;
+
+        RaceManager raceManager = Race.getInstance().getRaceManager();
+        IRace modelOverlay = raceManager.getRaceModel(overlay.getRace());
+
+        modelOverlay.applyRacePerks(player, profile, overlay);
+    }
 
     @Override
     public void applyRacePerks(Player player, RaceProfile profile, OniData data) {
@@ -130,43 +135,39 @@ public class Oni implements IRace<OniData>, IRankable {
         applyEffect(player, data);
         applyAttribute(player, data);
 
-//        applyOverlayPerks(player, data);
+        applyOverlayPerks(player, profile, data);
     }
 
-//    private void reapplyOverlayPerms(Player player, OniData data) {
-//        RaceManager raceManager = Race.getInstance().getRaceManager();
-//        IRaceData overlay = data.getOverlay();
-//        IRace modelOverlay = raceManager.getRaceModel(overlay.getRace());
-//
-//        modelOverlay.reapplyPerms(player, overlay);
-//    }
+    private void reapplyOverlayEffect(Player player, OniData data) {
+        IRaceData overlay = data.getOverlay();
+        if(overlay == null) return;
 
-//    private void reapplyOverlayEffect(Player player, OniData data) {
-//        RaceManager raceManager = Race.getInstance().getRaceManager();
-//        IRaceData overlay = data.getOverlay();
-//        IRace modelOverlay = raceManager.getRaceModel(overlay.getRace());
-//
-//        modelOverlay.reapplyEffect(player, overlay);
-//    }
+        RaceManager raceManager = Race.getInstance().getRaceManager();
+        IRace modelOverlay = raceManager.getRaceModel(overlay.getRace());
+
+        modelOverlay.reapplyEffect(player, overlay);
+    }
 
     @Override
     public void reapplyEffect(Player player, OniData data) {
         applyEffect(player, data);
-
-//        reapplyOverlayEffect(player, data);
+        reapplyOverlayEffect(player, data);
     }
 
-//    private void cleanupOverlayEffect(Player player) {
-//        RaceManager raceManager = Race.getInstance().getRaceManager();
-//        OniData data = (OniData) raceManager.getProfile(player).raceData;
-//        IRaceData overlay = data.getOverlay();
-//        IRace modelOverlay = raceManager.getRaceModel(overlay.getRace());
-//
-//        modelOverlay.cleanup(player);
-//    }
+    private void cleanupOverlayEffect(Player player, RaceProfile profile) {
+        IRaceData overlay = ((OniData) profile.raceData).getOverlay();
+        if(overlay == null) return;
+
+        RaceManager raceManager = Race.getInstance().getRaceManager();
+        IRace modelOverlay = raceManager.getRaceModel(overlay.getRace());
+
+        modelOverlay.cleanup(player, profile);
+    }
 
     @Override
     public void cleanup(Player player, RaceProfile profile) {
+        cleanupOverlayEffect(player, profile);
+
         IRace.removeAttribute(player, Attribute.ATTACK_DAMAGE, STRENGTH);
         IRace.removeAttribute(player, Attribute.MOVEMENT_SPEED, SPEED);
         IRace.removeAttribute(player, Attribute.MAX_HEALTH, HEALTH);
@@ -179,8 +180,6 @@ public class Oni implements IRace<OniData>, IRankable {
         for(AbilityKey key : getAbilities().keySet()) {
             profile.removeAbility(key);
         }
-
-//        cleanupOverlayEffect(player);
     }
 
     @Override

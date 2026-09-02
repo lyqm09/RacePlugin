@@ -42,14 +42,14 @@ public class OniData extends RaceData {
             JsonNode node = rootNode.get(RACE_TYPE.name());
 
             RaceType.PrimaryData data = loadProfileData(node, RACE_TYPE, -1);
-            RaceData overlayData = null;
+            IRaceData overlayData = null;
 
             node = node.get("overlay");
             if(node != null && !node.isEmpty()) {
                 String name = node.fieldNames().next();
                 RaceType overlay = RaceType.fromName(name);
 
-                overlay.loadData.apply(node, new RaceType.PrimaryData(-1, 0, 0));
+                overlayData = overlay.loadData.apply(node, new RaceType.PrimaryData(-1, 0, 0));
             }
 
             return new OniData(data.rank(), data.exp(), overlayData);

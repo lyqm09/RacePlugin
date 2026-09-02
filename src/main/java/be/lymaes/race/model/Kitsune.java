@@ -156,6 +156,10 @@ public class Kitsune implements IRace<KitsuneData>, IRankable {
             }
             player.addPotionEffect(new PotionEffect(PotionEffectType.LUCK, PotionEffect.INFINITE_DURATION, 0, true, false, true));
         }
+
+        if(data.getRank() >= Rank.NINE.rank) {
+            player.setAllowFlight(true);
+        }
     }
 
     @Override
@@ -176,10 +180,6 @@ public class Kitsune implements IRace<KitsuneData>, IRankable {
     @Override
     public void reapplyEffect(Player player, KitsuneData data) {
         applyEffect(player, data);
-
-        if(data.getRank() >= Rank.NINE.rank) {
-            player.setAllowFlight(true);
-        }
     }
 
     @Override

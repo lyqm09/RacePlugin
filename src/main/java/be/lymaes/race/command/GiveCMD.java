@@ -60,9 +60,8 @@ public class GiveCMD implements CommandExecutor, TabCompleter {
 
     @Override
     public @Nullable List<String> onTabComplete(@NonNull CommandSender sender, @NonNull Command command, @NonNull String label, @NonNull String[] args) {
-        if(args.length == 2) {
-            return items;
-        }
+
+        if(args.length == 2) return items;
         return List.of();
     }
 }

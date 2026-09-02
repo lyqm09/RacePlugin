@@ -348,6 +348,7 @@ public class RaceProfile {
                 rootNode = Race.MAPPER.createObjectNode();
             }
 
+            rootNode.put("current", raceData.getRace().name());
             raceData.saveProfileData(rootNode);
             Race.MAPPER.writerWithDefaultPrettyPrinter().writeValue(file.toFile(), rootNode);
 
