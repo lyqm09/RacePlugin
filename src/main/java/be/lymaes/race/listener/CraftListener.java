@@ -33,19 +33,19 @@ public class CraftListener implements Listener {
         if(!key.getNamespace().equals("race")) return;
 
         if(key.getKey().equals(RaceItem.PRIMORDIAL_ONI_BLOOD.id)) {
-            if(canCraft(e.getView().getPlayer())) return;
+            if(canCraft(e.getView().getPlayer(), AbilityKey.CRAFT_PRIMORDIAL_ONI_BLOOD)) return;
 
             e.getInventory().setResult(null);
         }
     }
 
-    public boolean canCraft(HumanEntity viewer) {
+    public boolean canCraft(HumanEntity viewer, AbilityKey craftKey) {
         if(!(viewer instanceof Player player)) return false;
 
         RaceProfile profile = raceManager.getProfile(player);
         if(profile == null) return false;
 
-        return profile.hasAbility(AbilityKey.CRAFT_PRIMORDIAL_ONI_BLOOD);
+        return profile.hasAbility(craftKey);
     }
 
 }
