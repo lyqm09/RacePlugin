@@ -93,42 +93,31 @@ public class RaceManager {
 
         IRace oldRace = getRaceModel(RaceType.fromName(raceName));
 
-        boolean wasRefreshed = false;
         if (raceName == null) {
-            getRaceModel(profile.raceData.getRace()).applyRacePerks(player, profile, profile.raceData);
             player.getPersistentDataContainer().set(RACE_KEY, PersistentDataType.STRING, profile.raceData.getRace().name());
             player.getPersistentDataContainer().set(SUBRACE_KEY, PersistentDataType.INTEGER, profile.raceData.getSubrace());
-            wasRefreshed = true;
         }
 
         else if (!raceName.equalsIgnoreCase(profile.raceData.getRace().name())) {
             oldRace.cleanup(player, profile);
 
-            getRaceModel(profile.raceData.getRace()).applyRacePerks(player, profile, profile.raceData);
             player.getPersistentDataContainer().set(RACE_KEY, PersistentDataType.STRING, profile.raceData.getRace().name());
             player.getPersistentDataContainer().set(SUBRACE_KEY, PersistentDataType.INTEGER, profile.raceData.getSubrace());
-            wasRefreshed = true;
         }
 
         else if (oldRace instanceof ISubRaceable) {
             if(subRaceId != profile.raceData.getSubrace()) {
                 oldRace.cleanup(player, profile);
 
-                getRaceModel(profile.raceData.getRace()).applyRacePerks(player, profile, profile.raceData);
                 player.getPersistentDataContainer().set(SUBRACE_KEY, PersistentDataType.INTEGER, profile.raceData.getSubrace());
-                wasRefreshed = true;
             }
         }
 
         if(rank != profile.raceData.getRank()) {
-            getRaceModel(profile.raceData.getRace()).applyRacePerks(player, profile, profile.raceData);
             player.getPersistentDataContainer().set(RANK_KEY, PersistentDataType.INTEGER, profile.raceData.getRank());
-            wasRefreshed = true;
         }
 
-        if(!wasRefreshed) {
-            getRaceModel(profile.raceData.getRace()).reapplyPerms(player, profile.raceData);
-        }
+        getRaceModel(profile.raceData.getRace()).applyRacePerks(player, profile, profile.raceData);
     }
 
     public void load(Player player) {
