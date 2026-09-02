@@ -22,11 +22,6 @@ public class Human implements IRace<HumanData> {
     }
 
     @Override
-    public void reapplyPerms(Player player, HumanData data) {
-
-    }
-
-    @Override
     public void reapplyEffect(Player player, HumanData data) {
 
     }
