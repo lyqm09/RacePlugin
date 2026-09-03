@@ -5,6 +5,7 @@ import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.AbilityType;
 import be.lymaes.race.ability.Helder;
 import be.lymaes.race.ability.Interact;
+import be.lymaes.race.ability.ItemDropping;
 import be.lymaes.race.item.IRaceItem;
 import be.lymaes.race.item.IStaticItem;
 import be.lymaes.race.manager.ItemManager;
@@ -90,6 +91,11 @@ public class InteractListener implements Listener {
         Set<Helder> abilities = profile.getEventAbilities(AbilityType.HELDER);
         for(Helder helder : abilities) {
             helder.onSwapOff(e.getItemDrop().getItemStack());
+        }
+
+        Set<ItemDropping> abilities1 = profile.getEventAbilities(AbilityType.ITEM_DROPPING);
+        for(ItemDropping item : abilities1) {
+            item.onDrop(e);
         }
 
         if(itemManager.getItem(e.getItemDrop().getItemStack()) instanceof IStaticItem) {

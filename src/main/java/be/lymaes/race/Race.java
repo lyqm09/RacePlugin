@@ -81,6 +81,9 @@ public final class Race extends JavaPlugin {
         VillagerCMD villager = new VillagerCMD(this);
         getCommand("villager").setExecutor(villager);
 
+        SetKamiCMD setKami = new SetKamiCMD(this);
+        getCommand("setkami").setExecutor(setKami);
+
         // Runnable
         this.mainRunnable = new MainRunnable(this);
     }

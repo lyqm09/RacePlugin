@@ -1,6 +1,5 @@
 package be.lymaes.race.manager;
 
-import be.lymaes.race.RaceProfile;
 import be.lymaes.race.item.*;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -10,7 +9,6 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ItemManager {

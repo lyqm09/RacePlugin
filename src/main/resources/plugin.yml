@@ -65,7 +65,7 @@ commands:
     usage: /foyer
 
   setkami:
-    description: Le bloc sous le joueur devient un bloc d'or pendant 10min. Si le joueur lance des diamants sur ce bloc, ils seront converti effet de *Luck IV* (diamant/min).
+    description: Le bloc sous le joueur devient un bloc d'or. Si le joueur lance des diamants sur ce bloc, ils seront converti effet de *Luck IV* (diamant/min).
     permission: race.kitsune.setkami
     permission-message: Tu n'as pas la permission d'utiliser cette commande.
     usage: /setkami

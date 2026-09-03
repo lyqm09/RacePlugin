@@ -2,6 +2,7 @@ package be.lymaes.race;
 
 import be.lymaes.race.ability.*;
 import be.lymaes.race.ability.model.EmptyAbility;
+import be.lymaes.race.ability.model.Offering;
 import be.lymaes.race.ability.model.Targetable;
 import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.manager.RaceManager;
@@ -71,6 +72,9 @@ public class RaceProfile {
         if(ability instanceof Interact) {
             eventAbilities.computeIfAbsent(AbilityType.INTERACT, k -> new HashSet<>()).add(ability);
         }
+        if(ability instanceof ItemDropping) {
+            eventAbilities.computeIfAbsent(AbilityType.ITEM_DROPPING, k -> new HashSet<>()).add(ability);
+        }
         if(ability instanceof Helder) {
             eventAbilities.computeIfAbsent(AbilityType.HELDER, k -> new HashSet<>()).add(ability);
         }
@@ -114,6 +118,9 @@ public class RaceProfile {
         }
         if(ability instanceof Interact) {
             removeEventAbility(AbilityType.INTERACT, ability);
+        }
+        if(ability instanceof ItemDropping) {
+            removeEventAbility(AbilityType.ITEM_DROPPING, ability);
         }
         if(ability instanceof Helder) {
             removeEventAbility(AbilityType.HELDER, ability);

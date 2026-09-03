@@ -4,14 +4,10 @@ import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
 import be.lymaes.race.data.KaryuData;
 import be.lymaes.race.manager.RaceManager;
-import be.lymaes.race.model.Karyu;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -44,14 +40,17 @@ public class VillagerCMD implements CommandExecutor {
         }
 
         RaceProfile profile = raceManager.getProfile(player);
-        KaryuData data = ((KaryuData)profile.raceData);
+        if(profile.raceData instanceof KaryuData data) {
 
-        long time = data.getVillagerCMDTime();
-        long currentTime = System.currentTimeMillis();
+            long time = data.getVillagerCMDTime();
+            long currentTime = System.currentTimeMillis();
 
-        if(time != 0 && time > currentTime) {
-            player.sendMessage(ChatColor.RED + "Error : Tu dois encore attendre avant d'utiliser cette commande.");
-            return true;
+            if (time != 0 && time > currentTime) {
+                player.sendMessage(ChatColor.RED + "Error : Tu dois encore attendre avant d'utiliser cette commande.");
+                return true;
+            }
+
+            data.setVillagerCMDTime(currentTime + COOLDOWN);
         }
 
         Villager prevVillager = villagers.get(player.getUniqueId());
@@ -61,8 +60,6 @@ public class VillagerCMD implements CommandExecutor {
 
         Villager newVillager = player.getWorld().spawn(player.getLocation(), Villager.class, CreatureSpawnEvent.SpawnReason.CUSTOM, true, null);
         villagers.put(player.getUniqueId(), newVillager);
-
-        data.setVillagerCMDTime(currentTime + COOLDOWN);
 
         return true;
     }

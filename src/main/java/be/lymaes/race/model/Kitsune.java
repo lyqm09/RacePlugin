@@ -42,7 +42,7 @@ public class Kitsune implements IRace<KitsuneData>, IRankable {
                 AbilityKey.FAST_GROWING, new FastGrowing(),
 
                 AbilityKey.PERM_ALLOW_FLY, EmptyAbility.INSTANCE,
-                AbilityKey.PERM_SETKAMI, new PermAbility(PERM_SETKAMI),
+                AbilityKey.PERM_SETKAMI, new Offering(PERM_SETKAMI),
                 AbilityKey.PERM_SETVILLAGE, new PermAbility(PERM_SETVILLAGE),
                 AbilityKey.PERM_CALLKAMI, new PermAbility(PERM_CALLKAMI)
         );

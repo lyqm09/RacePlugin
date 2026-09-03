@@ -8,4 +8,6 @@ public interface Taskable extends Ability {
 
     void run(Player player, RaceProfile profile, IRaceData data, long currentTime);
 
+    default void terminate() {}
+
 }

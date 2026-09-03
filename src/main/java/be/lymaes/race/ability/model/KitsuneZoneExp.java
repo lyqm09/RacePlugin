@@ -30,8 +30,6 @@ public class KitsuneZoneExp implements Taskable {
     );
 
     public void run(Player player, RaceProfile profile, IRaceData data, long currentTime) {
-        IRace<? extends IRaceData> irace = Race.getInstance().getRaceManager().getRaceModel(data.getRace());
-        if(!(irace instanceof Kitsune kitsune)) return;
         if(!(data instanceof KitsuneData kitsuneData)) return; // TODO remove from list
 
         long time = kitsuneData.getTimeInForest();
@@ -40,6 +38,10 @@ public class KitsuneZoneExp implements Taskable {
         if(AVAILABLE_BIOMES.contains(currentBiome)) {
             if (time > 0 && currentTime - time >= 1000 * 60 * 60) {
                 if (ThreadLocalRandom.current().nextDouble() <= Kitsune.TOLERENCE) {
+
+                    IRace<? extends IRaceData> irace = Race.getInstance().getRaceManager().getRaceModel(kitsuneData.getRace());
+                    if(!(irace instanceof Kitsune kitsune)) return;
+
                     if(kitsune.getExpRequired(kitsuneData.getRank()+1) != -1) {
                         profile.rankUp();
                     }
