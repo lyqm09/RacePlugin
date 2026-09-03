@@ -12,54 +12,113 @@ Les Onis gagnent de l'expérience en tuant des mobs (1 exp / mob).
 ### 1. Bête (initial)
 
 ### 2. Évolué (40 exp)
+
 \+10\% de force.  
 \+5\% de résistance.  
 \+10\% de vitesse.
 
 ### 3. Lieutenant (200 exp)
+
 \+20\% de force.  
 \+10\% de résistance.  
 \+20\% de vitesse.  
 Possibilité de lancer des boules de feu (clic droit avec des poudres de Blaze).
 
 ### 4. Capitaine (1000 exp)
+
 \+30\% de force.  
 \+15\% de résistance.  
 \+30\% de vitesse.  
 Les Monstres ne l'attaquent plus.
 
 ### 5. Commandant (4000 exp)
+
 \+40\% de force.  
 \+20\% de résistance.  
 \+40\% de vitesse.  
 Se voit octroyé *Régénération I* de facon permanente.
 
 ### 6. Seigneur (10,000 exp)
+
 \+50\% de force.  
 \+25\% de résistance.  
 \+50\% de vitesse.  
 \+20 pv
 
 ### 7. Général (20,000 exp & pierre de Kazan)
+
 \+100\% de force.  
 \+50\% de résistance.  
 \+100\% de vitesse.  
 Possibilité de craft *Sang d'Oni primordial*.
 
+
 ## Kitsune
 
 Les Kitsunes sont fortement vulnerable au feu (\+100\%).
+Les Kitsunes voient dans le noir.
 Les Kitsunes gagnent une queue en gagnant un raid.
-Les Kitsunes ont 2\% de chance de gagner une queue en restant une heure dans un biome forêt. 
+Les Kitsunes ont 2\% de chance de gagner une queue en restant une heure dans un biome forêt.
+
+### 1. Une Queue
+
+\+5\% de vitesse.
+
+### 2. Deux Queues
+
+\+5\% de force.
+\+10\% de vitesse.
+Jump Boost I.
+Accès au `/setkami`.
+
+### 3. Trois Queues
+
+\+10\% de force.
+\+15\% de vitesse.
+Accès au `/setvillage`.
+
+### 4. Quatre Queues
+
+\+15\% de force.
+\+20\% de vitesse.
+Possibilité de se transformer en renard avec *shift + click droit* dans l'air avec les mains vide.
+
+### 5. Cinq Queues
+
+\+20\% de force.
+\+25\% de vitesse.
+Jump Boost II.
+Devient invisible avec *shift*.
+
+### 6. Six Queues
+
+\+25\% de force.
+\+30\% de vitesse.
+Chance I.
+
+### 7. Sept Queues
+
+\+30\% de force.
+\+40\% de vitesse.
+Possibilité de faire grandir arbre et culture instantanément avec *shift + click droit* avec les mains vide.
+
+### 8. Huit Queues
+
+\+35\% de force.
+\+50\% de vitesse.
+Accès au `/callkami`.
+
+### 9. Neuf Queues
+
+\+50\% de force.
+\+100\% de vitesse.
+Jump Boost III.
+Peut voler.
 
 ## Tamashi
 
 
-
 ## Karyu
-
-
-
 
 
 ---
@@ -138,8 +197,9 @@ L'item est obtenu suite à un craft sur table de craft : (Image bientôt disponi
 
 ## Commande de Kitsune
 
-`/setkami` Le bloc sous le joueur devient un bloc d'or pendant 10min. Si le joueur lance des diamants sur ce bloc, ils seront converti effet de *Luck IV* (diamant/min).  
+`/setkami` Le bloc sous le joueur devient un bloc d'or. Si le joueur lance des diamants sur ce bloc, ils seront converti effet de *Luck IV* (diamant/min).  
 `/setvillage` Les 25 blocs de rayon autour de la position du joueur seront considéré comme un village (max 20 villageois et 20 renards).  
+`/callkami` Donne 5 effets positifs aléatoires à un niveau aléatoire pendant une min (5min de cooldown).
 
 ## Commande de Karyu
 
