@@ -71,9 +71,9 @@ permissions:
     children:
       race.mexp: true
       race.mtail: true
-      race.craft: true
       race.tamashi: true
       race.karyu: true
+      race.kitsune: true
 
   race.mexp:
     description: Donne accès à la commande /mexp
@@ -83,31 +83,13 @@ permissions:
     description: Donne accès à la commande /mtail
     default: op
 
-  race.craft:
-    description: Craft du plugin.
-    children:
-      race.craft.primordial_oni_blood: true
-
-  race.craft.primordial_oni_blood:
-    description: Permet le craft du Sang d'Oni Primordial.
-    default: false
-
   race.tamashi:
     description: Permissions de Tamashi.
     children:
       race.tamashi.home: false
-      race.tamashi.air: true
 
   race.tamashi.home:
     description: Permet d'utiliser la commande /home.
-    default: false
-
-  race.tamashi.air:
-    description: Permissions des Tamashi d'Air.
-    race.tamashi.air.fly_charge: true
-
-  race.tamashi.air.fly_charge:
-    description: Permet l'utilisation de la Charge de Vol.
     default: false
 
   race.karyu:
@@ -121,7 +103,6 @@ permissions:
     children:
       race.karyu.merchant.fortune: true
       race.karyu.merchant.villager: true
-      race.karyu.merchant.milicien: true
 
   race.karyu.adorer:
     description: Permissions de la sous-race Adorateur de Karyu.
@@ -137,14 +118,29 @@ permissions:
     description: Permet d'utiliser la commande /villager.
     default: false
 
-  race.karyu.merchant.milicien:
-    description: Permet l'invocation des miliciens.
-    default: false
-
   race.karyu.adorer.sharpness:
     description: Permet d'utiliser la commande /sharpness.
     default: false
 
   race.karyu.adorer.bless:
     description: Permet d'utiliser la commande /bless.
+    default: false
+
+  race.kitsune:
+    description: Permissions de la sous-race Adorateur de Kitsune.
+    children:
+      race.kitsune.setkami: true
+      race.kitsune.callkami: true
+      race.kitsune.setvillage: true
+
+  race.kitsune.setkami:
+    description: Permet d'utiliser la commande /setkami.
+    default: false
+
+  race.kitsune.callkami:
+    description: Permet d'utiliser la commande /callkami.
+    default: false
+
+  race.kitsune.setvillage:
+    description: Permet d'utiliser la commande /setvillage.
     default: false
