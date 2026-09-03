@@ -21,6 +21,8 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.Map;
 
+import static java.util.Map.entry;
+
 public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable {
 
     public static final String PERM_HOME = "race.tamashi.home";
@@ -35,21 +37,22 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable {
         double[] earthAbsorptionFactor = new double[] {0.20, 0.30, 0.40, 0.60, 0.80, 0.90};
         int[] fireTimes = new int[] {1, 2, 5, 10, 20, 30};
         int[] flyTimes = new int[] {5, 10, 20, 30, 5*60};
-        return Map.of(
-                AbilityKey.TAMASHI_EXP, new TamashiExp(DISTANCE_SQUARED),
-                AbilityKey.PERM_HOME, new PermAbility(PERM_HOME),
-                AbilityKey.MONOPHOBIA, new Monophobia(DISTANCE_SQUARED),
+        return Map.ofEntries(
+                entry(AbilityKey.TAMASHI_EXP, new TamashiExp(DISTANCE_SQUARED)),
+                entry(AbilityKey.PERM_HOME, new PermAbility(PERM_HOME)),
+                entry(AbilityKey.MONOPHOBIA, new Monophobia(DISTANCE_SQUARED)),
 
-                AbilityKey.AQUATIC_STRENGTH, new AquaticStrength(waterStrengthFactor),
+                entry(AbilityKey.AQUATIC_STRENGTH, new AquaticStrength(waterStrengthFactor)),
 
-                AbilityKey.TAMASHI_EARTH_ABSORPTION, new Absorption(earthAbsorptionFactor),
-                AbilityKey.DIRT_EATER, new DirtEater(),
+                entry(AbilityKey.TAMASHI_EARTH_ABSORPTION, new Absorption(earthAbsorptionFactor)),
+                entry(AbilityKey.DIRT_EATER, new DirtEater()),
 
-                AbilityKey.FIREBALL, new Fireball(),
-                AbilityKey.FIRE_ASPECT, new FireAspect(fireTimes),
+                entry(AbilityKey.FIREBALL, new Fireball()),
+                entry(AbilityKey.FIRE_ASPECT, new FireAspect(fireTimes)),
 
-                AbilityKey.FLY_CHARGE, new FlyCharge(flyTimes),
-                AbilityKey.FEATHER_FALL, new FeatherFall()
+                entry(AbilityKey.FLY_CHARGE, new FlyCharge(flyTimes)),
+                entry(AbilityKey.FEATHER_FALL, new FeatherFall()),
+                entry(AbilityKey.PERM_ALLOW_FLY, EmptyAbility.INSTANCE)
         );
     }
 
@@ -83,6 +86,7 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable {
             profile.addAbility(AbilityKey.FLY_CHARGE);
         } else {
             profile.removeAbility(AbilityKey.FLY_CHARGE);
+            profile.addAbility(AbilityKey.PERM_ALLOW_FLY);
         }
     }
 
@@ -179,6 +183,12 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable {
         }
     }
 
+    private void applyAirEffect(Player player, TamashiData data) {
+        if(data.getRank() >= Rank.OKAMI.rank) {
+            player.setAllowFlight(true);
+        }
+    }
+
     private void applyAir(Player player, RaceProfile profile, TamashiData data) {
         applyAirAbilities(profile, data);
         applyAirAttribute(player, data);
@@ -187,6 +197,7 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable {
         } else {
             removeAirItem(player);
         }
+        applyAirEffect(player, data);
     }
 
     @Override
@@ -214,7 +225,10 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable {
         switch(SubRace.fromId(data.getSubrace())) {
             case WATER -> applyWaterEffect(player, data);
             case FIRE -> applyFireEffect(player, data);
-            case AIR -> giveAirItem(player, data);
+            case AIR -> {
+                giveAirItem(player, data);
+                applyAirEffect(player, data);
+            }
         }
     }
 
