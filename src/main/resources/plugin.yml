@@ -64,6 +64,24 @@ commands:
     permission-message: Tu n'es pas un Tamashi.
     usage: /foyer
 
+  setkami:
+    description: Le bloc sous le joueur devient un bloc d'or pendant 10min. Si le joueur lance des diamants sur ce bloc, ils seront converti effet de *Luck IV* (diamant/min).
+    permission: race.kitsune.setkami
+    permission-message: Tu n'as pas la permission d'utiliser cette commande.
+    usage: /setkami
+
+  setvillage:
+    description: Les 25 blocs de rayon autour de la position du joueur seront considéré comme un village.
+    permission: race.kitsune.setvillage
+    permission-message: Tu n'as pas la permission d'utiliser cette commande.
+    usage: /setvillage
+
+  callkami:
+    description: Donne 5 effets positifs aléatoires à un niveau aléatoire pendant une min.
+    permission: race.kitsune.callkami
+    permission-message: Tu n'as pas la permission d'utiliser cette commande.
+    usage: /callkami
+
 permissions:
   race.*:
     description: Donne accès à presque toutes les permissions du plugin.
@@ -130,17 +148,17 @@ permissions:
     description: Permissions de la sous-race Adorateur de Kitsune.
     children:
       race.kitsune.setkami: true
-      race.kitsune.callkami: true
       race.kitsune.setvillage: true
+      race.kitsune.callkami: true
 
   race.kitsune.setkami:
     description: Permet d'utiliser la commande /setkami.
     default: false
 
-  race.kitsune.callkami:
-    description: Permet d'utiliser la commande /callkami.
-    default: false
-
   race.kitsune.setvillage:
     description: Permet d'utiliser la commande /setvillage.
+    default: false
+
+  race.kitsune.callkami:
+    description: Permet d'utiliser la commande /callkami.
     default: false
