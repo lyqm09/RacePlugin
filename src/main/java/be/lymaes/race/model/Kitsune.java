@@ -39,8 +39,9 @@ public class Kitsune implements IRace<KitsuneData>, IRankable {
 
                 AbilityKey.FOX_DISGUISE, new Disguise(DisguiseType.FOX),
                 AbilityKey.INVISIBILITY, new Invisibility(),
-                AbilityKey.PERM_ALLOW_FLY, EmptyAbility.INSTANCE,
+                AbilityKey.FAST_GROWING, new FastGrowing(),
 
+                AbilityKey.PERM_ALLOW_FLY, EmptyAbility.INSTANCE,
                 AbilityKey.PERM_SETKAMI, new PermAbility(PERM_SETKAMI),
                 AbilityKey.PERM_SETVILLAGE, new PermAbility(PERM_SETVILLAGE),
                 AbilityKey.PERM_CALLKAMI, new PermAbility(PERM_CALLKAMI)
@@ -77,6 +78,10 @@ public class Kitsune implements IRace<KitsuneData>, IRankable {
 
         if(rank >= Rank.FIVE.rank) {
             profile.addAbility(AbilityKey.INVISIBILITY);
+        }
+
+        if(rank >= Rank.EIGHT.rank) {
+            profile.addAbility(AbilityKey.FAST_GROWING);
         }
 
         if(rank >= Rank.EIGHT.rank) {

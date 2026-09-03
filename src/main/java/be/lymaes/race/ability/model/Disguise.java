@@ -21,7 +21,7 @@ public class Disguise implements Interact {
     public void onInteract(PlayerInteractEvent e, Player player, int rank) {
         if(!player.isSneaking()) return;
         if(e.getItem() != null || e.getMaterial() != Material.AIR) return;
-        if(e.getAction() != Action.LEFT_CLICK_AIR && e.getAction() != Action.LEFT_CLICK_BLOCK) return;
+        if(e.getAction() != Action.LEFT_CLICK_AIR) return;
 
         if (DisguiseAPI.isDisguised(player) && DisguiseAPI.getDisguise(player).getType() == disguiseType) {
             DisguiseAPI.undisguiseToAll(player);
