@@ -31,6 +31,7 @@ public class Kitsune implements IRace<KitsuneData>, IRankable {
         return Map.of(
                 AbilityKey.KITSUNE_RAID_EXP, new KitsuneRaidExp(),
                 AbilityKey.KITSUNE_ZONE_EXP, new KitsuneZoneExp(),
+                AbilityKey.FIRE_VULNERABILITY, new FireVulnerability(1.00),
 
                 AbilityKey.FOX_DISGUISE, new Disguise(DisguiseType.FOX),
                 AbilityKey.INVISIBILITY, new Invisibility(),
@@ -51,6 +52,8 @@ public class Kitsune implements IRace<KitsuneData>, IRankable {
 
     private void applyAbilities(RaceProfile profile, KitsuneData data) {
         int rank = data.getRank();
+
+        profile.addAbility(AbilityKey.FIRE_VULNERABILITY);
 
         if(rank >= Rank.FOUR.rank) {
             profile.addAbility(AbilityKey.FOX_DISGUISE);

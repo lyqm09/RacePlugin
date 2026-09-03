@@ -48,7 +48,9 @@ Possibilité de craft *Sang d'Oni primordial*.
 
 ## Kitsune
 
-
+Les Kitsunes sont fortement vulnerable au feu (\+100\%).
+Les Kitsunes gagnent une queue en gagnant un raid.
+Les Kitsunes ont 2\% de chance de gagner une queue en restant une heure dans un biome forêt. 
 
 ## Tamashi
 
