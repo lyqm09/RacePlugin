@@ -3,6 +3,7 @@ package be.lymaes.race.model;
 import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.*;
 import be.lymaes.race.ability.model.*;
+import be.lymaes.race.data.KaryuData;
 import be.lymaes.race.data.KitsuneData;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.DisguiseType;
@@ -208,6 +209,18 @@ public class Kitsune implements IRace<KitsuneData>, IRankable {
     @Override
     public void reapplyEffect(Player player, KitsuneData data) {
         applyEffect(player, data);
+    }
+
+
+    @Override
+    public PotionEffect getEffect(PotionEffectType type, KitsuneData data) {
+        PotionEffect currentEffect = new PotionEffect(PotionEffectType.NIGHT_VISION, PotionEffect.INFINITE_DURATION, 0, true, false, true);
+        if(type == currentEffect.getType()) return currentEffect;
+
+        currentEffect = new PotionEffect(PotionEffectType.LUCK, PotionEffect.INFINITE_DURATION, 0, true, false, true);
+        if(type == currentEffect.getType()) return currentEffect;
+
+        return null;
     }
 
     @Override

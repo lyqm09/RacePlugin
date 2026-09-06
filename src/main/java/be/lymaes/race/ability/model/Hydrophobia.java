@@ -1,14 +1,12 @@
 package be.lymaes.race.ability.model;
 
 import be.lymaes.race.RaceProfile;
-import be.lymaes.race.ability.Ability;
 import be.lymaes.race.ability.Taskable;
 import be.lymaes.race.data.IRaceData;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.Set;
@@ -40,9 +38,9 @@ public class Hydrophobia implements Taskable {
 
     public void run(Player player, RaceProfile profile, IRaceData data, long currentTime) {
         if(player.isInWater() || isUnderRain(player)) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 2 * 20, 1, true, false, true));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 2 * 20, 1, true, false, true));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 2 * 20, 0, true, false, true));
+            applyEffect(player, PotionEffectType.WEAKNESS, 2 * 20, 1);
+            applyEffect(player, PotionEffectType.SLOWNESS, 2 * 20, 1);
+            applyEffect(player, PotionEffectType.BLINDNESS, 2 * 20, 0);
         }
     }
 

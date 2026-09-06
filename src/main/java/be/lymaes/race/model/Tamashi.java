@@ -4,6 +4,7 @@ import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.*;
 import be.lymaes.race.ability.model.*;
+import be.lymaes.race.data.KaryuData;
 import be.lymaes.race.data.TamashiData;
 import be.lymaes.race.gui.GUITypes;
 import be.lymaes.race.item.model.FlyChargeBall;
@@ -230,6 +231,35 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable {
                 applyAirEffect(player, data);
             }
         }
+    }
+
+    @Override
+    public PotionEffect getEffect(PotionEffectType type, TamashiData data) {
+        int subrace = data.getSubrace();
+
+        PotionEffect currentEffect;
+        if(subrace == SubRace.WATER.id) {
+
+            currentEffect = new PotionEffect(PotionEffectType.CONDUIT_POWER, PotionEffect.INFINITE_DURATION, 0, true, false, true);
+            if(type == currentEffect.getType()) return currentEffect;
+
+            int dolphinGraceLvl = switch(Rank.fromRank(data.getRank())) {
+                case EMBRYO, CHILD -> 1;
+                case ACCOMPLISHED, HALF_GOD -> 2;
+                case KAMI, OKAMI -> 3;
+            };
+            currentEffect = new PotionEffect(PotionEffectType.DOLPHINS_GRACE, PotionEffect.INFINITE_DURATION, dolphinGraceLvl-1, true, false, true);
+            if(type == currentEffect.getType()) return currentEffect;
+
+        }
+        else if(subrace == SubRace.FIRE.id) {
+
+            currentEffect = new PotionEffect(PotionEffectType.FIRE_RESISTANCE, PotionEffect.INFINITE_DURATION, 0, true, false, true);
+            if(type == currentEffect.getType()) return currentEffect;
+
+        }
+
+        return null;
     }
 
     @Override

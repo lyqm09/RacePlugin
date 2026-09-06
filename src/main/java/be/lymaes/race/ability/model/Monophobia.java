@@ -1,15 +1,12 @@
 package be.lymaes.race.ability.model;
 
 import be.lymaes.race.RaceProfile;
-import be.lymaes.race.ability.Ability;
 import be.lymaes.race.ability.Taskable;
 import be.lymaes.race.data.IRaceData;
-import be.lymaes.race.data.KitsuneData;
 import be.lymaes.race.data.OniData;
 import be.lymaes.race.data.TamashiData;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class Monophobia implements Taskable {
@@ -45,8 +42,8 @@ public class Monophobia implements Taskable {
             if(other.getLocation().distanceSquared(playerLoc) <= tolerance) return;
         }
 
-        player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 2 * 20, 0, true, false, true));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 2 * 20, 0, true, false, true));
+        applyEffect(player, PotionEffectType.HUNGER, 2 * 20, 0);
+        applyEffect(player, PotionEffectType.WEAKNESS, 2 * 20, 0);
     }
 
 }

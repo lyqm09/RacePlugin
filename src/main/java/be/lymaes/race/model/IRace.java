@@ -1,6 +1,5 @@
 package be.lymaes.race.model;
 
-import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.Ability;
 import be.lymaes.race.ability.AbilityKey;
@@ -11,8 +10,8 @@ import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlotGroup;
-import org.bukkit.permissions.PermissionAttachment;
-import org.bukkit.permissions.PermissionAttachmentInfo;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.Map;
 
@@ -22,6 +21,7 @@ public interface IRace<T extends IRaceData> {
 
     void applyRacePerks(Player player, RaceProfile profile, T data);
     void reapplyEffect(Player player, T data);
+    PotionEffect getEffect(PotionEffectType type, T data);
     void cleanup(Player player, RaceProfile profile);
 
     static void removeAttribute(Player player, Attribute attribute, NamespacedKey key) {

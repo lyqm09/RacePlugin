@@ -5,6 +5,8 @@ import be.lymaes.race.ability.Ability;
 import be.lymaes.race.ability.AbilityKey;
 import be.lymaes.race.data.HumanData;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.Collections;
 import java.util.Map;
@@ -24,6 +26,11 @@ public class Human implements IRace<HumanData> {
     @Override
     public void reapplyEffect(Player player, HumanData data) {
 
+    }
+
+    @Override
+    public PotionEffect getEffect(PotionEffectType type, HumanData data) {
+        return null;
     }
 
     @Override

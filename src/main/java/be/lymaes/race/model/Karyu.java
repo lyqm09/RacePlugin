@@ -191,10 +191,29 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable {
 
     @Override
     public void reapplyEffect(Player player, KaryuData data) {
-        if (Objects.requireNonNull(SubRace.fromId(data.getSubrace())) == SubRace.MERCHANT) {
+        if (data.getSubrace() == SubRace.MERCHANT.id) {
             applyMerchantEffect(player, data);
             giveMerchantItem(player, data);
         }
+    }
+
+    @Override
+    public PotionEffect getEffect(PotionEffectType type, KaryuData data) {
+        int subrace = data.getSubrace();
+        int rank = data.getRank();
+
+        PotionEffect currentEffect;
+        if(subrace == SubRace.MERCHANT.id
+        || (subrace == SubRace.ADORER.id && rank >= Rank.DRAGON.rank)) {
+
+            if(rank >= Rank.INTERMEDIATE.rank) {
+                currentEffect = new PotionEffect(PotionEffectType.HERO_OF_THE_VILLAGE, PotionEffect.INFINITE_DURATION, 0, true, false, true);
+                if(type == currentEffect.getType()) return currentEffect;
+            }
+
+        }
+
+        return null;
     }
 
     @Override

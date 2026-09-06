@@ -147,8 +147,8 @@ permissions:
   race.kitsune:
     description: Permissions de la sous-race Adorateur de Kitsune.
     children:
-      race.kitsune.setkami: true
-      race.kitsune.setvillage: true
+      race.kitsune.setkami: false
+      race.kitsune.setvillage: false
       race.kitsune.callkami: true
 
   race.kitsune.setkami:

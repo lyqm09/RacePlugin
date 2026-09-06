@@ -52,6 +52,7 @@ public final class Race extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PotionListener(this), this);
         getServer().getPluginManager().registerEvents(new CraftListener(this), this);
         getServer().getPluginManager().registerEvents(new BlockListener(this), this);
+        getServer().getPluginManager().registerEvents(new PotionEffectListener(this), this);
 
         // command
         MutsuharaCMD mutsuhara = new MutsuharaCMD(this);

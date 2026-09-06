@@ -6,6 +6,7 @@ import be.lymaes.race.ability.*;
 import be.lymaes.race.ability.model.*;
 import be.lymaes.race.ability.model.Fireball;
 import be.lymaes.race.data.IRaceData;
+import be.lymaes.race.data.KaryuData;
 import be.lymaes.race.data.OniData;
 import be.lymaes.race.manager.RaceManager;
 import org.bukkit.*;
@@ -162,6 +163,19 @@ public class Oni implements IRace<OniData>, IRankable {
         IRace modelOverlay = raceManager.getRaceModel(overlay.getRace());
 
         modelOverlay.cleanup(player, profile);
+    }
+
+    @Override
+    public PotionEffect getEffect(PotionEffectType type, OniData data) {
+        int rank = data.getRank();
+
+        PotionEffect currentEffect;
+        if(rank >= Rank.COMMANDER.rank) {
+            currentEffect = new PotionEffect(PotionEffectType.REGENERATION, PotionEffect.INFINITE_DURATION, 0, true, false, true);
+            if(type == currentEffect.getType()) return currentEffect;
+        }
+
+        return null;
     }
 
     @Override
