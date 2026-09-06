@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class Kitsune implements IRace<KitsuneData>, IRankable {
 
-    public static final double TOLERENCE = 0.02;
+    public static final double TOLERANCE = 0.02;
 
     private static final String PERM_SETKAMI = "race.kitsune.setkami";
     private static final String PERM_SETVILLAGE = "race.kitsune.setvillage";

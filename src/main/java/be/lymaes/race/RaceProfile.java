@@ -54,6 +54,9 @@ public class RaceProfile {
         if(ability instanceof Taskable) {
             eventAbilities.computeIfAbsent(AbilityType.TASKABLE, k -> new HashSet<>()).add(ability);
         }
+        if(ability instanceof BlockBreaker) {
+            eventAbilities.computeIfAbsent(AbilityType.BLOCK_BREAKER, k -> new HashSet<>()).add(ability);
+        }
         if(ability instanceof Consumer) {
             eventAbilities.computeIfAbsent(AbilityType.CONSUMER, k -> new HashSet<>()).add(ability);
         }
@@ -100,6 +103,9 @@ public class RaceProfile {
 
         if(ability instanceof Taskable) {
             removeEventAbility(AbilityType.TASKABLE, ability);
+        }
+        if(ability instanceof BlockBreaker) {
+            removeEventAbility(AbilityType.BLOCK_BREAKER, ability);
         }
         if(ability instanceof Consumer) {
             removeEventAbility(AbilityType.CONSUMER, ability);

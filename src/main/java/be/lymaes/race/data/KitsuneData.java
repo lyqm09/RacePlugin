@@ -37,7 +37,15 @@ public class KitsuneData extends RaceData {
         timeInForest = time;
     }
 
+    public SimpleBlockLocation getKamiBlockLocation() {
+        return kamiBlockLoc;
+    }
+
     public void setKamiBlockLocation(Block block) {
+        if(block == null) {
+            kamiBlockLoc = null;
+            return;
+        }
         kamiBlockLoc = new SimpleBlockLocation(block.getWorld().getUID(), block.getX(), block.getY(), block.getZ());
     }
 
@@ -58,6 +66,10 @@ public class KitsuneData extends RaceData {
                 } else {
                     offering.removeKamiBlock(kamiBlockLoc);
                 }
+            }
+        } else {
+            if(node.has("kami_block")) {
+                node.remove("kami_block");
             }
         }
     }

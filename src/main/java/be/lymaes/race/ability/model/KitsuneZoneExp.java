@@ -2,11 +2,9 @@ package be.lymaes.race.ability.model;
 
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
-import be.lymaes.race.ability.Ability;
 import be.lymaes.race.ability.Taskable;
 import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.data.KitsuneData;
-import be.lymaes.race.data.OniData;
 import be.lymaes.race.model.IRace;
 import be.lymaes.race.model.Kitsune;
 import org.bukkit.block.Biome;
@@ -37,7 +35,7 @@ public class KitsuneZoneExp implements Taskable {
         Biome currentBiome = player.getWorld().getBiome(player.getLocation());
         if(AVAILABLE_BIOMES.contains(currentBiome)) {
             if (time > 0 && currentTime - time >= 1000 * 60 * 60) {
-                if (ThreadLocalRandom.current().nextDouble() <= Kitsune.TOLERENCE) {
+                if (ThreadLocalRandom.current().nextDouble() <= Kitsune.TOLERANCE) {
 
                     IRace<? extends IRaceData> irace = Race.getInstance().getRaceManager().getRaceModel(kitsuneData.getRace());
                     if(!(irace instanceof Kitsune kitsune)) return;

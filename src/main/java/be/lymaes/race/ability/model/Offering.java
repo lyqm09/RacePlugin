@@ -2,6 +2,7 @@ package be.lymaes.race.ability.model;
 
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
+import be.lymaes.race.ability.BlockBreaker;
 import be.lymaes.race.ability.ItemDropping;
 import be.lymaes.race.ability.Taskable;
 import be.lymaes.race.data.IRaceData;
@@ -17,13 +18,14 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 
-public class Offering extends PermAbility implements Taskable, ItemDropping {
+public class Offering extends PermAbility implements Taskable, ItemDropping, BlockBreaker {
 
     private static final Material BLOCK_TYPE = Material.GOLD_BLOCK;
     private static final int LUCK_LVL = 3; // Luck IV
@@ -58,6 +60,28 @@ public class Offering extends PermAbility implements Taskable, ItemDropping {
     }
 
     @Override
+    public void onBreak(BlockBreakEvent e, IRaceData data) {
+        Block block = e.getBlock();
+        SimpleBlockLocation simpleBlockLoc = new SimpleBlockLocation(block.getWorld().getUID(), block.getX(), block.getY(), block.getZ());
+
+        if(!hasKamiBlock(simpleBlockLoc)) return;
+
+        Player player = e.getPlayer();
+
+        if(data instanceof KitsuneData kitsuneData) {
+            if(kitsuneData.getKamiBlockLocation().equals(simpleBlockLoc)) {
+                removeKamiBlock(simpleBlockLoc);
+                kitsuneData.setKamiBlockLocation(null);
+                player.sendMessage("Tu viens de casser ton bloc de prière.");
+                return;
+            }
+        }
+
+        player.sendMessage("Tu ne peux pas casser un bloc de prière pour Kami.");
+        e.setCancelled(true);
+    }
+
+    @Override
     public void onDrop(PlayerDropItemEvent e) {
         if(e.getItemDrop().getItemStack().getType() != Material.DIAMOND) return;
         trackedItem.add(e.getItemDrop());
@@ -84,10 +108,11 @@ public class Offering extends PermAbility implements Taskable, ItemDropping {
                     continue;
                 }
 
+                int amount = item.getItemStack().getAmount();
                 Block block = item.getLocation().getBlock().getRelative(BlockFace.DOWN);
                 SimpleBlockLocation blockLoc = new SimpleBlockLocation(block.getWorld().getUID(), block.getX(), block.getY(), block.getZ());
                 if(kamiBlock.containsKey(blockLoc)) {
-                    players.put(uuid, players.getOrDefault(uuid, 0) + 1);
+                    players.put(uuid, players.getOrDefault(uuid, 0) + amount);
                     item.remove();
                 }
 
@@ -112,7 +137,8 @@ public class Offering extends PermAbility implements Taskable, ItemDropping {
 
                 player.removePotionEffect(PotionEffectType.LUCK);
             }
-            player.addPotionEffect(new PotionEffect(PotionEffectType.LUCK, time + entry.getValue() * 20, LUCK_LVL, false, false, true));
+
+            player.addPotionEffect(new PotionEffect(PotionEffectType.LUCK, time + entry.getValue() * 20 * 60, LUCK_LVL, false, false, true));
         }
     }
 

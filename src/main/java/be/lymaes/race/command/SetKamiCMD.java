@@ -53,6 +53,7 @@ public class SetKamiCMD implements CommandExecutor {
         }
 
         if(profile.hasAbility(AbilityKey.PERM_SETKAMI)) {
+            offering.removeKamiBlock(data.getKamiBlockLocation());
             data.setKamiBlockLocation(block);
         }
 

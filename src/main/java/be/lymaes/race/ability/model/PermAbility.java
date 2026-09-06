@@ -40,8 +40,7 @@ public class PermAbility implements CommandSender {
     @Override
     public void removePermission(Player player) {
         PermissionAttachment attachment = getPermission(player);
-        if(attachment == null)
-            return;
+        if(attachment == null) return;
 
         attachment.setPermission(perm, false);
         player.updateCommands();
