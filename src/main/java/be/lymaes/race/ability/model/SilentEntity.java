@@ -1,5 +1,6 @@
 package be.lymaes.race.ability.model;
 
+import be.lymaes.race.ability.Targetable;
 import org.bukkit.entity.Monster;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;

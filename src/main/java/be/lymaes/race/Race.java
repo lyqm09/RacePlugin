@@ -2,13 +2,9 @@ package be.lymaes.race;
 
 import be.lymaes.race.command.*;
 import be.lymaes.race.listener.*;
-import be.lymaes.race.manager.AbilityManager;
-import be.lymaes.race.manager.GUIManager;
-import be.lymaes.race.manager.ItemManager;
-import be.lymaes.race.manager.RaceManager;
+import be.lymaes.race.manager.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.bukkit.plugin.java.JavaPlugin;
-
 
 public final class Race extends JavaPlugin {
 
@@ -20,6 +16,7 @@ public final class Race extends JavaPlugin {
     private RaceManager raceManager;
     private GUIManager guiManager;
     private ItemManager itemManager;
+    private StructureManager structureManager;
     private AbilityManager abilityManager;
 
     private MainRunnable mainRunnable;
@@ -33,6 +30,7 @@ public final class Race extends JavaPlugin {
         this.raceManager = new RaceManager();
         this.guiManager = new GUIManager();
         this.itemManager = new ItemManager();
+        this.structureManager = new StructureManager(this);
         this.abilityManager = new AbilityManager(raceManager.getModels());
 
         // Messager
@@ -53,6 +51,7 @@ public final class Race extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new CraftListener(this), this);
         getServer().getPluginManager().registerEvents(new BlockListener(this), this);
         getServer().getPluginManager().registerEvents(new PotionEffectListener(this), this);
+        getServer().getPluginManager().registerEvents(new EntitySpawnListener(this), this);
 
         // command
         MutsuharaCMD mutsuhara = new MutsuharaCMD(this);
@@ -86,6 +85,9 @@ public final class Race extends JavaPlugin {
         SetKamiCMD setKami = new SetKamiCMD(this);
         getCommand("setkami").setExecutor(setKami);
 
+        CallKamiCMD callKami = new CallKamiCMD(this);
+        getCommand("callkami").setExecutor(callKami);
+
         // Runnable
         this.mainRunnable = new MainRunnable(this);
     }
@@ -94,6 +96,7 @@ public final class Race extends JavaPlugin {
     public void onDisable() {
         mainRunnable.terminate();
 
+        structureManager.terminate();
         itemManager.terminate();
         guiManager.terminate();
         raceManager.terminate();
@@ -117,6 +120,9 @@ public final class Race extends JavaPlugin {
     }
     public ItemManager getItemManager() {
         return itemManager;
+    }
+    public StructureManager getStructureManager() {
+        return structureManager;
     }
     public AbilityManager getAbilityManager() {
         return abilityManager;

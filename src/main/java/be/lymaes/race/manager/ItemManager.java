@@ -42,10 +42,7 @@ public class ItemManager {
             return false;
 
         PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-        if(!dataContainer.has(ItemManager.KEY_ITEM_ID))
-            return false;
-
-        return true;
+        return dataContainer.has(ItemManager.KEY_ITEM_ID);
     }
 
     public IRaceItem getItem(ItemStack item) {

@@ -2,8 +2,7 @@ package be.lymaes.race;
 
 import be.lymaes.race.ability.*;
 import be.lymaes.race.ability.model.EmptyAbility;
-import be.lymaes.race.ability.model.Offering;
-import be.lymaes.race.ability.model.Targetable;
+import be.lymaes.race.ability.Targetable;
 import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.manager.RaceManager;
 import be.lymaes.race.model.IRace;
@@ -57,6 +56,9 @@ public class RaceProfile {
         if(ability instanceof BlockBreaker) {
             eventAbilities.computeIfAbsent(AbilityType.BLOCK_BREAKER, k -> new HashSet<>()).add(ability);
         }
+        if(ability instanceof BlockPlacer) {
+            eventAbilities.computeIfAbsent(AbilityType.BLOCK_PLACER, k -> new HashSet<>()).add(ability);
+        }
         if(ability instanceof Consumer) {
             eventAbilities.computeIfAbsent(AbilityType.CONSUMER, k -> new HashSet<>()).add(ability);
         }
@@ -106,6 +108,9 @@ public class RaceProfile {
         }
         if(ability instanceof BlockBreaker) {
             removeEventAbility(AbilityType.BLOCK_BREAKER, ability);
+        }
+        if(ability instanceof BlockPlacer) {
+            removeEventAbility(AbilityType.BLOCK_PLACER, ability);
         }
         if(ability instanceof Consumer) {
             removeEventAbility(AbilityType.CONSUMER, ability);
@@ -302,7 +307,7 @@ public class RaceProfile {
         Bukkit.getScheduler().runTaskAsynchronously(Race.getInstance(), () -> {
             RaceManager raceManager = Race.getInstance().getRaceManager();
 
-            Path file = Paths.get(Race.getInstance().getDataFolder().toPath() + "Race/profiles/" + player.getUniqueId() + ".json");
+            Path file = Paths.get(Race.getInstance().getDataFolder().toPath() + "/profiles/" + player.getUniqueId() + ".json");
             if (Files.exists(file)) {
 
                 JsonNode rootNode;
@@ -349,7 +354,7 @@ public class RaceProfile {
     }
 
     public void saveSynchronously() {
-        Path file = Paths.get(Race.getInstance().getDataFolder().toPath() + "Race/profiles/" + uuid + ".json");
+        Path file = Paths.get(Race.getInstance().getDataFolder().toPath() + "/profiles/" + uuid + ".json");
 
         try {
             Files.createDirectories(file.getParent());

@@ -11,7 +11,9 @@ public enum RaceItem {
     TAMASHI_HEART("tamashi_heart", "Coeur de Tamashi", Material.GLOWSTONE_DUST, TamashiHeart::new),
     FLY_CHARGE("fly_charge", "Charge de vol", Material.WIND_CHARGE, FlyChargeBall::new),
     MILICIEN_EGG("milicien_egg", "Oeuf de Milicien", Material.IRON_GOLEM_SPAWN_EGG, MilicienEgg::new),
-    PRIMORDIAL_ONI_BLOOD("primordial_oni_blood", "Sang d'Oni primordial", Material.SPLASH_POTION, PrimordialOniBlood::new);
+    PRIMORDIAL_ONI_BLOOD("primordial_oni_blood", "Sang d'Oni primordial", Material.SPLASH_POTION, PrimordialOniBlood::new),
+    SANCTUARY_HEART("sanctuary_heart", "Coeur de Sanctuaire", Material.ENCHANTED_GOLDEN_APPLE, SanctuaryHeart::new),
+    VILLAGE_HEART("village_heart", "Coeur de village", Material.BELL, VillageHeart::new);
 
     public final String id;
     public final String name;

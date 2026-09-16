@@ -3,7 +3,7 @@ package be.lymaes.race.listener;
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.AbilityType;
-import be.lymaes.race.ability.model.Targetable;
+import be.lymaes.race.ability.Targetable;
 import be.lymaes.race.manager.RaceManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

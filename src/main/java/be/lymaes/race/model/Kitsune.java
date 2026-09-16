@@ -24,7 +24,6 @@ public class Kitsune implements IRace<KitsuneData>, IRankable {
     public static final double TOLERANCE = 0.02;
 
     private static final String PERM_SETKAMI = "race.kitsune.setkami";
-    private static final String PERM_SETVILLAGE = "race.kitsune.setvillage";
     private static final String PERM_CALLKAMI = "race.kitsune.callkami";
 
     private static final NamespacedKey STRENGTH = NamespacedKey.fromString("kitsune:strength");
@@ -44,7 +43,7 @@ public class Kitsune implements IRace<KitsuneData>, IRankable {
 
                 AbilityKey.PERM_ALLOW_FLY, EmptyAbility.INSTANCE,
                 AbilityKey.PERM_SETKAMI, new Offering(PERM_SETKAMI),
-                AbilityKey.PERM_SETVILLAGE, new PermAbility(PERM_SETVILLAGE),
+                AbilityKey.VILLAGE_FOUNDER, new VillageFounder(),
                 AbilityKey.PERM_CALLKAMI, new PermAbility(PERM_CALLKAMI)
         );
     }
@@ -70,7 +69,11 @@ public class Kitsune implements IRace<KitsuneData>, IRankable {
         }
 
         if(rank >= Rank.THREE.rank) {
-            profile.addAbility(AbilityKey.PERM_SETVILLAGE);
+            if(!data.hasVillage()) {
+                profile.addAbility(AbilityKey.VILLAGE_FOUNDER);
+            } else if(profile.hasAbility(AbilityKey.VILLAGE_FOUNDER)) {
+                profile.removeAbility(AbilityKey.VILLAGE_FOUNDER);
+            }
         }
 
         if(rank >= Rank.FOUR.rank) {

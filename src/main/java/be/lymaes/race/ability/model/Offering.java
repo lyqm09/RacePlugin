@@ -61,6 +61,8 @@ public class Offering extends PermAbility implements Taskable, ItemDropping, Blo
 
     @Override
     public void onBreak(BlockBreakEvent e, IRaceData data) {
+        if(e.isCancelled()) return;
+
         Block block = e.getBlock();
         SimpleBlockLocation simpleBlockLoc = new SimpleBlockLocation(block.getWorld().getUID(), block.getX(), block.getY(), block.getZ());
 

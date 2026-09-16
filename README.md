@@ -75,7 +75,7 @@ Accès au `/setkami`.
 
 \+10\% de force.
 \+15\% de vitesse.
-Accès au `/setvillage`.
+Accès au craft Cœur de Village.
 
 ### 4. Quatre Queues
 
@@ -134,7 +134,7 @@ L'item peut être utilisé pour craft un objet, ou pour augmenter de rang (sous 
 
 L'item peut être obtenu en tuant un *Wither Skeleton* avec une probabilité de 0.5\%.
 
-## Coeur de Tamashi
+## Cœur de Tamashi
 
 Cette item est comestible.  
 Une fois mangé, joueur gagne 500exp.  
@@ -178,6 +178,25 @@ L'item est obtenu suite à un craft sur table de craft : (Image bientôt disponi
 - un *Bloc de verre* sur les milieux de chaque côté
 
 
+## Cœur de Village
+
+Une fois placé, celui-ci devient le centre d'un village qui contient de base deux villageois et deux renards.  
+
+### Obtention
+
+L'item est obtenu suite à un craft sur table de craft : (Image bientôt disponible.)
+- un *Coeur de sanctuaire* au centre
+- un *Cœur de Tamashi* sur le milieu bas
+- un *Bloc de pierre* sur les espaces restants
+
+## Cœur de sanctuaire.
+
+Base de craft.
+
+### Obtention
+
+/
+
 ---
 # Liste des commandes
 
@@ -197,8 +216,7 @@ L'item est obtenu suite à un craft sur table de craft : (Image bientôt disponi
 
 ## Commande de Kitsune
 
-`/setkami` Le bloc sous le joueur devient un bloc d'or. Si le joueur lance des diamants sur ce bloc, ils seront converti effet de *Luck IV* (diamant/min).  
-`/setvillage` Les 25 blocs de rayon autour de la position du joueur seront considéré comme un village (max 20 villageois et 20 renards).  
+`/setkami` Le bloc sous le joueur devient un bloc d'or. Si le joueur lance des diamants sur ce bloc, ils seront converti effet de *Luck IV* (diamant/min).
 `/callkami` Donne 5 effets positifs aléatoires à un niveau aléatoire pendant une min (5min de cooldown).
 
 ## Commande de Karyu
