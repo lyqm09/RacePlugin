@@ -1,7 +1,9 @@
 package be.lymaes.race.ability.model;
 
 import be.lymaes.race.Race;
+import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.Interact;
+import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.item.model.FlyChargeBall;
 import be.lymaes.race.manager.ItemManager;
 import org.bukkit.entity.Player;
@@ -14,12 +16,14 @@ import org.bukkit.potion.PotionEffectType;
 public class FlyCharge implements Interact {
 
     private final int[] times;
+    private final Class<? extends IRaceData> dataClass;
 
-    public FlyCharge(int[] times) {
+    public FlyCharge(int[] times, Class<? extends IRaceData> dataClass) {
         this.times = times;
+        this.dataClass = dataClass;
     }
 
-    public void onInteract(PlayerInteractEvent e, Player player, int rank) {
+    public void onInteract(PlayerInteractEvent e, Player player, RaceProfile profile) {
         ItemStack item = e.getItem();
         ItemManager itemManager = Race.getInstance().getItemManager();
         if(!(itemManager.getItem(item) instanceof FlyChargeBall)) return;
@@ -28,6 +32,10 @@ public class FlyCharge implements Interact {
 
         if(e.getAction() != Action.RIGHT_CLICK_AIR) return;
 
+        IRaceData data = profile.getRaceData(dataClass);
+        if(data == null) return;
+
+        int rank = data.getRank();
         if(rank < 0 || rank >= times.length) return;
         int time = times[rank];
 

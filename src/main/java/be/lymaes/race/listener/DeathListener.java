@@ -5,6 +5,7 @@ import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.AbilityType;
 import be.lymaes.race.ability.Helder;
 import be.lymaes.race.ability.Killer;
+import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.item.Droppable;
 import be.lymaes.race.item.IRaceItem;
 import be.lymaes.race.manager.ItemManager;
@@ -63,8 +64,9 @@ public class DeathListener implements Listener {
         Player player = e.getPlayer();
         RaceProfile profile = raceManager.getProfile(player);
         if(profile == null) return;
+        IRaceData raceData = profile.getRaceData();
 
-        Bukkit.getScheduler().runTaskLater(Race.getInstance(), () -> raceManager.getRaceModel(profile.raceData.getRace()).reapplyEffect(player, profile.raceData), 1L);
+        Bukkit.getScheduler().runTaskLater(Race.getInstance(), () -> raceManager.getRaceModel(raceData.getRace()).reapplyEffect(player, raceData), 1L);
     }
 
 }

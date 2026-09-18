@@ -18,10 +18,11 @@ public class TamashiExp implements Taskable {
         this.tolerance = tolerance;
     }
 
-    public void run(Player player, RaceProfile profile, IRaceData data, long currentTime) {
+    public void run(Player player, RaceProfile profile, long currentTime) {
         if((currentTime / 1000) % 60 != 0) return;
 
-        if(!(data instanceof TamashiData tamashiData))  return; // TODO remove from list
+        TamashiData tamashiData = profile.getRaceData(TamashiData.class);
+        if(tamashiData == null)  return; // TODO remove from list
 
         Location playerLoc = player.getLocation();
         Location home = tamashiData.getHome();

@@ -2,7 +2,6 @@ package be.lymaes.race.ability.model;
 
 import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.Taskable;
-import be.lymaes.race.data.IRaceData;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
@@ -36,7 +35,7 @@ public class Hydrophobia implements Taskable {
         return highestBlockY < location.getBlockY();
     }
 
-    public void run(Player player, RaceProfile profile, IRaceData data, long currentTime) {
+    public void run(Player player, RaceProfile profile, long currentTime) {
         if(player.isInWater() || isUnderRain(player)) {
             applyEffect(player, PotionEffectType.WEAKNESS, 2 * 20, 1);
             applyEffect(player, PotionEffectType.SLOWNESS, 2 * 20, 1);

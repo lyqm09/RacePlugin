@@ -1,5 +1,6 @@
 package be.lymaes.race.ability.model;
 
+import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.Ability;
 import be.lymaes.race.ability.Interact;
 import me.libraryaddict.disguise.DisguiseAPI;
@@ -18,7 +19,7 @@ public class Disguise implements Interact {
         this.disguiseType = disguiseType;
     }
 
-    public void onInteract(PlayerInteractEvent e, Player player, int rank) {
+    public void onInteract(PlayerInteractEvent e, Player player, RaceProfile profile) {
         if(!player.isSneaking()) return;
         if(e.getItem() != null || e.getMaterial() != Material.AIR) return;
         if(e.getAction() != Action.LEFT_CLICK_AIR) return;

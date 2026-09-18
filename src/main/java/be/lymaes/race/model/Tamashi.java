@@ -27,6 +27,7 @@ import static java.util.Map.entry;
 public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable {
 
     public static final String PERM_HOME = "race.tamashi.home";
+    public static final String PERM_KAMI = "race.tamashi.kami";
 
     public static final double DISTANCE_SQUARED = 200 * 200;
 
@@ -42,16 +43,17 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable {
                 entry(AbilityKey.TAMASHI_EXP, new TamashiExp(DISTANCE_SQUARED)),
                 entry(AbilityKey.PERM_HOME, new PermAbility(PERM_HOME)),
                 entry(AbilityKey.MONOPHOBIA, new Monophobia(DISTANCE_SQUARED)),
+                entry(AbilityKey.PERM_KAMI, new PermAbility(PERM_KAMI)),
 
-                entry(AbilityKey.AQUATIC_STRENGTH, new AquaticStrength(waterStrengthFactor)),
+                entry(AbilityKey.AQUATIC_STRENGTH, new AquaticStrength(waterStrengthFactor, TamashiData.class)),
 
-                entry(AbilityKey.TAMASHI_EARTH_ABSORPTION, new Absorption(earthAbsorptionFactor)),
+                entry(AbilityKey.TAMASHI_EARTH_ABSORPTION, new Absorption(earthAbsorptionFactor, TamashiData.class)),
                 entry(AbilityKey.DIRT_EATER, new DirtEater()),
 
                 entry(AbilityKey.FIREBALL, new Fireball()),
-                entry(AbilityKey.FIRE_ASPECT, new FireAspect(fireTimes)),
+                entry(AbilityKey.FIRE_ASPECT, new FireAspect(fireTimes, TamashiData.class)),
 
-                entry(AbilityKey.FLY_CHARGE, new FlyCharge(flyTimes)),
+                entry(AbilityKey.FLY_CHARGE, new FlyCharge(flyTimes, TamashiData.class)),
                 entry(AbilityKey.FEATHER_FALL, new FeatherFall()),
                 entry(AbilityKey.PERM_ALLOW_FLY, EmptyAbility.INSTANCE)
         );
@@ -203,7 +205,7 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable {
 
     @Override
     public void applyRacePerks(Player player, RaceProfile profile, TamashiData data) {
-        if(profile.raceData == data) {
+        if(profile.getRaceData() == data) {
             if(getExpRequired(data.getRank() + 1) != -1) {
                 addExpAbilities(profile);
             } else {

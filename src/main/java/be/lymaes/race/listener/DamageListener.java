@@ -5,6 +5,7 @@ import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.AbilityType;
 import be.lymaes.race.ability.Damager;
 import be.lymaes.race.ability.Defender;
+import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.manager.RaceManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -37,7 +38,7 @@ public class DamageListener implements Listener {
 
         Set<Damager> abilities = profile.getEventAbilities(AbilityType.DAMAGER);
         for(Damager damager : abilities) {
-            damager.onDamage(attackEvent, player, profile.raceData.getRank());
+            damager.onDamage(attackEvent, player, profile);
         }
     }
 
@@ -49,7 +50,7 @@ public class DamageListener implements Listener {
 
         Set<Defender> abilities = profile.getEventAbilities(AbilityType.DEFENDER);
         for(Defender defender : abilities) {
-            defender.onDefend(e, profile.raceData.getRank());
+            defender.onDefend(e, profile);
         }
     }
 

@@ -1,5 +1,6 @@
 package be.lymaes.race.ability.model;
 
+import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.Interact;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -9,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class Fireball implements Interact {
 
-    public void onInteract(PlayerInteractEvent e, Player player, int rank) {
+    public void onInteract(PlayerInteractEvent e, Player player, RaceProfile profile) {
         ItemStack item = e.getItem();
         if(item == null || item.getType() != Material.BLAZE_POWDER) return;
 

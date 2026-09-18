@@ -4,6 +4,8 @@ import be.lymaes.race.ability.*;
 import be.lymaes.race.ability.model.EmptyAbility;
 import be.lymaes.race.ability.Targetable;
 import be.lymaes.race.data.IRaceData;
+import be.lymaes.race.data.OniData;
+import be.lymaes.race.data.TamashiData;
 import be.lymaes.race.manager.RaceManager;
 import be.lymaes.race.model.IRace;
 import be.lymaes.race.model.IRankable;
@@ -27,14 +29,17 @@ import java.util.concurrent.CompletableFuture;
 public class RaceProfile {
 
     public final UUID uuid;
-    public final IRaceData raceData;
+    private LinkedHashMap<Class<? extends IRaceData>, IRaceData> raceDatas;
     private transient Set<AbilityKey> abilities;
     private transient Map<AbilityType, Set<Ability>> eventAbilities;
     private transient Queue<Runnable> visualQueue;
 
     public RaceProfile(UUID uuid, IRaceData raceData) {
         this.uuid = uuid;
-        this.raceData = raceData;
+
+        this.raceDatas = new LinkedHashMap<>();
+        raceDatas.put(raceData.getClass(), raceData);
+
         this.abilities = EnumSet.noneOf(AbilityKey.class);
         this.eventAbilities = new EnumMap<>(AbilityType.class);
         this.visualQueue = new LinkedList<>();
@@ -42,6 +47,23 @@ public class RaceProfile {
 
     public Player getPlayer() {
         return Bukkit.getPlayer(uuid);
+    }
+
+    public IRaceData getRaceData() {
+        return raceDatas.firstEntry().getValue();
+    }
+
+    public <T extends IRaceData> T getRaceData(Class<T> dataType) {
+        return dataType.cast(raceDatas.get(dataType));
+    }
+
+    public <T extends IRaceData> void addRaceData(Class<T> dataType, IRaceData data) {
+        raceDatas.computeIfAbsent(dataType, (k) -> data);
+    }
+
+    public <T extends IRaceData> void removeRaceData(Class<T> dataType) {
+        if(raceDatas.firstEntry().getKey() == dataType) return;
+        raceDatas.remove(dataType);
     }
 
     public void addAbility(AbilityKey key) {
@@ -204,12 +226,13 @@ public class RaceProfile {
     // RaceData
 
     public void addExp(int n) {
-        raceData.addExp(n);
+        getRaceData().addExp(n);
         tryRankUp();
         updateTabInfo();
     }
 
     public void rankUp() {
+        IRaceData raceData = getRaceData();
         raceData.rankUp();
 
         IRace irace = Race.getInstance().getRaceManager().getRaceModel(raceData.getRace());
@@ -225,6 +248,7 @@ public class RaceProfile {
     }
 
     void tryRankUp() {
+        IRaceData raceData = getRaceData();
         IRace irace = Race.getInstance().getRaceManager().getRaceModel(raceData.getRace());
         if(!(irace instanceof IRankable rankable)) return;
 
@@ -242,6 +266,7 @@ public class RaceProfile {
     // utils functions
 
     public void setTabName() {
+        IRaceData raceData = getRaceData();
         RaceType race = raceData.getRace();
         Player player = getPlayer();
 
@@ -262,6 +287,8 @@ public class RaceProfile {
 
     public void updateTabInfo() {
         Player player = getPlayer();
+        IRaceData raceData = getRaceData();
+
         int rank = raceData.getRank();
         int exp = raceData.getExp();
 
@@ -328,7 +355,9 @@ public class RaceProfile {
 
                 IRaceData data = raceType.loadData.apply(rootNode, new RaceType.PrimaryData(subrace, 0, 0));
                 RaceProfile profile = new RaceProfile(player.getUniqueId(), data);
-                if(raceManager.getRaceModel(profile.raceData.getRace()) instanceof IRankable rankable) {
+
+                IRaceData raceData = profile.getRaceData();
+                if(raceManager.getRaceModel(raceData.getRace()) instanceof IRankable rankable) {
                     rankable.addExpAbilities(profile);
                 }
                 Bukkit.getScheduler().runTask(Race.getInstance(), () -> future.complete(profile));
@@ -336,7 +365,8 @@ public class RaceProfile {
             }
 
             RaceProfile defaultProfile = new RaceProfile(player.getUniqueId(), race != null ? race.loadData.apply(null, new RaceType.PrimaryData(-1, 0, 0)) : RaceType.HUMAN.loadData.apply(null, null));
-            if(raceManager.getRaceModel(defaultProfile.raceData.getRace()) instanceof IRankable rankable) {
+            IRaceData raceData = defaultProfile.getRaceData();
+            if(raceManager.getRaceModel(raceData.getRace()) instanceof IRankable rankable) {
                 rankable.addExpAbilities(defaultProfile);
             }
             Bukkit.getScheduler().runTask(Race.getInstance(), () -> future.complete(defaultProfile));
@@ -366,6 +396,7 @@ public class RaceProfile {
                 rootNode = Race.MAPPER.createObjectNode();
             }
 
+            IRaceData raceData = getRaceData();
             rootNode.put("current", raceData.getRace().name());
             raceData.saveProfileData(rootNode);
             Race.MAPPER.writerWithDefaultPrettyPrinter().writeValue(file.toFile(), rootNode);

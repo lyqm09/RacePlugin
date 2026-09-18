@@ -2,6 +2,7 @@ package be.lymaes.race.command;
 
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
+import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.data.KitsuneData;
 import be.lymaes.race.manager.RaceManager;
 import be.lymaes.race.model.Kitsune;
@@ -43,7 +44,8 @@ public class MtailCMD implements CommandExecutor {
         }
 
         RaceProfile profile = raceManager.getProfile(player);
-        RaceType race = profile.raceData.getRace();
+        IRaceData raceData = profile.getRaceData();
+        RaceType race = raceData.getRace();
         if(!(raceManager.getRaceModel(race) instanceof Kitsune kitsune)) {
             sender.sendMessage("Erreur : Le joueur spécifié n'est pas un Kitsune.");
             return true;
@@ -58,11 +60,11 @@ public class MtailCMD implements CommandExecutor {
             return true;
         }
 
-        int newRank = profile.raceData.getRank() + (give ? queues : -queues);
+        int newRank = raceData.getRank() + (give ? queues : -queues);
         Kitsune.Rank rank = Kitsune.Rank.fromRank(newRank);
-        profile.raceData.setRank(rank.rank);
+        raceData.setRank(rank.rank);
 
-        kitsune.applyRacePerks(player, profile, (KitsuneData) profile.raceData);
+        kitsune.applyRacePerks(player, profile, (KitsuneData) raceData);
         profile.updateTabInfo();
 
         sender.sendMessage(player.getDisplayName() + " devient un Kitsune à " + rank.name + ".");

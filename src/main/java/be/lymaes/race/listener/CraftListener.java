@@ -37,6 +37,13 @@ public class CraftListener implements Listener {
 
             e.getInventory().setResult(null);
         }
+        else if(key.getKey().equals(RaceItem.VILLAGE_HEART.id)) {
+            if(canCraft(e.getView().getPlayer(), AbilityKey.VILLAGE_FOUNDER)) return;
+
+            e.getInventory().setResult(null);
+        }
+
+
     }
 
     public boolean canCraft(HumanEntity viewer, AbilityKey craftKey) {

@@ -33,7 +33,7 @@ public class ChatListener implements Listener {
         String message = e.getMessage();
 
         RaceProfile profile = raceManager.getProfile(player);
-        RaceType race = profile.raceData.getRace();
+        RaceType race = profile.getRaceData().getRace();
 
         Component chatFormat = Component.empty()
                 .append(Component.text("[").color(NamedTextColor.WHITE))

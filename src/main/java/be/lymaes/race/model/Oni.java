@@ -33,7 +33,7 @@ public class Oni implements IRace<OniData>, IRankable {
                 AbilityKey.MEAT_EATER, new MeatEater(),
                 AbilityKey.FIREBALL, new Fireball(),
                 AbilityKey.SILENT_ENTITY, new SilentEntity(),
-                AbilityKey.ONI_ABSORPTION, new Absorption(defendFactor),
+                AbilityKey.ONI_ABSORPTION, new Absorption(defendFactor, OniData.class),
                 AbilityKey.CRAFT_PRIMORDIAL_ONI_BLOOD, EmptyAbility.INSTANCE
         );
     }
@@ -124,7 +124,7 @@ public class Oni implements IRace<OniData>, IRankable {
 
     @Override
     public void applyRacePerks(Player player, RaceProfile profile, OniData data) {
-        if(profile.raceData == data) {
+        if(profile.getRaceData() == data) {
             if(getExpRequired(data.getRank() + 1) != -1) {
                 addExpAbilities(profile);
             } else {
@@ -156,7 +156,7 @@ public class Oni implements IRace<OniData>, IRankable {
     }
 
     private void cleanupOverlayEffect(Player player, RaceProfile profile) {
-        IRaceData overlay = ((OniData) profile.raceData).getOverlay();
+        IRaceData overlay = ((OniData) profile.getRaceData()).getOverlay();
         if(overlay == null) return;
 
         RaceManager raceManager = Race.getInstance().getRaceManager();
@@ -211,7 +211,7 @@ public class Oni implements IRace<OniData>, IRankable {
 
     @Override
     public boolean canRankUp(RaceProfile profile) {
-        return profile.raceData.getRank() + 1 < Rank.GENERAL.rank;
+        return profile.getRaceData().getRank() + 1 < Rank.GENERAL.rank;
     }
 
     public enum Rank {

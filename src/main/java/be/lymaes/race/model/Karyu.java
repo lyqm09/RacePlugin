@@ -56,7 +56,7 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable {
         return Map.of(
                 AbilityKey.KARYU_MERCHANT_EXP, new KaryuMerchantExp(),
                 AbilityKey.KARYU_ADORER_EXP, new KaryuAdorerExp(),
-                AbilityKey.KARYU_ADORER_ABSORPTION, new Absorption(adorerAbsorptionFactor),
+                AbilityKey.KARYU_ADORER_ABSORPTION, new Absorption(adorerAbsorptionFactor, KaryuData.class),
                 AbilityKey.EMERALD_TRANSFORMER, new LootTransformer(minerals),
                 AbilityKey.PERM_FORTUNE, new PermAbility(PERM_FORTUNE),
                 AbilityKey.PERM_VILLAGER, new PermAbility(PERM_VILLAGER),
@@ -68,7 +68,7 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable {
 
     @Override
     public void addExpAbilities(RaceProfile profile) {
-        int sub = profile.raceData.getSubrace();
+        int sub = profile.getRaceData().getSubrace();
 
         if(sub == SubRace.MERCHANT.id) {
             profile.addAbility(AbilityKey.KARYU_MERCHANT_EXP);
@@ -175,7 +175,7 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable {
 
     @Override
     public void applyRacePerks(Player player, RaceProfile profile, KaryuData data) {
-        if(profile.raceData == data) {
+        if(profile.getRaceData() == data) {
             if(getExpRequired(data.getRank() + 1) != -1) {
                 addExpAbilities(profile);
             } else {

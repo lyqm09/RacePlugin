@@ -8,7 +8,7 @@ import org.bukkit.potion.PotionEffectType;
 
 public interface Taskable extends Ability {
 
-    void run(Player player, RaceProfile profile, IRaceData data, long currentTime);
+    void run(Player player, RaceProfile profile, long currentTime);
     default void terminate() {}
 
     default void applyEffect(Player player, PotionEffectType type, int duration, int amplifier) {

@@ -13,6 +13,7 @@ public enum AbilityKey {
     TAMASHI_EXP,
     TAMASHI_EARTH_ABSORPTION,
     PERM_HOME,
+    PERM_KAMI,
     FLY_CHARGE,
     FIRE_ASPECT,
     AQUATIC_STRENGTH,

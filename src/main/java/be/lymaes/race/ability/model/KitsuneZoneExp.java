@@ -27,8 +27,8 @@ public class KitsuneZoneExp implements Taskable {
             Biome.CHERRY_GROVE
     );
 
-    public void run(Player player, RaceProfile profile, IRaceData data, long currentTime) {
-        if(!(data instanceof KitsuneData kitsuneData)) return; // TODO remove from list
+    public void run(Player player, RaceProfile profile, long currentTime) {
+        if(!(profile.getRaceData() instanceof KitsuneData kitsuneData)) return; // TODO remove from list
 
         long time = kitsuneData.getTimeInForest();
 

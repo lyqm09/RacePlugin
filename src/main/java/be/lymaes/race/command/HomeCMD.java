@@ -30,7 +30,11 @@ public class HomeCMD implements CommandExecutor  {
         }
 
         RaceProfile profile = raceManager.getProfile(player);
-        TamashiData data = ((TamashiData)profile.raceData);
+        TamashiData data = profile.getRaceData(TamashiData.class);
+        if(data == null) {
+            player.sendMessage("Erreur : Tu n'est pas Tamashi.");
+            return true;
+        }
 
         data.setHome(player.getLocation());
         sender.sendMessage("Nouveau foyer défini.");

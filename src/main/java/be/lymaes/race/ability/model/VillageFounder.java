@@ -4,7 +4,6 @@ import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.AbilityKey;
 import be.lymaes.race.ability.BlockPlacer;
-import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.data.KitsuneData;
 import be.lymaes.race.item.model.VillageHeart;
 import be.lymaes.race.manager.ItemManager;
@@ -19,7 +18,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 public class VillageFounder implements BlockPlacer {
 
     @Override
-    public void onPlace(BlockPlaceEvent e, IRaceData data) {
+    public void onPlace(BlockPlaceEvent e, RaceProfile profile) {
         if(e.getBlockPlaced().getType() != Material.BELL) return;
 
         if(e.isCancelled() || !e.canBuild()) return;
@@ -41,10 +40,11 @@ public class VillageFounder implements BlockPlacer {
         world.spawnEntity(location, EntityType.FOX);
         world.spawnEntity(location, EntityType.FOX);
 
-        if(data instanceof KitsuneData kitsuneData) {
-            kitsuneData.setVillage(village.getUuid());
-            RaceProfile profile = plugin.getRaceManager().getProfile(e.getPlayer());
-            profile.removeAbility(AbilityKey.VILLAGE_FOUNDER);
-        }
+        KitsuneData data = profile.getRaceData(KitsuneData.class);
+        if(data == null) return;
+
+        data.setVillage(village.getUuid());
+        profile.removeAbility(AbilityKey.VILLAGE_FOUNDER);
     }
+
 }

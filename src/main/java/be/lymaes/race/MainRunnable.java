@@ -41,7 +41,7 @@ public class MainRunnable extends BukkitRunnable {
 
             Set<Taskable> abilities = profile.getEventAbilities(AbilityType.TASKABLE);
             for(Taskable taskable : abilities) {
-                taskable.run(player, profile, profile.raceData, currentTime);
+                taskable.run(player, profile, currentTime);
             }
         }
 

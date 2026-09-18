@@ -82,6 +82,12 @@ commands:
     permission-message: Tu n'as pas la permission d'utiliser cette commande.
     usage: /callkami
 
+  kami:
+    description: Donne effets d'un Kitsune de rang Kami pendant 5min (Cooldown 10min).
+    permission: race.tamashi.kami
+    permission-message: Tu n'as pas la permission d'utiliser cette commande.
+    usage: /setkami <player>
+
 permissions:
   race.*:
     description: Donne accès à presque toutes les permissions du plugin.
@@ -105,9 +111,14 @@ permissions:
     description: Permissions de Tamashi.
     children:
       race.tamashi.home: false
+      race.tamashi.kami: false
 
   race.tamashi.home:
     description: Permet d'utiliser la commande /home.
+    default: false
+
+  race.tamashi.kami:
+    description: Permet d'utiliser la commande /kami.
     default: false
 
   race.karyu:

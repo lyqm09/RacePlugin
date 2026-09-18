@@ -8,9 +8,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
-import java.util.Iterator;
-import java.util.Map;
-
 public class TamashiData extends RaceData {
 
     private record SimpleLocation(String world, double x, double y, double z) {}
@@ -18,15 +15,17 @@ public class TamashiData extends RaceData {
     public static final RaceType RACE_TYPE = RaceType.TAMASHI;
 
     private Location home;
+    private long kamiCMDTime;
 
-    public TamashiData(int subrace, int rank, int exp, Location home) {
+    public TamashiData(int subrace, int rank, int exp, Location home, long kamiCMDTime) {
         super(RACE_TYPE, subrace, rank, exp);
 
         this.home = home;
+        this.kamiCMDTime = kamiCMDTime;
     }
 
     public TamashiData(int subrace, int rank, int exp) {
-        this(subrace, rank, exp, null);
+        this(subrace, rank, exp, null, 0);
     }
 
     public void setHome(Location newHome) {
@@ -40,8 +39,19 @@ public class TamashiData extends RaceData {
         return home;
     }
 
+    public void setKamiCMDTime(long time) {
+        this.kamiCMDTime = time;
+    }
+
+    public long getKamiCMDTime() {
+        return kamiCMDTime;
+    }
+
     @Override
     protected void saveSpecificData(ObjectNode node) {
+
+        node.put("time_kami_cmd", kamiCMDTime);
+
         if(home != null && home.getWorld() != null) {
             SimpleLocation simpleLocation = new SimpleLocation(home.getWorld().getName(), home.getX(), home.getY(), home.getZ());
 
@@ -61,8 +71,9 @@ public class TamashiData extends RaceData {
 
             RaceType.PrimaryData data = loadProfileData(raceNode, RACE_TYPE, primaryData.subrace());
 
-            Location home = null;
+            long kamiCMDTime = raceNode.path("time_kami_cmd").asLong(0);
 
+            Location home = null;
             String sub = String.valueOf(data.subrace());
             if(raceNode.has(sub)) {
                 raceNode = raceNode.get(sub);
@@ -78,7 +89,7 @@ public class TamashiData extends RaceData {
                 }
             }
 
-            return new TamashiData(data.subrace(), data.rank(), data.exp(), home);
+            return new TamashiData(data.subrace(), data.rank(), data.exp(), home, kamiCMDTime);
         }
 
         return new TamashiData(Math.max(primaryData.subrace(), 0), primaryData.rank(), primaryData.exp());

@@ -37,7 +37,8 @@ public class SetKamiCMD implements CommandExecutor {
         }
 
         RaceProfile profile = raceManager.getProfile(player);
-        if(!(profile.raceData instanceof KitsuneData data)) return false;
+        KitsuneData data = profile.getRaceData(KitsuneData.class);
+        if(data == null) return false;
 
         Block block = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
         if(block.isEmpty() || block.isLiquid() || block.isPassable()) return false;

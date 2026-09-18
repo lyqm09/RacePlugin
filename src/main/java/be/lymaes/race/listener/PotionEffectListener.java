@@ -2,6 +2,7 @@ package be.lymaes.race.listener;
 
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
+import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.manager.RaceManager;
 import be.lymaes.race.model.IRace;
 import org.bukkit.entity.Player;
@@ -24,14 +25,15 @@ public class PotionEffectListener implements Listener {
 
         RaceProfile profile = raceManager.getProfile(player);
         if(profile == null) return;
+        IRaceData raceData = profile.getRaceData();
 
-        IRace model = raceManager.getRaceModel(profile.raceData.getRace());
+        IRace model = raceManager.getRaceModel(raceData.getRace());
         if(model == null) return;
 
         PotionEffect oldEffect = e.getOldEffect();
         if(oldEffect == null) return;
 
-        PotionEffect modelEffect = model.getEffect(oldEffect.getType(), profile.raceData);
+        PotionEffect modelEffect = model.getEffect(oldEffect.getType(), raceData);
         if(modelEffect == null) return;
 
         if(isSameEffect(oldEffect, modelEffect)) return;

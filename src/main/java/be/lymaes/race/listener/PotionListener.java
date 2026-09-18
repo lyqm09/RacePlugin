@@ -35,7 +35,7 @@ public class PotionListener implements Listener {
                 if(!(entity instanceof Player player)) continue;
 
                 players.add(player);
-                data.add(raceManager.getProfile(player).raceData);
+                data.add(raceManager.getProfile(player).getRaceData());
             }
 
             splashable.onSplash(players, data);

@@ -1,6 +1,7 @@
 package be.lymaes.race.item.model;
 
 import be.lymaes.race.RaceProfile;
+import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.item.ARaceItem;
 import be.lymaes.race.item.Consumable;
 import be.lymaes.race.item.Droppable;
@@ -61,14 +62,16 @@ public class KazanStone extends ARaceItem implements Consumable, Droppable {
     @Override
     public void onConsume(Player player, RaceProfile profile, IRace model) {
         if(model instanceof Oni oni) {
-            int nextRank = profile.raceData.getRank() + 1;
+            IRaceData raceData = profile.getRaceData();
+
+            int nextRank = raceData.getRank() + 1;
             if(nextRank < Oni.Rank.GENERAL.rank) return;
 
             int expRequired = oni.getExpRequired(nextRank);
             if(expRequired < 0) return;
-            if (profile.raceData.getExp() < expRequired) return;
+            if (raceData.getExp() < expRequired) return;
 
-            profile.raceData.subExp(expRequired);
+            raceData.subExp(expRequired);
             profile.rankUp();
 
             profile.updateTabInfo();

@@ -40,7 +40,7 @@ public class ConsumeListener implements Listener {
 
         IRaceItem item = itemManager.getItem(e.getItem());
         if(item instanceof Consumable consumable) {
-            IRace model = raceManager.getRaceModel(profile.raceData.getRace());
+            IRace model = raceManager.getRaceModel(profile.getRaceData().getRace());
             consumable.onConsume(player, profile, model);
         }
     }

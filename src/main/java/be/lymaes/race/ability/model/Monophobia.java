@@ -3,7 +3,6 @@ package be.lymaes.race.ability.model;
 import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.Taskable;
 import be.lymaes.race.data.IRaceData;
-import be.lymaes.race.data.OniData;
 import be.lymaes.race.data.TamashiData;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -17,16 +16,8 @@ public class Monophobia implements Taskable {
         this.tolerance = tolerance;
     }
 
-    public void run(Player player, RaceProfile profile, IRaceData data, long currentTime) {
-        TamashiData tamashiData = null;
-        if(data instanceof TamashiData d) {
-            tamashiData = d;
-        }
-        else {
-            if(data instanceof OniData oniData && oniData.getOverlay() instanceof TamashiData d) {
-                tamashiData = d;
-            }
-        }
+    public void run(Player player, RaceProfile profile, long currentTime) {
+        TamashiData tamashiData = profile.getRaceData(TamashiData.class);
 
         Location playerLoc = player.getLocation();
         Location home = tamashiData != null ? tamashiData.getHome() : player.getRespawnLocation();

@@ -196,7 +196,7 @@ public class Kitsune implements IRace<KitsuneData>, IRankable {
 
     @Override
     public void applyRacePerks(Player player, RaceProfile profile, KitsuneData data) {
-        if(profile.raceData == data) {
+        if(profile.getRaceData() == data) {
             if(getExpRequired(data.getRank() + 1) != -1) {
                 addExpAbilities(profile);
             } else {

@@ -7,7 +7,6 @@ import be.lymaes.race.ability.ItemDropping;
 import be.lymaes.race.ability.Taskable;
 import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.data.KitsuneData;
-import be.lymaes.race.data.OniData;
 import be.lymaes.race.model.IRace;
 import be.lymaes.race.model.Kitsune;
 import be.lymaes.race.util.SimpleBlockLocation;
@@ -38,8 +37,8 @@ public class Offering extends PermAbility implements Taskable, ItemDropping, Blo
     }
 
     @Override
-    public void run(Player player, RaceProfile profile, IRaceData data, long currentTime) {
-        KitsuneData kitsuneData = getKitsuneData(data);
+    public void run(Player player, RaceProfile profile, long currentTime) {
+        KitsuneData kitsuneData = profile.getRaceData(KitsuneData.class);
         if(kitsuneData == null) return;
 
         PotionEffect luck = player.getPotionEffect(PotionEffectType.LUCK);
@@ -60,7 +59,7 @@ public class Offering extends PermAbility implements Taskable, ItemDropping, Blo
     }
 
     @Override
-    public void onBreak(BlockBreakEvent e, IRaceData data) {
+    public void onBreak(BlockBreakEvent e, RaceProfile profile) {
         if(e.isCancelled()) return;
 
         Block block = e.getBlock();
@@ -70,7 +69,8 @@ public class Offering extends PermAbility implements Taskable, ItemDropping, Blo
 
         Player player = e.getPlayer();
 
-        if(data instanceof KitsuneData kitsuneData) {
+        KitsuneData kitsuneData = profile.getRaceData(KitsuneData.class);
+        if(kitsuneData != null) {
             if(kitsuneData.getKamiBlockLocation().equals(simpleBlockLoc)) {
                 removeKamiBlock(simpleBlockLoc);
                 kitsuneData.setKamiBlockLocation(null);
@@ -177,19 +177,6 @@ public class Offering extends PermAbility implements Taskable, ItemDropping, Blo
         Block block = world.getBlockAt(location.x(), location.y(), location.z());
 
         block.setType(material);
-    }
-
-    private KitsuneData getKitsuneData(IRaceData data) {
-        if(data instanceof KitsuneData d) {
-            return d;
-        }
-        else {
-            if(data instanceof OniData oniData && oniData.getOverlay() instanceof KitsuneData d) {
-                return d;
-            }
-        }
-
-        return null;
     }
 
 }

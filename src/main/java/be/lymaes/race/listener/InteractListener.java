@@ -43,7 +43,7 @@ public class InteractListener implements Listener {
 
         Set<Interact> abilities = profile.getEventAbilities(AbilityType.INTERACT);
         for(Interact interact : abilities) {
-            interact.onInteract(e, player, profile.raceData.getRank());
+            interact.onInteract(e, player, profile);
         }
     }
 

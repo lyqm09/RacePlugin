@@ -5,6 +5,7 @@ import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.AbilityType;
 import be.lymaes.race.ability.BlockBreaker;
 import be.lymaes.race.ability.BlockPlacer;
+import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.data.KitsuneData;
 import be.lymaes.race.manager.RaceManager;
 import be.lymaes.race.manager.StructureManager;
@@ -40,7 +41,8 @@ public class BlockListener implements Listener {
             for (KitsuneVillage village : kitsuneVillages) {
                 if (!village.isVillageBell(e.getBlock().getLocation())) continue;
 
-                if(profile.raceData instanceof KitsuneData kitsuneData && kitsuneData.hasVillage()) {
+                KitsuneData kitsuneData = profile.getRaceData(KitsuneData.class);
+                if(kitsuneData != null && kitsuneData.hasVillage()) {
                     if(village.getUuid().equals(kitsuneData.getVillageUuid())) { // owner
                         structureManager.removeStructure(village);
                         kitsuneData.setVillage(null);
@@ -56,7 +58,7 @@ public class BlockListener implements Listener {
         // Abilities
         Set<BlockBreaker> abilities = profile.getEventAbilities(AbilityType.BLOCK_BREAKER);
         for(BlockBreaker breaker : abilities) {
-            breaker.onBreak(e, profile.raceData);
+            breaker.onBreak(e, profile);
         }
     }
 
@@ -68,7 +70,7 @@ public class BlockListener implements Listener {
 
         Set<BlockPlacer> abilities = profile.getEventAbilities(AbilityType.BLOCK_PLACER);
         for(BlockPlacer placer : abilities) {
-            placer.onPlace(e, profile.raceData);
+            placer.onPlace(e, profile);
         }
     }
 

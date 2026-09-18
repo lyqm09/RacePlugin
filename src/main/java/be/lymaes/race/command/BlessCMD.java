@@ -67,7 +67,11 @@ public class BlessCMD implements CommandExecutor {
         }
 
         RaceProfile profile = raceManager.getProfile(player);
-        KaryuData data = ((KaryuData)profile.raceData);
+        KaryuData data = profile.getRaceData(KaryuData.class);
+        if(data == null) {
+            player.sendMessage("Erreur : Tu n'est pas Karyu.");
+            return true;
+        }
 
         long time = data.getBlessCMDTime();
         long currentTime = System.currentTimeMillis();

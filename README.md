@@ -213,6 +213,7 @@ Base de craft.
 ## Commande de Tamashi
 
 `/foyer` Défini le foyer autour duquel le joueur peut opérer.
+`/kami [player]` Donne les effets d'un Tamashi de rang Kami du même type que du lanceur.
 
 ## Commande de Kitsune
 

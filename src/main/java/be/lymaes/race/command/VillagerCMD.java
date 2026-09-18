@@ -40,7 +40,8 @@ public class VillagerCMD implements CommandExecutor {
         }
 
         RaceProfile profile = raceManager.getProfile(player);
-        if(profile.raceData instanceof KaryuData data) {
+        KaryuData data = profile.getRaceData(KaryuData.class);
+        if(data != null) {
 
             long time = data.getVillagerCMDTime();
             long currentTime = System.currentTimeMillis();

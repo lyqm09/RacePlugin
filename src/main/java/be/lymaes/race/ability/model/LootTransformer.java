@@ -1,5 +1,6 @@
 package be.lymaes.race.ability.model;
 
+import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.Interact;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -18,7 +19,7 @@ public class LootTransformer implements Interact {
         this.list = list;
     }
 
-    public void onInteract(PlayerInteractEvent e, Player player, int rank) {
+    public void onInteract(PlayerInteractEvent e, Player player, RaceProfile profile) {
         ItemStack item = e.getItem();
         if (item == null || item.getType() != Material.EMERALD) return;
 
