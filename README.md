@@ -115,7 +115,62 @@ Accès au `/callkami`.
 Jump Boost III.
 Peut voler.
 
+
 ## Tamashi
+
+Il existe quatre types de Tamashi : Eau, Terre, Feu, et Air. Chacun de ces quatre elements ont des particularités qui leur sont propres.
+Le Tamashi a peur d'être seul ou d'être loin de chez lui. Cependant, lorsqu'il est accompagné ou en territoire connu, celui-ci prend du niveau (1 exp/min/joueur et 1exp/min autour de sa maison).
+Il peut faire `/foyer` qui définit sa position actuelle comme le centre d'un cercle de 200 blocs qu'il considère comme sa maison.
+
+### Embryon (initial)
+
+**Eau** : \+10\% de force dans l'eau.
+**Terre** : 
+- il peut manger de la terre.
+- \+20\% de résistance.
+**Feu** : 
+- il peut lancer des boules de feu.
+- inflige des dégâts de feu pendant 1s.
+**Air** : 
+- ne subit pas de degats de chute.
+- lévite 5s avec l'*Orbe de lévitation*.
+
+### Enfant (400 exp)
+
+**Eau** : \+20\% de force dans l'eau.
+**Terre** : \+30\% de résistance.
+**Feu** : inflige des dégâts de feu pendant 2s.
+**Air** : lévite 10s avec l'*Orbe de lévitation*.
+
+### Accompli (4,000 exp)
+
+**Eau** : \+30\% de force dans l'eau.
+**Terre** : \+40\% de résistance.
+**Feu** : inflige des dégâts de feu pendant 5s.
+**Air** : lévite 20s avec l'*Orbe de lévitation*.
+
+### Semi-Divin (10,000 exp)
+
+**Eau** : \+40\% de force dans l'eau.
+**Terre** : \+60\% de résistance.
+**Feu** : inflige des dégâts de feu pendant 10s.
+**Air** : lévite 30s avec l'*Orbe de lévitation*.
+
+### Kami (20,000 exp)
+
+Accès à la commande `/kami`.
+
+**Eau** : \+50\% de force dans l'eau.
+**Terre** : \+80\% de résistance.
+**Feu** : inflige des dégâts de feu pendant 20s.
+**Air** : lévite 5min avec l'*Orbe de lévitation*.
+
+### Okami (40,000 exp)
+
+**Eau** : \+100\% de force dans l'eau.
+**Terre** : \+90\% de résistance.
+**Feu** : inflige des dégâts de feu pendant 30s.
+**Air** : peut voler.
 
 
 ## Karyu
@@ -153,7 +208,7 @@ L'item nécéssaire pour augmenter le rang d'un Karyu (sous condition).
 
 L'item peut être obtenu en tuant un *Enderman* avec une probabilité de 0.05\%.
 
-## Charge de vol
+## Orbe de lévitation
 
 L'utilisation de cet item ajoute un effet *Levitation* au joueur.
 
