@@ -93,9 +93,13 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable {
         }
     }
 
-    public void applySharedAbilities(RaceProfile profile) {
+    public void applySharedAbilities(RaceProfile profile, TamashiData data) {
         profile.addAbility(AbilityKey.PERM_HOME);
         profile.addAbility(AbilityKey.MONOPHOBIA);
+
+        if(data.getRank() >= Rank.KAMI.rank) {
+            profile.addAbility(AbilityKey.PERM_KAMI);
+        }
     }
 
     private void applyWaterEffect(Player player, TamashiData data) {
@@ -213,7 +217,7 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable {
             }
         }
 
-        applySharedAbilities(profile);
+        applySharedAbilities(profile, data);
 
         switch(SubRace.fromId(data.getSubrace())) {
             case WATER -> applyWater(player, profile, data);
