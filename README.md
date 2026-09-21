@@ -175,6 +175,53 @@ Accès à la commande `/kami`.
 
 ## Karyu
 
+Les Karyu sont une race de plus faible constitution que les autres (\-30\% moins résistant).
+Ils sont composés de deux factions : Les marchants, et les Adorateurs.
+Les marchants gagnent de l'expérience en commerçant avec les villageois.
+Les adorateurs gagnent de l'expérience en tuant des monstres. Ils peuvent aussi gagner de l'expérience en sacrifiant leurs diamants dans le vide (10 exp/diamant).
+Le dragon ne considère pas les adorateurs comme ses enemis.
+
+### Débutant (initial)
+
+**Adorateurs** : 
+- \+5\% de force.
+- \+5\% de résistance.
+- \+5\% de vitesse.
+**Marchants** : Accès à la commande `/fortune`.
+
+### Novice (200 exp)
+
+**Adorateurs** : 
+- \+10\% de force.
+- \+10\% de vitesse.
+**Marchants** : Accès à la commande `/villageois`.
+
+### Intermédiaire (1,000 exp)
+
+**Adorateurs** :
+- \+20\% de force.
+- \+20\% de vitesse.
+**Marchants** : Obtiennent l'effet *Héro du village*.
+
+### Avancé (4,000 exp)
+
+**Adorateurs** : 
+- Accès à la commande `/sharpness`.
+- \+30\% de force.
+- \+30\% de vitesse.
+**Marchants** : peuvent échanger des émeraudes contre un autre minerai aléatoire (clic droit).
+
+### Grand (10,000 exp & un œil de l'end)
+
+**Adorateurs** : 
+- Accès à la commande `/bless`.
+- \+50\% de force.
+- \+50\% de vitesse.
+**Marchants** : peuvent invoquer un *milicien*.
+
+### Dragon (20,000 exp & deux yeux de l'end)
+
+Les adorateurs obtiennent les capacités des marchants et vis-versa.
 
 ---
 # Liste des items

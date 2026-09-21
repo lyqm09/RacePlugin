@@ -33,7 +33,7 @@ public class DamageListener implements Listener {
     private void handleAttack(EntityDamageEvent e) {
 
         // special case
-        Ability ability = abilityManager.getAbility(AbilityKey.OFFERING_TO_VOID);
+        Ability ability = abilityManager.getAbility(AbilityKey.OFFERING_TO_VOID_EXP);
         if(ability instanceof OfferingToVoid offering) {
             offering.diamondDamage(e, raceManager);
         }

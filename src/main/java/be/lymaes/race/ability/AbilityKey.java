@@ -43,6 +43,6 @@ public enum AbilityKey {
     MILICIEN_SUMMONER,
     PERM_SHARPNESS,
     PERM_BLESS,
-    OFFERING_TO_VOID
+    OFFERING_TO_VOID_EXP
 
 }

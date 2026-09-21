@@ -67,7 +67,7 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable {
                 entry(AbilityKey.MILICIEN_SUMMONER, EmptyAbility.INSTANCE),
                 entry(AbilityKey.PERM_SHARPNESS, new PermAbility(PERM_SHARPNESS)),
                 entry(AbilityKey.PERM_BLESS, new PermAbility(PERM_BLESS)),
-                entry(AbilityKey.OFFERING_TO_VOID, new OfferingToVoid())
+                entry(AbilityKey.OFFERING_TO_VOID_EXP, new OfferingToVoid())
         );
     }
 
@@ -80,12 +80,14 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable {
         }
         else if(sub == SubRace.ADORER.id) {
             profile.addAbility(AbilityKey.KARYU_ADORER_EXP);
+            profile.addAbility(AbilityKey.OFFERING_TO_VOID_EXP);
         }
     }
 
     public void removeExpAbilities(RaceProfile profile) {
         profile.removeAbility(AbilityKey.KARYU_MERCHANT_EXP);
         profile.removeAbility(AbilityKey.KARYU_ADORER_EXP);
+        profile.removeAbility(AbilityKey.OFFERING_TO_VOID_EXP);
     }
 
     private void applyCommunAbilities(RaceProfile profile) {
@@ -115,7 +117,6 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable {
     private void applyAdorerAbilities(RaceProfile profile, KaryuData data) {
         profile.addAbility(AbilityKey.KARYU_ADORER_ABSORPTION);
         profile.addAbility(AbilityKey.DRAGON_FRIEND);
-        profile.addAbility(AbilityKey.OFFERING_TO_VOID);
 
         if(data.getRank() >= Rank.ADVANCE.rank) {
             profile.addAbility(AbilityKey.PERM_SHARPNESS);
