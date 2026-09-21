@@ -125,12 +125,15 @@ Il peut faire `/foyer` qui définit sa position actuelle comme le centre d'un ce
 ### Embryon (initial)
 
 **Eau** : \+10\% de force dans l'eau.  
+
 **Terre** : 
 - il peut manger de la terre.  
 - \+20\% de résistance.  
+
 **Feu** : 
 - il peut lancer des boules de feu.  
 - inflige des dégâts de feu pendant 1s.  
+
 **Air** : 
 - ne subit pas de degats de chute.  
 - lévite 5s avec l'*Orbe de lévitation*.  
@@ -187,6 +190,7 @@ Le dragon ne considère pas les adorateurs comme ses enemis.
 - \+5\% de force.  
 - \+5\% de résistance.  
 - \+5\% de vitesse.  
+
 **Marchants** : Accès à la commande `/fortune`.
 
 ### Novice (200 exp)
@@ -194,6 +198,7 @@ Le dragon ne considère pas les adorateurs comme ses enemis.
 **Adorateurs** : 
 - \+10\% de force.  
 - \+10\% de vitesse.  
+
 **Marchants** : Accès à la commande `/villageois`.
 
 ### Intermédiaire (1,000 exp)
@@ -201,6 +206,7 @@ Le dragon ne considère pas les adorateurs comme ses enemis.
 **Adorateurs** :
 - \+20\% de force.  
 - \+20\% de vitesse.  
+
 **Marchants** : Obtiennent l'effet *Héro du village*.
 
 ### Avancé (4,000 exp)
@@ -209,6 +215,7 @@ Le dragon ne considère pas les adorateurs comme ses enemis.
 - Accès à la commande `/sharpness`.  
 - \+30\% de force.  
 - \+30\% de vitesse.  
+
 **Marchants** : peuvent échanger des émeraudes contre un autre minerai aléatoire (clic droit).
 
 ### Grand (10,000 exp & un œil de l'end)
@@ -217,6 +224,7 @@ Le dragon ne considère pas les adorateurs comme ses enemis.
 - Accès à la commande `/bless`.  
 - \+50\% de force.  
 - \+50\% de vitesse.  
+
 **Marchants** : peuvent invoquer un *milicien*.
 
 ### Dragon (20,000 exp & deux yeux de l'end)
