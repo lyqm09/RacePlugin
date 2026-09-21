@@ -66,53 +66,53 @@ Les Kitsunes ont 2\% de chance de gagner une queue en restant une heure dans un 
 
 ### 2. Deux Queues
 
-\+5\% de force.
-\+10\% de vitesse.
-Jump Boost I.
+\+5\% de force.  
+\+10\% de vitesse.  
+Jump Boost I.  
 Accès au `/setkami`.
 
 ### 3. Trois Queues
 
-\+10\% de force.
-\+15\% de vitesse.
+\+10\% de force.  
+\+15\% de vitesse.  
 Accès au craft Cœur de Village.
 
 ### 4. Quatre Queues
 
-\+15\% de force.
-\+20\% de vitesse.
+\+15\% de force.  
+\+20\% de vitesse.  
 Possibilité de se transformer en renard avec *shift + click droit* dans l'air avec les mains vide.
 
 ### 5. Cinq Queues
 
-\+20\% de force.
-\+25\% de vitesse.
-Jump Boost II.
+\+20\% de force.  
+\+25\% de vitesse.  
+Jump Boost II.  
 Devient invisible avec *shift*.
 
 ### 6. Six Queues
 
-\+25\% de force.
-\+30\% de vitesse.
+\+25\% de force.  
+\+30\% de vitesse.  
 Chance I.
 
 ### 7. Sept Queues
 
-\+30\% de force.
-\+40\% de vitesse.
+\+30\% de force.  
+\+40\% de vitesse.  
 Possibilité de faire grandir arbre et culture instantanément avec *shift + click droit* avec les mains vide.
 
 ### 8. Huit Queues
 
-\+35\% de force.
-\+50\% de vitesse.
+\+35\% de force.  
+\+50\% de vitesse.  
 Accès au `/callkami`.
 
 ### 9. Neuf Queues
 
-\+50\% de force.
-\+100\% de vitesse.
-Jump Boost III.
+\+50\% de force.  
+\+100\% de vitesse.  
+Jump Boost III.  
 Peut voler.
 
 
@@ -124,52 +124,52 @@ Il peut faire `/foyer` qui définit sa position actuelle comme le centre d'un ce
 
 ### Embryon (initial)
 
-**Eau** : \+10\% de force dans l'eau.
+**Eau** : \+10\% de force dans l'eau.  
 **Terre** : 
-- il peut manger de la terre.
-- \+20\% de résistance.
+- il peut manger de la terre.  
+- \+20\% de résistance.  
 **Feu** : 
-- il peut lancer des boules de feu.
-- inflige des dégâts de feu pendant 1s.
+- il peut lancer des boules de feu.  
+- inflige des dégâts de feu pendant 1s.  
 **Air** : 
-- ne subit pas de degats de chute.
-- lévite 5s avec l'*Orbe de lévitation*.
+- ne subit pas de degats de chute.  
+- lévite 5s avec l'*Orbe de lévitation*.  
 
 ### Enfant (400 exp)
 
-**Eau** : \+20\% de force dans l'eau.
-**Terre** : \+30\% de résistance.
-**Feu** : inflige des dégâts de feu pendant 2s.
+**Eau** : \+20\% de force dans l'eau.  
+**Terre** : \+30\% de résistance.  
+**Feu** : inflige des dégâts de feu pendant 2s.  
 **Air** : lévite 10s avec l'*Orbe de lévitation*.
 
 ### Accompli (4,000 exp)
 
-**Eau** : \+30\% de force dans l'eau.
-**Terre** : \+40\% de résistance.
-**Feu** : inflige des dégâts de feu pendant 5s.
+**Eau** : \+30\% de force dans l'eau.  
+**Terre** : \+40\% de résistance.  
+**Feu** : inflige des dégâts de feu pendant 5s.  
 **Air** : lévite 20s avec l'*Orbe de lévitation*.
 
 ### Semi-Divin (10,000 exp)
 
-**Eau** : \+40\% de force dans l'eau.
-**Terre** : \+60\% de résistance.
-**Feu** : inflige des dégâts de feu pendant 10s.
+**Eau** : \+40\% de force dans l'eau.  
+**Terre** : \+60\% de résistance.  
+**Feu** : inflige des dégâts de feu pendant 10s.  
 **Air** : lévite 30s avec l'*Orbe de lévitation*.
 
 ### Kami (20,000 exp)
 
-Accès à la commande `/kami`.
+Accès à la commande `/kami`.  
 
-**Eau** : \+50\% de force dans l'eau.
-**Terre** : \+80\% de résistance.
-**Feu** : inflige des dégâts de feu pendant 20s.
+**Eau** : \+50\% de force dans l'eau.  
+**Terre** : \+80\% de résistance.  
+**Feu** : inflige des dégâts de feu pendant 20s.  
 **Air** : lévite 5min avec l'*Orbe de lévitation*.
 
 ### Okami (40,000 exp)
 
-**Eau** : \+100\% de force dans l'eau.
-**Terre** : \+90\% de résistance.
-**Feu** : inflige des dégâts de feu pendant 30s.
+**Eau** : \+100\% de force dans l'eau.  
+**Terre** : \+90\% de résistance.  
+**Feu** : inflige des dégâts de feu pendant 30s.  
 **Air** : peut voler.
 
 
@@ -184,39 +184,39 @@ Le dragon ne considère pas les adorateurs comme ses enemis.
 ### Débutant (initial)
 
 **Adorateurs** : 
-- \+5\% de force.
-- \+5\% de résistance.
-- \+5\% de vitesse.
+- \+5\% de force.  
+- \+5\% de résistance.  
+- \+5\% de vitesse.  
 **Marchants** : Accès à la commande `/fortune`.
 
 ### Novice (200 exp)
 
 **Adorateurs** : 
-- \+10\% de force.
-- \+10\% de vitesse.
+- \+10\% de force.  
+- \+10\% de vitesse.  
 **Marchants** : Accès à la commande `/villageois`.
 
 ### Intermédiaire (1,000 exp)
 
 **Adorateurs** :
-- \+20\% de force.
-- \+20\% de vitesse.
+- \+20\% de force.  
+- \+20\% de vitesse.  
 **Marchants** : Obtiennent l'effet *Héro du village*.
 
 ### Avancé (4,000 exp)
 
 **Adorateurs** : 
-- Accès à la commande `/sharpness`.
-- \+30\% de force.
-- \+30\% de vitesse.
+- Accès à la commande `/sharpness`.  
+- \+30\% de force.  
+- \+30\% de vitesse.  
 **Marchants** : peuvent échanger des émeraudes contre un autre minerai aléatoire (clic droit).
 
 ### Grand (10,000 exp & un œil de l'end)
 
 **Adorateurs** : 
-- Accès à la commande `/bless`.
-- \+50\% de force.
-- \+50\% de vitesse.
+- Accès à la commande `/bless`.  
+- \+50\% de force.  
+- \+50\% de vitesse.  
 **Marchants** : peuvent invoquer un *milicien*.
 
 ### Dragon (20,000 exp & deux yeux de l'end)
