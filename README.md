@@ -322,12 +322,12 @@ Base de craft.
 
 ## Commande de Tamashi
 
-`/foyer` Défini le foyer autour duquel le joueur peut opérer.
+`/foyer` Défini le foyer autour duquel le joueur peut opérer.  
 `/kami [player]` Donne les effets d'un Tamashi de rang Kami du même type que du lanceur.
 
 ## Commande de Kitsune
 
-`/setkami` Le bloc sous le joueur devient un bloc d'or. Si le joueur lance des diamants sur ce bloc, ils seront converti effet de *Luck IV* (diamant/min).
+`/setkami` Le bloc sous le joueur devient un bloc d'or. Si le joueur lance des diamants sur ce bloc, ils seront converti effet de *Luck IV* (diamant/min).  
 `/callkami` Donne 5 effets positifs aléatoires à un niveau aléatoire pendant une min (5min de cooldown).
 
 ## Commande de Karyu
