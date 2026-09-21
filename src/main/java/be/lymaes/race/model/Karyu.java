@@ -263,6 +263,11 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable {
     }
 
     @Override
+    public boolean canRankUp(RaceProfile profile) {
+        return profile.getRaceData().getRank() + 1 < Rank.BIG.rank;
+    }
+
+    @Override
     public GUITypes getSubRaceGUI() {
         return GUITypes.KARYU;
     }
