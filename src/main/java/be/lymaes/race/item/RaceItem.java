@@ -13,7 +13,8 @@ public enum RaceItem {
     MILICIEN_EGG("milicien_egg", "Oeuf de Milicien", Material.IRON_GOLEM_SPAWN_EGG, MilicienEgg::new),
     PRIMORDIAL_ONI_BLOOD("primordial_oni_blood", "Sang d'Oni primordial", Material.SPLASH_POTION, PrimordialOniBlood::new),
     SANCTUARY_HEART("sanctuary_heart", "Coeur de Sanctuaire", Material.ENCHANTED_GOLDEN_APPLE, SanctuaryHeart::new),
-    VILLAGE_HEART("village_heart", "Coeur de village", Material.BELL, VillageHeart::new);
+    VILLAGE_HEART("village_heart", "Coeur de village", Material.BELL, VillageHeart::new),
+    ENDER_EYE("ender_eye", "Oeil de l'Ender", Material.ENDER_PEARL, EnderEye::new);
 
     public final String id;
     public final String name;

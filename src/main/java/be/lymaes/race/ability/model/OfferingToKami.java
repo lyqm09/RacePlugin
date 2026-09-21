@@ -24,7 +24,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 
-public class Offering extends PermAbility implements Taskable, ItemDropping, BlockBreaker {
+public class OfferingToKami extends PermAbility implements Taskable, ItemDropping, BlockBreaker {
 
     private static final Material BLOCK_TYPE = Material.GOLD_BLOCK;
     private static final int LUCK_LVL = 3; // Luck IV
@@ -32,7 +32,7 @@ public class Offering extends PermAbility implements Taskable, ItemDropping, Blo
     private final Set<Item> trackedItem = new HashSet<>();
     private final Map<SimpleBlockLocation, Material> kamiBlock = new HashMap<>();
 
-    public Offering(String permission) {
+    public OfferingToKami(String permission) {
         super(permission);
     }
 

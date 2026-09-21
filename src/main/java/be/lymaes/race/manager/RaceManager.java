@@ -160,10 +160,14 @@ public class RaceManager {
         return register.get(race);
     }
 
+    public RaceProfile getProfile(UUID uuid) {
+        if(!profiles.containsKey(uuid))
+            return new RaceProfile(uuid, RaceType.HUMAN.loadData.apply(null, null));
+        return profiles.get(uuid);
+    }
+
     public RaceProfile getProfile(Player player) {
-        if(!profiles.containsKey(player.getUniqueId()))
-            return new RaceProfile(player.getUniqueId(), RaceType.HUMAN.loadData.apply(null, null));
-        return profiles.get(player.getUniqueId());
+        return  getProfile(player.getUniqueId());
     }
 
     public void putPendingOffer(UUID token, Function<Player, Boolean> function, long cooldown) {

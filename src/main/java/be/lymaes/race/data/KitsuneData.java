@@ -2,7 +2,7 @@ package be.lymaes.race.data;
 
 import be.lymaes.race.Race;
 import be.lymaes.race.ability.AbilityKey;
-import be.lymaes.race.ability.model.Offering;
+import be.lymaes.race.ability.model.OfferingToKami;
 import be.lymaes.race.model.RaceType;
 import be.lymaes.race.util.SimpleBlockLocation;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -76,11 +76,11 @@ public class KitsuneData extends RaceData {
             }
 
             Race plugin = Race.getInstance();
-            if(plugin.getAbilityManager().getAbility(AbilityKey.PERM_SETKAMI) instanceof Offering offering) {
+            if(plugin.getAbilityManager().getAbility(AbilityKey.PERM_SETKAMI) instanceof OfferingToKami offeringToKami) {
                 if(plugin.isEnabled()) {
-                    Bukkit.getScheduler().runTask(plugin, () -> offering.removeKamiBlock(kamiBlockLoc));
+                    Bukkit.getScheduler().runTask(plugin, () -> offeringToKami.removeKamiBlock(kamiBlockLoc));
                 } else {
-                    offering.removeKamiBlock(kamiBlockLoc);
+                    offeringToKami.removeKamiBlock(kamiBlockLoc);
                 }
             }
         } else {
@@ -113,11 +113,11 @@ public class KitsuneData extends RaceData {
                 try {
                     SimpleBlockLocation blocLoc = Race.MAPPER.readValue(kamiBlock, SimpleBlockLocation.class);
 
-                    if(plugin.getAbilityManager().getAbility(AbilityKey.PERM_SETKAMI) instanceof Offering offering) {
+                    if(plugin.getAbilityManager().getAbility(AbilityKey.PERM_SETKAMI) instanceof OfferingToKami offeringToKami) {
 
-                        if(!offering.hasKamiBlock(blocLoc)) {
+                        if(!offeringToKami.hasKamiBlock(blocLoc)) {
                             kamiBlockLoc = blocLoc;
-                            Bukkit.getScheduler().runTask(plugin, () -> offering.setKamiBlock(blocLoc));
+                            Bukkit.getScheduler().runTask(plugin, () -> offeringToKami.setKamiBlock(blocLoc));
                         }
 
                     }

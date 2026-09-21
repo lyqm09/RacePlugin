@@ -3,7 +3,7 @@ package be.lymaes.race.command;
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.AbilityKey;
-import be.lymaes.race.ability.model.Offering;
+import be.lymaes.race.ability.model.OfferingToKami;
 import be.lymaes.race.data.KitsuneData;
 import be.lymaes.race.manager.AbilityManager;
 import be.lymaes.race.manager.RaceManager;
@@ -43,18 +43,18 @@ public class SetKamiCMD implements CommandExecutor {
         Block block = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
         if(block.isEmpty() || block.isLiquid() || block.isPassable()) return false;
 
-        if(!(abilityManager.getAbility(AbilityKey.PERM_SETKAMI) instanceof Offering offering)) {
+        if(!(abilityManager.getAbility(AbilityKey.PERM_SETKAMI) instanceof OfferingToKami offeringToKami)) {
             sender.sendMessage("Erreur : Oups... Une erreur s'est produite.");
             return true;
         }
 
-        if(!offering.setKamiBlock(block)) {
+        if(!offeringToKami.setKamiBlock(block)) {
             sender.sendMessage("Erreur : Ce lieu a deja été définit comme lieu d'offrande.");
             return true;
         }
 
         if(profile.hasAbility(AbilityKey.PERM_SETKAMI)) {
-            offering.removeKamiBlock(data.getKamiBlockLocation());
+            offeringToKami.removeKamiBlock(data.getKamiBlockLocation());
             data.setKamiBlockLocation(block);
         }
 

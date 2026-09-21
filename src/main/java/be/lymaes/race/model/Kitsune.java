@@ -3,7 +3,6 @@ package be.lymaes.race.model;
 import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.*;
 import be.lymaes.race.ability.model.*;
-import be.lymaes.race.data.KaryuData;
 import be.lymaes.race.data.KitsuneData;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.DisguiseType;
@@ -42,7 +41,7 @@ public class Kitsune implements IRace<KitsuneData>, IRankable {
                 AbilityKey.FAST_GROWING, new FastGrowing(),
 
                 AbilityKey.PERM_ALLOW_FLY, EmptyAbility.INSTANCE,
-                AbilityKey.PERM_SETKAMI, new Offering(PERM_SETKAMI),
+                AbilityKey.PERM_SETKAMI, new OfferingToKami(PERM_SETKAMI),
                 AbilityKey.VILLAGE_FOUNDER, new VillageFounder(),
                 AbilityKey.PERM_CALLKAMI, new PermAbility(PERM_CALLKAMI)
         );

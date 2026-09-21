@@ -49,8 +49,7 @@ public class TamashiHeart extends ARaceItem implements Consumable, Droppable {
         if(!(e.getEntity() instanceof Monster)) return;
 
         double random = ThreadLocalRandom.current().nextDouble();
-        if(random > TOL)
-            return;
+        if(random > TOL) return;
 
         ItemStack tamashiHeart = this.getItem();
         e.getDrops().add(tamashiHeart);

@@ -6,7 +6,6 @@ import be.lymaes.race.ability.*;
 import be.lymaes.race.ability.model.*;
 import be.lymaes.race.ability.model.Fireball;
 import be.lymaes.race.data.IRaceData;
-import be.lymaes.race.data.KaryuData;
 import be.lymaes.race.data.OniData;
 import be.lymaes.race.manager.RaceManager;
 import org.bukkit.*;
@@ -32,8 +31,8 @@ public class Oni implements IRace<OniData>, IRankable {
                 AbilityKey.HYDROPHOBIA, new Hydrophobia(),
                 AbilityKey.MEAT_EATER, new MeatEater(),
                 AbilityKey.FIREBALL, new Fireball(),
-                AbilityKey.SILENT_ENTITY, new SilentEntity(),
-                AbilityKey.ONI_ABSORPTION, new Absorption(defendFactor, OniData.class),
+                AbilityKey.SILENT_ENTITY, new Untargetable(Monster.class),
+                AbilityKey.ONI_ABSORPTION, new DamageModifier(defendFactor, OniData.class),
                 AbilityKey.CRAFT_PRIMORDIAL_ONI_BLOOD, EmptyAbility.INSTANCE
         );
     }

@@ -3,7 +3,7 @@ package be.lymaes.race;
 import be.lymaes.race.ability.AbilityKey;
 import be.lymaes.race.ability.AbilityType;
 import be.lymaes.race.ability.Taskable;
-import be.lymaes.race.ability.model.Offering;
+import be.lymaes.race.ability.model.OfferingToKami;
 import be.lymaes.race.manager.AbilityManager;
 import be.lymaes.race.manager.RaceManager;
 import org.bukkit.Bukkit;
@@ -45,7 +45,7 @@ public class MainRunnable extends BukkitRunnable {
             }
         }
 
-        if(abilityManager.getAbility(AbilityKey.PERM_SETKAMI) instanceof Offering offering) offering.trackDiamonds();
+        if(abilityManager.getAbility(AbilityKey.PERM_SETKAMI) instanceof OfferingToKami offeringToKami) offeringToKami.trackDiamonds();
     }
 
 }

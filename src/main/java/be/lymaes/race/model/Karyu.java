@@ -21,7 +21,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.Map;
-import java.util.Objects;
+
+import static java.util.Map.entry;
 
 public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable {
 
@@ -34,6 +35,7 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable {
     public static final String PERM_BLESS = "race.karyu.adorer.bless";
 
     public Map<AbilityKey, Ability> getAbilities() {
+        double[] vulnerability = new double[] {-0.3};
         double[] adorerAbsorptionFactor = new double[] {0.05, 0.10, 0.20, 0.30, 0.50, 0.50};
         Material[] minerals = new Material[] {
                 Material.AMETHYST_SHARD,
@@ -53,16 +55,19 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable {
                 Material.PRISMARINE_SHARD,
                 Material.REDSTONE};
 
-        return Map.of(
-                AbilityKey.KARYU_MERCHANT_EXP, new KaryuMerchantExp(),
-                AbilityKey.KARYU_ADORER_EXP, new KaryuAdorerExp(),
-                AbilityKey.KARYU_ADORER_ABSORPTION, new Absorption(adorerAbsorptionFactor, KaryuData.class),
-                AbilityKey.EMERALD_TRANSFORMER, new LootTransformer(minerals),
-                AbilityKey.PERM_FORTUNE, new PermAbility(PERM_FORTUNE),
-                AbilityKey.PERM_VILLAGER, new PermAbility(PERM_VILLAGER),
-                AbilityKey.MILICIEN_SUMMONER, EmptyAbility.INSTANCE,
-                AbilityKey.PERM_SHARPNESS, new PermAbility(PERM_SHARPNESS),
-                AbilityKey.PERM_BLESS, new PermAbility(PERM_BLESS)
+        return Map.ofEntries(
+                entry(AbilityKey.KARYU_MERCHANT_EXP, new KaryuMerchantExp()),
+                entry(AbilityKey.KARYU_ADORER_EXP, new KaryuAdorerExp()),
+                entry(AbilityKey.KARYU_VUNERABILITY, new DamageModifier(vulnerability, KaryuData.class)),
+                entry(AbilityKey.KARYU_ADORER_ABSORPTION, new DamageModifier(adorerAbsorptionFactor, KaryuData.class)),
+                entry(AbilityKey.DRAGON_FRIEND, new Untargetable(EnderDragon.class)),
+                entry(AbilityKey.EMERALD_TRANSFORMER, new LootTransformer(minerals)),
+                entry(AbilityKey.PERM_FORTUNE, new PermAbility(PERM_FORTUNE)),
+                entry(AbilityKey.PERM_VILLAGER, new PermAbility(PERM_VILLAGER)),
+                entry(AbilityKey.MILICIEN_SUMMONER, EmptyAbility.INSTANCE),
+                entry(AbilityKey.PERM_SHARPNESS, new PermAbility(PERM_SHARPNESS)),
+                entry(AbilityKey.PERM_BLESS, new PermAbility(PERM_BLESS)),
+                entry(AbilityKey.OFFERING_TO_VOID, new OfferingToVoid())
         );
     }
 
@@ -81,6 +86,10 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable {
     public void removeExpAbilities(RaceProfile profile) {
         profile.removeAbility(AbilityKey.KARYU_MERCHANT_EXP);
         profile.removeAbility(AbilityKey.KARYU_ADORER_EXP);
+    }
+
+    private void applyCommunAbilities(RaceProfile profile) {
+        profile.addAbility(AbilityKey.KARYU_VUNERABILITY);
     }
 
     private void applyMerchantAbilities(RaceProfile profile, KaryuData data) {
@@ -105,6 +114,8 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable {
 
     private void applyAdorerAbilities(RaceProfile profile, KaryuData data) {
         profile.addAbility(AbilityKey.KARYU_ADORER_ABSORPTION);
+        profile.addAbility(AbilityKey.DRAGON_FRIEND);
+        profile.addAbility(AbilityKey.OFFERING_TO_VOID);
 
         if(data.getRank() >= Rank.ADVANCE.rank) {
             profile.addAbility(AbilityKey.PERM_SHARPNESS);
@@ -165,6 +176,7 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable {
     }
 
     public void applyAdorer(Player player, RaceProfile profile, KaryuData data) {
+        applyCommunAbilities(profile);
         applyAdorerAbilities(profile, data);
         applyAdorerAttribute(player, data);
 

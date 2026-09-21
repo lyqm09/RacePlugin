@@ -2,10 +2,9 @@ package be.lymaes.race.listener;
 
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
-import be.lymaes.race.ability.AbilityType;
-import be.lymaes.race.ability.Damager;
-import be.lymaes.race.ability.Defender;
-import be.lymaes.race.data.IRaceData;
+import be.lymaes.race.ability.*;
+import be.lymaes.race.ability.model.OfferingToVoid;
+import be.lymaes.race.manager.AbilityManager;
 import be.lymaes.race.manager.RaceManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,9 +17,11 @@ import java.util.Set;
 public class DamageListener implements Listener {
 
     private final RaceManager raceManager;
+    private final AbilityManager abilityManager;
 
     public DamageListener(Race plugin) {
         this.raceManager = plugin.getRaceManager();
+        this.abilityManager = plugin.getAbilityManager();
     }
 
     @EventHandler
@@ -30,6 +31,14 @@ public class DamageListener implements Listener {
     }
 
     private void handleAttack(EntityDamageEvent e) {
+
+        // special case
+        Ability ability = abilityManager.getAbility(AbilityKey.OFFERING_TO_VOID);
+        if(ability instanceof OfferingToVoid offering) {
+            offering.diamondDamage(e, raceManager);
+        }
+
+        // entity damage by entity
         if(!(e instanceof EntityDamageByEntityEvent attackEvent)) return;
         if(!(attackEvent.getDamager() instanceof Player player)) return;
 

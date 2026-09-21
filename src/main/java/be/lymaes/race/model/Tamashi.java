@@ -4,7 +4,6 @@ import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.*;
 import be.lymaes.race.ability.model.*;
-import be.lymaes.race.data.KaryuData;
 import be.lymaes.race.data.TamashiData;
 import be.lymaes.race.gui.GUITypes;
 import be.lymaes.race.item.model.FlyChargeBall;
@@ -47,7 +46,7 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable {
 
                 entry(AbilityKey.AQUATIC_STRENGTH, new AquaticStrength(waterStrengthFactor, TamashiData.class)),
 
-                entry(AbilityKey.TAMASHI_EARTH_ABSORPTION, new Absorption(earthAbsorptionFactor, TamashiData.class)),
+                entry(AbilityKey.TAMASHI_EARTH_ABSORPTION, new DamageModifier(earthAbsorptionFactor, TamashiData.class)),
                 entry(AbilityKey.DIRT_EATER, new DirtEater()),
 
                 entry(AbilityKey.FIREBALL, new Fireball()),
