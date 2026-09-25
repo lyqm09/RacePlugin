@@ -8,7 +8,6 @@ import org.bukkit.Bukkit;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -60,25 +59,30 @@ public class StructureManager {
 
     public void load() {
         if(Race.getInstance().isEnabled()) {
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> loadStruct(StructureType.KITSUNE_VILLAGE));
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, (k) -> loadStruct(StructureType.KITSUNE_VILLAGE));
         } else {
             loadStruct(StructureType.KITSUNE_VILLAGE);
         }
     }
 
     public void loadStruct(StructureType type) {
-        Path file = Paths.get(dataFolder + type.name().toLowerCase() + ".json");
-        if (!Files.exists(file)) return;
+        String name = type.name().toLowerCase();
+        File file = new File(dataFolder.toFile(), name + ".json");
+
+        if (!file.exists()) return;
 
         ObjectMapper mapper = Race.MAPPER;
 
         try {
-            List<Structure> loadedList = type.loader.load(mapper, file.toFile());
+            List<Structure> loadedList = type.loader.load(mapper, file);
 
             for (Structure structure : loadedList) {
                 register.put(structure.getUuid(), structure);
             }
             structures.put(type, loadedList);
+
+            int amount = loadedList.size();
+            System.out.println(amount + " " + type.name().toLowerCase() + (amount > 1 ? " are ":" has ") + "been load.");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -95,13 +99,19 @@ public class StructureManager {
 
     public void unloadStruct(StructureType type) {
         String name = type.name().toLowerCase();
-        File file = new File(dataFolder.toFile(), name + ".json");
-        if(!file.exists()) file.mkdirs();
+        File path = dataFolder.toFile();
+        File file = new File(path, name + ".json");
+        if(!path.exists()) path.mkdirs();
 
         try {
+            if(!file.exists() && !file.createNewFile()) {
+                plugin.getLogger().severe("Erreur lors de la sauvegarde du fichier : " + name + " (1)");
+                return;
+            }
+
             Race.MAPPER.writerWithDefaultPrettyPrinter().writeValue(file, register);
         } catch (IOException e) {
-            plugin.getLogger().severe("Erreur lors de la sauvegarde du fichier : " + name);
+            plugin.getLogger().severe("Erreur lors de la sauvegarde du fichier : " + name + " (2)");
             e.printStackTrace();
         }
     }

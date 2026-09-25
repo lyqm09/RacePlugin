@@ -2,6 +2,7 @@ package be.lymaes.race.structure;
 
 import be.lymaes.race.util.SimpleBlockLocation;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class KitsuneVillage implements Structure {
 
     private static final StructureType STRUCT_TYPE = StructureType.KITSUNE_VILLAGE;
