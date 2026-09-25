@@ -65,6 +65,8 @@ public class Kitsune implements IRace<KitsuneData>, IRankable {
 
         if(rank >= Rank.TWO.rank) {
             profile.addAbility(AbilityKey.PERM_SETKAMI);
+        }else {
+            profile.removeAbility(AbilityKey.PERM_SETKAMI);
         }
 
         if(rank >= Rank.THREE.rank) {
@@ -89,10 +91,14 @@ public class Kitsune implements IRace<KitsuneData>, IRankable {
 
         if(rank >= Rank.EIGHT.rank) {
             profile.addAbility(AbilityKey.PERM_CALLKAMI);
+        } else {
+            profile.removeAbility(AbilityKey.PERM_CALLKAMI);
         }
 
         if(rank >= Rank.NINE.rank) {
             profile.addAbility(AbilityKey.PERM_ALLOW_FLY);
+        } else {
+            profile.removeAbility(AbilityKey.PERM_ALLOW_FLY);
         }
     }
 

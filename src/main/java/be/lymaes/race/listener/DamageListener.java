@@ -11,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityRemoveEvent;
 
 import java.util.Set;
 
@@ -31,13 +32,6 @@ public class DamageListener implements Listener {
     }
 
     private void handleAttack(EntityDamageEvent e) {
-
-        // special case
-        Ability ability = abilityManager.getAbility(AbilityKey.OFFERING_TO_VOID_EXP);
-        if(ability instanceof OfferingToVoid offering) {
-            offering.diamondDamage(e, raceManager);
-        }
-
         // entity damage by entity
         if(!(e instanceof EntityDamageByEntityEvent attackEvent)) return;
         if(!(attackEvent.getDamager() instanceof Player player)) return;

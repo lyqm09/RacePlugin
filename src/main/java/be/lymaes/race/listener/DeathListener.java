@@ -2,12 +2,12 @@ package be.lymaes.race.listener;
 
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
-import be.lymaes.race.ability.AbilityType;
-import be.lymaes.race.ability.Helder;
-import be.lymaes.race.ability.Killer;
+import be.lymaes.race.ability.*;
+import be.lymaes.race.ability.model.OfferingToVoid;
 import be.lymaes.race.data.IRaceData;
 import be.lymaes.race.item.Droppable;
 import be.lymaes.race.item.IRaceItem;
+import be.lymaes.race.manager.AbilityManager;
 import be.lymaes.race.manager.ItemManager;
 import be.lymaes.race.manager.RaceManager;
 import org.bukkit.Bukkit;
@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityRemoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import java.util.Set;
@@ -24,10 +25,12 @@ public class DeathListener implements Listener {
 
     private final RaceManager raceManager;
     private final ItemManager itemManager;
+    private final AbilityManager abilityManager;
 
     public DeathListener(Race plugin) {
         this.raceManager = plugin.getRaceManager();
         this.itemManager = plugin.getItemManager();
+        this.abilityManager = plugin.getAbilityManager();
     }
 
     @EventHandler
@@ -67,6 +70,19 @@ public class DeathListener implements Listener {
         IRaceData raceData = profile.getRaceData();
 
         Bukkit.getScheduler().runTaskLater(Race.getInstance(), () -> raceManager.getRaceModel(raceData.getRace()).reapplyEffect(player, raceData), 1L);
+    }
+
+
+    // items
+    @EventHandler
+    public void onRemove(EntityRemoveEvent e) {
+
+        // special case
+        Ability ability = abilityManager.getAbility(AbilityKey.OFFERING_TO_VOID_EXP);
+        if(ability instanceof OfferingToVoid offering) {
+            offering.diamondDamage(e, raceManager);
+        }
+
     }
 
 }

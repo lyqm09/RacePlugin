@@ -15,7 +15,7 @@ public class FastGrowing implements Interact {
     public void onInteract(PlayerInteractEvent e, Player player, RaceProfile profile) {
         if(!player.isSneaking()) return;
         if(e.getItem() != null || e.getMaterial() != Material.AIR) return;
-        if(e.getAction() != Action.LEFT_CLICK_BLOCK) return;
+        if(e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 
         Block block = e.getClickedBlock();
         if(block == null) return;

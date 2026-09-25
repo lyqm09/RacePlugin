@@ -99,10 +99,14 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable {
 
         if(data.getRank() >= Rank.BEGINNER.rank) {
             profile.addAbility(AbilityKey.PERM_FORTUNE);
+        } else {
+            profile.removeAbility(AbilityKey.PERM_FORTUNE);
         }
 
         if(data.getRank() >= Rank.NOVICE.rank) {
             profile.addAbility(AbilityKey.PERM_VILLAGER);
+        } else {
+            profile.removeAbility(AbilityKey.PERM_VILLAGER);
         }
 
         if (rank >= Rank.ADVANCE.rank) {
@@ -120,10 +124,14 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable {
 
         if(data.getRank() >= Rank.ADVANCE.rank) {
             profile.addAbility(AbilityKey.PERM_SHARPNESS);
+        } else {
+            profile.removeAbility(AbilityKey.PERM_SHARPNESS);
         }
 
         if(data.getRank() >= Rank.BIG.rank) {
             profile.addAbility(AbilityKey.PERM_BLESS);
+        } else {
+            profile.removeAbility(AbilityKey.PERM_BLESS);
         }
     }
 

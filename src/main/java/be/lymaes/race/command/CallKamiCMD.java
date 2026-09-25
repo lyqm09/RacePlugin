@@ -66,10 +66,10 @@ public class CallKamiCMD implements CommandExecutor {
         UUID uuid = player.getUniqueId();
         if(cooldowns.containsKey(uuid)) {
             long endTime = cooldowns.get(uuid);
-            long time = currentTime - endTime;
+            long time = endTime - currentTime;
 
             if(time > 0) {
-                player.sendMessage("Tu dois encore attendre " + ChatColor.AQUA + time + ChatColor.RESET + "sec avec de réutiliser cette commande.");
+                player.sendMessage("Tu dois encore attendre " + ChatColor.AQUA + Math.round(time/1000f) + ChatColor.RESET + "sec avec de réutiliser cette commande.");
                 return true;
             }
         }

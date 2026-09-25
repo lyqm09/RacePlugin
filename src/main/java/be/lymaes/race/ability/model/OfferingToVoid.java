@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Item;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityRemoveEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -32,14 +33,10 @@ public class OfferingToVoid implements ItemDropping {
         item.getPersistentDataContainer().set(key, PersistentDataType.BYTE, (byte) 1);
     }
 
-    public void diamondDamage(EntityDamageEvent e, RaceManager raceManager) {
-        if(e.getCause() != EntityDamageEvent.DamageCause.VOID) return;
-
-        if(!(e.getEntity() instanceof Item item)) return;
-
-        if(!item.getPersistentDataContainer().has(key)) return;
-
-        item.remove();
+    public void diamondDamage(EntityRemoveEvent e, RaceManager raceManager) {
+        if (e.getCause() != EntityRemoveEvent.Cause.OUT_OF_WORLD) return;
+        if (!(e.getEntity() instanceof Item item)) return;
+        if (!item.getPersistentDataContainer().has(key)) return;
 
         UUID throwerUuid = item.getThrower();
         if (throwerUuid == null) return;
