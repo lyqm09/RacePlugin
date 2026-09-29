@@ -14,7 +14,7 @@ public enum RaceItem {
     PRIMORDIAL_ONI_BLOOD("primordial_oni_blood", "Sang d'Oni primordial", Material.SPLASH_POTION, PrimordialOniBlood::new),
     SANCTUARY_HEART("sanctuary_heart", "Coeur de Sanctuaire", Material.ENCHANTED_GOLDEN_APPLE, SanctuaryHeart::new),
     VILLAGE_HEART("village_heart", "Coeur de village", Material.BELL, VillageHeart::new),
-    ENDER_EYE("ender_eye", "Oeil de l'Ender", Material.ENDER_PEARL, EnderEye::new);
+    DRAGON_PEARL("dragon_pearl", "Perle du Dragon", Material.ENDER_EYE, DragonPearl::new);
 
     public final String id;
     public final String name;

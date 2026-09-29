@@ -185,7 +185,6 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable {
     }
 
     public void applyAdorer(Player player, RaceProfile profile, KaryuData data) {
-        applyCommunAbilities(profile);
         applyAdorerAbilities(profile, data);
         applyAdorerAttribute(player, data);
 
@@ -204,6 +203,8 @@ public class Karyu implements IRace<KaryuData>, ISubRaceable, IRankable {
             }
         }
 
+        applyCommunAbilities(profile);
+        
         switch(SubRace.fromId(data.getSubrace())) {
             case MERCHANT -> applyMerchant(player, profile, data);
             case ADORER -> applyAdorer(player, profile, data);

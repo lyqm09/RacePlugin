@@ -7,7 +7,6 @@ import be.lymaes.race.item.*;
 import be.lymaes.race.manager.RaceManager;
 import be.lymaes.race.model.IRace;
 import be.lymaes.race.model.Karyu;
-import org.bukkit.Sound;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -15,17 +14,13 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.components.FoodComponent;
-import org.bukkit.inventory.meta.components.UseCooldownComponent;
-import org.bukkit.inventory.meta.components.UseEffectsComponent;
-import org.bukkit.inventory.meta.components.consumable.ConsumableComponent;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class EnderEye extends ARaceItem implements Droppable, Interactable {
+public class DragonPearl extends ARaceItem implements Droppable, Interactable {
 
     public static final double TOL = 0.0005;
 
@@ -33,7 +28,7 @@ public class EnderEye extends ARaceItem implements Droppable, Interactable {
 
     @Override
     public RaceItem getType() {
-        return RaceItem.ENDER_EYE;
+        return RaceItem.DRAGON_PEARL;
     }
 
     @Override

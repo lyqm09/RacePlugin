@@ -93,6 +93,9 @@ public class RaceProfile {
         if(ability instanceof Defender) {
             eventAbilities.computeIfAbsent(AbilityType.DEFENDER, k -> new HashSet<>()).add(ability);
         }
+        if(ability instanceof Fly) {
+            eventAbilities.computeIfAbsent(AbilityType.FLY, k -> new HashSet<>()).add(ability);
+        }
         if(ability instanceof Killer) {
             eventAbilities.computeIfAbsent(AbilityType.KILLER, k -> new HashSet<>()).add(ability);
         }
@@ -145,6 +148,9 @@ public class RaceProfile {
         }
         if(ability instanceof Defender) {
             removeEventAbility(AbilityType.DEFENDER, ability);
+        }
+        if(ability instanceof Fly) {
+            removeEventAbility(AbilityType.FLY, ability);
         }
         if(ability instanceof Killer) {
             removeEventAbility(AbilityType.KILLER, ability);

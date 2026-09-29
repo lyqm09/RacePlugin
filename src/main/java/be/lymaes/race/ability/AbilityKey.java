@@ -28,6 +28,7 @@ public enum AbilityKey {
     INVISIBILITY,
     FAST_GROWING,
     PERM_ALLOW_FLY,
+    AIR_SICK,
     PERM_SETKAMI,
     VILLAGE_FOUNDER,
     PERM_CALLKAMI,

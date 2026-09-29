@@ -18,6 +18,8 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.Map;
 
+import static java.util.Map.entry;
+
 public class Kitsune implements IRace<KitsuneData>, IRankable {
 
     public static final double TOLERANCE = 0.02;
@@ -31,19 +33,21 @@ public class Kitsune implements IRace<KitsuneData>, IRankable {
     private static final NamespacedKey FALL = NamespacedKey.fromString("kitsune:fall");
 
     public Map<AbilityKey, Ability> getAbilities() {
-        return Map.of(
-                AbilityKey.KITSUNE_RAID_EXP, new KitsuneRaidExp(),
-                AbilityKey.KITSUNE_ZONE_EXP, new KitsuneZoneExp(),
-                AbilityKey.FIRE_VULNERABILITY, new FireVulnerability(1.00),
+        return Map.ofEntries(
+                entry(AbilityKey.KITSUNE_RAID_EXP, new KitsuneRaidExp()),
+                entry(AbilityKey.KITSUNE_ZONE_EXP, new KitsuneZoneExp()),
+                entry(AbilityKey.FIRE_VULNERABILITY, new FireVulnerability(1.00)),
 
-                AbilityKey.FOX_DISGUISE, new Disguise(DisguiseType.FOX),
-                AbilityKey.INVISIBILITY, new Invisibility(),
-                AbilityKey.FAST_GROWING, new FastGrowing(),
+                entry(AbilityKey.FOX_DISGUISE, new Disguise(DisguiseType.FOX)),
+                entry(AbilityKey.INVISIBILITY, new Invisibility()),
+                entry(AbilityKey.FAST_GROWING, new FastGrowing()),
 
-                AbilityKey.PERM_ALLOW_FLY, EmptyAbility.INSTANCE,
-                AbilityKey.PERM_SETKAMI, new OfferingToKami(PERM_SETKAMI),
-                AbilityKey.VILLAGE_FOUNDER, new VillageFounder(),
-                AbilityKey.PERM_CALLKAMI, new PermAbility(PERM_CALLKAMI)
+                entry(AbilityKey.PERM_ALLOW_FLY, EmptyAbility.INSTANCE),
+                entry(AbilityKey.AIR_SICK, new AirSick()),
+
+                entry(AbilityKey.PERM_SETKAMI, new OfferingToKami(PERM_SETKAMI)),
+                entry(AbilityKey.VILLAGE_FOUNDER, new VillageFounder()),
+               entry(AbilityKey.PERM_CALLKAMI, new PermAbility(PERM_CALLKAMI))
         );
     }
 
@@ -96,9 +100,11 @@ public class Kitsune implements IRace<KitsuneData>, IRankable {
         }
 
         if(rank >= Rank.NINE.rank) {
+            profile.addAbility(AbilityKey.AIR_SICK);
             profile.addAbility(AbilityKey.PERM_ALLOW_FLY);
         } else {
             profile.removeAbility(AbilityKey.PERM_ALLOW_FLY);
+            profile.removeAbility(AbilityKey.AIR_SICK);
         }
     }
 
@@ -146,8 +152,8 @@ public class Kitsune implements IRace<KitsuneData>, IRankable {
                 JBLvl = 2;
             }
             case NINE -> {
-                speedMultiplier = 1.0;
-                strengthMultiplier = 0.50;
+                speedMultiplier = 0.75;
+                strengthMultiplier = 0.40;
                 JBLvl = 3;
             }
         }
@@ -188,7 +194,8 @@ public class Kitsune implements IRace<KitsuneData>, IRankable {
 
 
         if(data.getRank() >= Rank.SIX.rank) {
-            if(player.hasPotionEffect(PotionEffectType.LUCK)) {
+            PotionEffect luck = player.getPotionEffect(PotionEffectType.LUCK);
+            if(luck != null && (luck.getAmplifier() < 1 || luck.getDuration() <= 0)) {
                 player.removePotionEffect(PotionEffectType.LUCK);
             }
             player.addPotionEffect(new PotionEffect(PotionEffectType.LUCK, PotionEffect.INFINITE_DURATION, 0, true, false, true));

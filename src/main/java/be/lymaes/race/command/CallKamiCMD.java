@@ -19,6 +19,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class CallKamiCMD implements CommandExecutor {
 
     private static final long COOLDOWN = 5 * 60 * 1000;
+    private static final long DURATION = 1 * 60 * 1000;
 
     private final RaceManager raceManager;
     private Map<UUID, Long> cooldowns = new HashMap<>();
@@ -46,7 +47,7 @@ public class CallKamiCMD implements CommandExecutor {
         List<PotionEffectType> bonus = shuffled.subList(0, size);
 
         for(PotionEffectType type : bonus) {
-            player.addPotionEffect(new PotionEffect(type, (int) (COOLDOWN/1000) * 20, random.nextInt(5)));
+            player.addPotionEffect(new PotionEffect(type, (int) (DURATION/1000) * 20, random.nextInt(5)));
         }
     }
 

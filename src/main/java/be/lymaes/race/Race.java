@@ -45,7 +45,7 @@ public final class Race extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new TargetListener(this), this);
         getServer().getPluginManager().registerEvents(new DeathListener(this), this);
         getServer().getPluginManager().registerEvents(new RaidListener(this), this);
-        getServer().getPluginManager().registerEvents(new SneakListener(this), this);
+        getServer().getPluginManager().registerEvents(new ToggleListener(this), this);
         getServer().getPluginManager().registerEvents(new InteractListener(this), this);
         getServer().getPluginManager().registerEvents(new PotionListener(this), this);
         getServer().getPluginManager().registerEvents(new CraftListener(this), this);
