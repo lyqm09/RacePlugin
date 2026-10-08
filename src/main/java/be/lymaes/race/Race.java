@@ -52,6 +52,7 @@ public final class Race extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new BlockListener(this), this);
         getServer().getPluginManager().registerEvents(new PotionEffectListener(this), this);
         getServer().getPluginManager().registerEvents(new EntitySpawnListener(this), this);
+        getServer().getPluginManager().registerEvents(new ProjectileListener(this), this);
 
         // command
         MutsuharaCMD mutsuhara = new MutsuharaCMD(this);
@@ -69,6 +70,12 @@ public final class Race extends JavaPlugin {
 
         HomeCMD home = new HomeCMD(this);
         getCommand("foyer").setExecutor(home);
+
+        FishCMD fish = new FishCMD(this);
+        getCommand("fish").setExecutor(fish);
+
+        AquaCMD aqua = new AquaCMD(this);
+        getCommand("aqua").setExecutor(aqua);
 
         BlessCMD bless = new BlessCMD(this);
         getCommand("bless").setExecutor(bless);

@@ -3,15 +3,14 @@ package be.lymaes.race.listener;
 import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.*;
-import be.lymaes.race.ability.model.OfferingToVoid;
 import be.lymaes.race.manager.AbilityManager;
 import be.lymaes.race.manager.RaceManager;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityRemoveEvent;
 
 import java.util.Set;
 
@@ -34,14 +33,28 @@ public class DamageListener implements Listener {
     private void handleAttack(EntityDamageEvent e) {
         // entity damage by entity
         if(!(e instanceof EntityDamageByEntityEvent attackEvent)) return;
-        if(!(attackEvent.getDamager() instanceof Player player)) return;
+        if(attackEvent.getDamager() instanceof Player player) {
 
-        RaceProfile profile = raceManager.getProfile(player);
-        if(profile == null) return;
+            RaceProfile profile = raceManager.getProfile(player);
+            if (profile == null) return;
 
-        Set<Damager> abilities = profile.getEventAbilities(AbilityType.DAMAGER);
-        for(Damager damager : abilities) {
-            damager.onDamage(attackEvent, player, profile);
+            Set<Damager> abilities = profile.getEventAbilities(AbilityType.DAMAGER);
+            for (Damager damager : abilities) {
+                damager.onDamage(attackEvent, player, profile);
+            }
+
+        } else if(attackEvent.getDamager() instanceof Projectile projectile) {
+            if(projectile.getShooter() instanceof Player player) {
+
+                RaceProfile profile = raceManager.getProfile(player);
+                if (profile == null) return;
+
+                Set<ProjectileDamage> abilities = profile.getEventAbilities(AbilityType.PROJECTILE_DAMAGE);
+                for (ProjectileDamage shooter : abilities) {
+                    shooter.onDamage(attackEvent, projectile, player);
+                }
+
+            }
         }
     }
 

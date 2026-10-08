@@ -9,10 +9,16 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.FoodComponent;
 import org.bukkit.inventory.meta.components.consumable.ConsumableComponent;
 
-public class DirtEater implements Helder {
+public class BlockEater implements Helder {
+
+    private final Material material;
+
+    public BlockEater(Material material) {
+        this.material = material;
+    }
 
     public void onSwapOn(ItemStack item) {
-        if(item == null || item.getType() != Material.DIRT) return;
+        if(item == null || item.getType() != material) return;
 
         ItemMeta meta = item.getItemMeta();
         if(meta == null) return;
@@ -33,7 +39,7 @@ public class DirtEater implements Helder {
     }
 
     public void onSwapOff(ItemStack item) {
-        if(item == null || item.getType() != Material.DIRT) return;
+        if(item == null || item.getType() != material) return;
 
         ItemMeta meta = item.getItemMeta();
         if(meta == null) return;
@@ -53,7 +59,7 @@ public class DirtEater implements Helder {
 
     public void onDrops(EntityDeathEvent e) {
         for(ItemStack item : e.getDrops()) {
-            if(item.getType() != Material.DIRT) continue;
+            if(item.getType() != material) continue;
 
             ItemMeta meta = item.getItemMeta();
             if(meta == null || !meta.hasFood()) continue;

@@ -64,6 +64,19 @@ commands:
     permission-message: Tu n'es pas un Tamashi.
     usage: /foyer
 
+  fish:
+    aliases: [poisson]
+    description: Fait apparaitre un animal aquatique aléatoire.
+    permission: race.tamashi.water.fish
+    permission-message: Tu n'es pas un Tamashi d'eau.
+    usage: /fish
+
+  aqua:
+    description: ose l'enchantement aqua affinity et curse of binding sur l'objet en main.
+    permission: race.tamashi.water.aqua
+    permission-message: Tu n'es pas un Tamashi d'eau.
+    usage: /aqua
+
   setkami:
     description: Le bloc sous le joueur devient un bloc d'or. Si le joueur lance des diamants sur ce bloc, ils seront converti effet de *Luck IV* (diamant/min).
     permission: race.kitsune.setkami
@@ -119,6 +132,20 @@ permissions:
 
   race.tamashi.kami:
     description: Permet d'utiliser la commande /kami.
+    default: false
+
+  race.tamashi.water:
+    description: Permission de la sous-race Tamashi d'Eau.
+    children:
+      race.tamashi.water.fish: false
+      race.tamashi.water.aqua: false
+
+  race.tamashi.water.fish:
+    description: Permet d'utiliser la commande /fish.
+    default: false
+
+  race.tamashi.water.aqua:
+    description: Permet d'utiliser la commande /aqua.
     default: false
 
   race.karyu:

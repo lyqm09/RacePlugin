@@ -4,6 +4,7 @@ import be.lymaes.race.Race;
 import be.lymaes.race.RaceProfile;
 import be.lymaes.race.ability.AbilityType;
 import be.lymaes.race.ability.Helder;
+import be.lymaes.race.ability.InteractOwnInventory;
 import be.lymaes.race.ability.Merchant;
 import be.lymaes.race.gui.IRaceGUI;
 import be.lymaes.race.gui.RaceInventoryHolder;
@@ -20,6 +21,7 @@ import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.MerchantInventory;
+import org.bukkit.inventory.PlayerInventory;
 
 import java.util.Set;
 
@@ -41,27 +43,35 @@ public class InventoryListener implements Listener {
         if(inventory == null)
             return;
 
-        if(!(e.getWhoClicked() instanceof Player player)) return;
+        if((e.getWhoClicked() instanceof Player player)) {
 
-        if(inventory.getHolder() instanceof RaceInventoryHolder) {
-            IRaceGUI gui = guiManager.getGUI(inventory);
-            if (gui == null) return;
+            if (inventory.getHolder() instanceof RaceInventoryHolder) {
+                IRaceGUI gui = guiManager.getGUI(inventory);
+                if (gui == null) return;
 
-            gui.onClick(e);
-        }
-        else if(inventory instanceof MerchantInventory merchantInventory) {
-            RaceProfile profile = raceManager.getProfile(player);
-            if(profile == null) return;
+                gui.onClick(e);
+            } else if (inventory instanceof MerchantInventory merchantInventory) {
+                RaceProfile profile = raceManager.getProfile(player);
+                if (profile == null) return;
 
-            Set<Merchant> abilities = profile.getEventAbilities(AbilityType.MERCHANT);
-            for(Merchant merchant : abilities) {
-                merchant.onTrade(e, merchantInventory, profile);
+                Set<Merchant> abilities = profile.getEventAbilities(AbilityType.MERCHANT);
+                for (Merchant merchant : abilities) {
+                    merchant.onTrade(e, merchantInventory, profile);
+                }
+            } else if(inventory instanceof PlayerInventory playerInventory) {
+                if(!playerInventory.getHolder().equals(player)) return;
+
+                RaceProfile profile = raceManager.getProfile(player);
+                if (profile == null) return;
+
+                Set<InteractOwnInventory> abilities = profile.getEventAbilities(AbilityType.INVENTORY);
+                for (InteractOwnInventory owner : abilities) {
+                    owner.onClick(e, playerInventory, player);
+                }
             }
-        }
-    }
 
-    @EventHandler
-    public void onClick(InventoryClickEvent e) {
+        }
+
         if(itemManager.getItem(e.getCurrentItem()) instanceof IStaticItem) {
             e.setCancelled(true);
         }

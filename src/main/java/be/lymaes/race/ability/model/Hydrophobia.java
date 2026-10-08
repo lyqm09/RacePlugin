@@ -12,6 +12,8 @@ import java.util.Set;
 
 public class Hydrophobia implements Taskable {
 
+    private static final int DURATION = 2 * 20;
+
     private static final Set<Biome> NOT_RAINING_BIOMES = Set.of(
             Biome.DESERT,
             Biome.SAVANNA,
@@ -23,7 +25,7 @@ public class Hydrophobia implements Taskable {
             Biome.WOODED_BADLANDS
     );
 
-    private boolean isUnderRain(Player player) {
+    public static boolean isUnderRain(Player player) {
         World world = player.getWorld();
         if(!world.hasStorm()) return false;
 
@@ -37,9 +39,9 @@ public class Hydrophobia implements Taskable {
 
     public void run(Player player, RaceProfile profile, long currentTime) {
         if(player.isInWater() || isUnderRain(player)) {
-            applyEffect(player, PotionEffectType.WEAKNESS, 2 * 20, 1);
-            applyEffect(player, PotionEffectType.SLOWNESS, 2 * 20, 1);
-            applyEffect(player, PotionEffectType.BLINDNESS, 2 * 20, 0);
+            applyEffect(player, PotionEffectType.WEAKNESS, DURATION, 1);
+            applyEffect(player, PotionEffectType.SLOWNESS, DURATION, 1);
+            applyEffect(player, PotionEffectType.BLINDNESS, DURATION, 0);
         }
     }
 

@@ -13,6 +13,8 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.entity.Drowned;
+import org.bukkit.entity.Guardian;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -27,6 +29,8 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable {
 
     public static final String PERM_HOME = "race.tamashi.home";
     public static final String PERM_KAMI = "race.tamashi.kami";
+    public static final String PERM_FISH = "race.tamashi.water.fish";
+    public static final String PERM_AQUA = "race.tamashi.water.aqua";
 
     public static final double DISTANCE_SQUARED = 200 * 200;
 
@@ -45,9 +49,20 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable {
                 entry(AbilityKey.PERM_KAMI, new PermAbility(PERM_KAMI)),
 
                 entry(AbilityKey.AQUATIC_STRENGTH, new AquaticStrength(waterStrengthFactor, TamashiData.class)),
+                entry(AbilityKey.SNOW_EATER, new BlockEater(Material.SNOW_BLOCK)),
+                entry(AbilityKey.PERM_FISH, new PermAbility(PERM_FISH)),
+                entry(AbilityKey.PERM_AQUA, new PermAbility(PERM_AQUA)),
+                entry(AbilityKey.FROST_AFFINITY, new FrostAffinity()),
+                entry(AbilityKey.GUARDIAN_FRIEND, new Untargetable(Guardian.class)),
+                entry(AbilityKey.DROWED_FRIEND, new Untargetable(Drowned.class)),
+                entry(AbilityKey.POWDER_WALKER, new PowderWalker()),
+                entry(AbilityKey.HARD_SNOWBALL, new HardSnowball()),
+                entry(AbilityKey.FROST_ASPECT, new FrostAspect()),
+                entry(AbilityKey.AQUATIC_AFFINITY, new AquaticAffinity()),
+                entry(AbilityKey.FROST_SNOWBALL, new FrostSnowball()),
 
                 entry(AbilityKey.TAMASHI_EARTH_ABSORPTION, new DamageModifier(earthAbsorptionFactor, TamashiData.class)),
-                entry(AbilityKey.DIRT_EATER, new DirtEater()),
+                entry(AbilityKey.DIRT_EATER, new BlockEater(Material.DIRT)),
 
                 entry(AbilityKey.FIREBALL, new Fireball()),
                 entry(AbilityKey.FIRE_ASPECT, new FireAspect(fireTimes, TamashiData.class)),
@@ -69,6 +84,33 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable {
 
     private void applyWaterAbilities(RaceProfile profile, TamashiData data) {
         profile.addAbility(AbilityKey.AQUATIC_STRENGTH);
+        profile.addAbility(AbilityKey.SNOW_EATER);
+        profile.addAbility(AbilityKey.PERM_FISH);
+        profile.addAbility(AbilityKey.PERM_AQUA);
+        profile.addAbility(AbilityKey.FROST_AFFINITY);
+
+        int rank = data.getRank();
+        if(rank >= Rank.CHILD.rank) {
+            profile.addAbility(AbilityKey.POWDER_WALKER);
+//
+            PowderWalker powderWalker = (PowderWalker) Race.getInstance().getAbilityManager().getAbility(AbilityKey.POWDER_WALKER);
+            powderWalker.disguise(profile.getPlayer().getInventory());
+        }
+        if(rank >= Rank.ACCOMPLISHED.rank) {
+            profile.addAbility(AbilityKey.GUARDIAN_FRIEND);
+            profile.addAbility(AbilityKey.DROWED_FRIEND);
+
+            profile.addAbility(AbilityKey.HARD_SNOWBALL);
+        }
+        if(rank >= Rank.HALF_GOD.rank) {
+            profile.addAbility(AbilityKey.FROST_SNOWBALL);
+        }
+        if(rank >= Rank.KAMI.rank) {
+            profile.addAbility(AbilityKey.FROST_ASPECT);
+        }
+        if(rank >= Rank.OKAMI.rank) {
+            profile.addAbility(AbilityKey.AQUATIC_AFFINITY);
+        }
     }
 
     private void applyEarthAbilities(RaceProfile profile, TamashiData data) {
@@ -279,6 +321,9 @@ public class Tamashi implements IRace<TamashiData>, ISubRaceable, IRankable {
         if(dolphinGrace != null && dolphinGrace.isInfinite()) {
             player.removePotionEffect(PotionEffectType.DOLPHINS_GRACE);
         }
+
+        PowderWalker powderWalker = (PowderWalker) Race.getInstance().getAbilityManager().getAbility(AbilityKey.POWDER_WALKER);
+        powderWalker.restore(profile.getPlayer().getInventory());
 
         // fire
         PotionEffect fireResistance = player.getPotionEffect(PotionEffectType.FIRE_RESISTANCE);

@@ -4,8 +4,6 @@ import be.lymaes.race.ability.*;
 import be.lymaes.race.ability.model.EmptyAbility;
 import be.lymaes.race.ability.Targetable;
 import be.lymaes.race.data.IRaceData;
-import be.lymaes.race.data.OniData;
-import be.lymaes.race.data.TamashiData;
 import be.lymaes.race.manager.RaceManager;
 import be.lymaes.race.model.IRace;
 import be.lymaes.race.model.IRankable;
@@ -102,11 +100,17 @@ public class RaceProfile {
         if(ability instanceof Interact) {
             eventAbilities.computeIfAbsent(AbilityType.INTERACT, k -> new HashSet<>()).add(ability);
         }
+        if(ability instanceof InteractOwnInventory) {
+            eventAbilities.computeIfAbsent(AbilityType.INVENTORY, k -> new HashSet<>()).add(ability);
+        }
         if(ability instanceof ItemDropping) {
             eventAbilities.computeIfAbsent(AbilityType.ITEM_DROPPING, k -> new HashSet<>()).add(ability);
         }
         if(ability instanceof Helder) {
             eventAbilities.computeIfAbsent(AbilityType.HELDER, k -> new HashSet<>()).add(ability);
+        }
+        if(ability instanceof ProjectileLauncher) {
+            eventAbilities.computeIfAbsent(AbilityType.PROJECTILE_LAUNCHER, k -> new HashSet<>()).add(ability);
         }
         if(ability instanceof Merchant) {
             eventAbilities.computeIfAbsent(AbilityType.MERCHANT, k -> new HashSet<>()).add(ability);
@@ -116,6 +120,9 @@ public class RaceProfile {
         }
         if(ability instanceof Sneaker) {
             eventAbilities.computeIfAbsent(AbilityType.SNEAKER, k -> new HashSet<>()).add(ability);
+        }
+        if(ability instanceof ProjectileDamage) {
+            eventAbilities.computeIfAbsent(AbilityType.PROJECTILE_DAMAGE, k -> new HashSet<>()).add(ability);
         }
         if(ability instanceof Targetable) {
             eventAbilities.computeIfAbsent(AbilityType.TARGETABLE, k -> new HashSet<>()).add(ability);
@@ -158,11 +165,17 @@ public class RaceProfile {
         if(ability instanceof Interact) {
             removeEventAbility(AbilityType.INTERACT, ability);
         }
+        if(ability instanceof InteractOwnInventory) {
+            removeEventAbility(AbilityType.INVENTORY, ability);
+        }
         if(ability instanceof ItemDropping) {
             removeEventAbility(AbilityType.ITEM_DROPPING, ability);
         }
         if(ability instanceof Helder) {
             removeEventAbility(AbilityType.HELDER, ability);
+        }
+        if(ability instanceof ProjectileLauncher) {
+            removeEventAbility(AbilityType.PROJECTILE_LAUNCHER, ability);
         }
         if(ability instanceof Merchant) {
             removeEventAbility(AbilityType.MERCHANT, ability);
@@ -172,6 +185,9 @@ public class RaceProfile {
         }
         if(ability instanceof Sneaker) {
             removeEventAbility(AbilityType.SNEAKER, ability);
+        }
+        if(ability instanceof ProjectileDamage) {
+            removeEventAbility(AbilityType.PROJECTILE_DAMAGE, ability);
         }
         if(ability instanceof Targetable) {
             removeEventAbility(AbilityType.TARGETABLE, ability);

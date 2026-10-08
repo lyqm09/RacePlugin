@@ -1,7 +1,6 @@
 package be.lymaes.race.ability.model;
 
 import be.lymaes.race.RaceProfile;
-import be.lymaes.race.ability.Ability;
 import be.lymaes.race.ability.Damager;
 import be.lymaes.race.data.IRaceData;
 import org.bukkit.entity.Player;
